@@ -1,8 +1,8 @@
 {
-  "name": "dviersel-claude-code-plugins",
+  "name": "applab-plugins",
   "owner": {
-    "name": "Dylan",
-    "url": "https://github.com/dviersel"
+    "name": "AppLab",
+    "url": "https://github.com/applab-nl"
   },
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "plugins": [
@@ -12,8 +12,8 @@
       "version": "1.0.0",
       "description": "Feature Development Lifecycle Orchestrator - Manages issue tracker integration and creates comprehensive implementation plans with subagent delegation",
       "author": {
-        "name": "Dylan",
-        "url": "https://github.com/dviersel"
+        "name": "AppLab",
+        "url": "https://github.com/applab-nl"
       },
       "keywords": ["workflow", "planning", "issue-tracking", "linear", "feature-development", "orchestration"],
       "license": "MIT"

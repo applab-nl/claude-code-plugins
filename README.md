@@ -38,13 +38,13 @@ Transform feature requests into comprehensive implementation plans with issue tr
 ### Add This Marketplace
 
 ```bash
-/plugin marketplace add dviersel/claude-code-plugins
+/plugin marketplace add applab-nl/claude-code-plugins
 ```
 
 ### Install a Plugin
 
 ```bash
-/plugin install flux-capacitor@dviersel-claude-code-plugins
+/plugin install flux-capacitor@applab-plugins
 ```
 
 ### List Available Plugins
@@ -156,8 +156,8 @@ Example marketplace entry:
 
 ### Getting Help
 - 📖 [Official Documentation](https://docs.claude.com/en/docs/claude-code/plugins-reference)
-- 🐛 [Report Issues](https://github.com/dviersel/claude-code-plugins/issues)
-- 💬 [Discussions](https://github.com/dviersel/claude-code-plugins/discussions)
+- 🐛 [Report Issues](https://github.com/applab-nl/claude-code-plugins/issues)
+- 💬 [Discussions](https://github.com/applab-nl/claude-code-plugins/discussions)
 
 ### Contributing
 We welcome contributions! Please:
