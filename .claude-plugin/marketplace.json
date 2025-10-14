@@ -17,6 +17,18 @@
       },
       "keywords": ["workflow", "planning", "issue-tracking", "linear", "feature-development", "orchestration"],
       "license": "MIT"
+    },
+    {
+      "name": "sentry-issue-fixer",
+      "source": "./sentry-issue-fixer",
+      "version": "1.0.0",
+      "description": "Automated Sentry error investigation and resolution - Fetches errors from Sentry, analyzes device logs (iOS/Android), and proposes comprehensive fixes",
+      "author": {
+        "name": "AppLab",
+        "url": "https://github.com/applab-nl"
+      },
+      "keywords": ["sentry", "error-tracking", "debugging", "ios", "android", "monitoring", "crash-analysis", "bug-fixing"],
+      "license": "MIT"
     }
   ]
 }

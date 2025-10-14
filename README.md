@@ -33,6 +33,33 @@ Transform feature requests into comprehensive implementation plans with issue tr
 /flux-capacitor Add OAuth authentication
 ```
 
+### Sentry Issue Fixer
+
+**Automated Sentry Error Investigation & Resolution**
+
+Transform Sentry errors into comprehensive solutions with automated device log analysis and production-ready fixes.
+
+- **Version**: 1.0.0
+- **Category**: Debugging, Monitoring, Error Tracking
+- **Integrations**: Sentry.io, iOS Debugging, Android Debugging
+
+[View Documentation](./sentry-issue-fixer/README.md)
+
+**Key Features:**
+- Sentry MCP integration for direct API access
+- iOS device log analysis (physical devices & simulators)
+- Android ADB and logcat integration
+- Multi-platform error analysis (Flutter, React Native, Native iOS/Android)
+- Root cause identification with specific code fixes
+- Enhanced monitoring recommendations
+
+**Quick Start:**
+```bash
+/sentry-fix https://sentry.io/organizations/my-org/issues/12345/
+/sentry-fix ISSUE-67890
+/sentry-fix App crashes when opening camera
+```
+
 ## Installation
 
 ### Add This Marketplace
@@ -65,6 +92,9 @@ Transform feature requests into comprehensive implementation plans with issue tr
 ### 📋 Workflow & Planning
 - **Flux Capacitor**: Feature development lifecycle orchestration
 
+### 🐛 Debugging & Monitoring
+- **Sentry Issue Fixer**: Automated error investigation and resolution
+
 ### 🔗 Integration (Coming Soon)
 - API integration helpers
 - Database migration tools
@@ -85,8 +115,12 @@ Transform feature requests into comprehensive implementation plans with issue tr
 - Claude Code CLI (latest version)
 - Git for project management
 - Optional: MCP servers for specific integrations
-  - Linear MCP for issue tracking
+  - Linear MCP for issue tracking (Flux Capacitor)
+  - Sentry MCP for error tracking (Sentry Issue Fixer)
   - GitHub MCP for repository management
+- Optional: Development tools
+  - iOS: Xcode, libimobiledevice for device debugging
+  - Android: Android SDK with ADB
 
 ## Creating Your Own Plugins
 
@@ -170,6 +204,7 @@ We welcome contributions! Please:
 
 ### Q1 2025
 - ✅ Flux Capacitor v1.0 (Feature planning & issue tracking)
+- ✅ Sentry Issue Fixer v1.0 (Error investigation & debugging)
 - ⏳ GitHub Issues integration
 - ⏳ Jira integration
 - ⏳ Git worktree automation

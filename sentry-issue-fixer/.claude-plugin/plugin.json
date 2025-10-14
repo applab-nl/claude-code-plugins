@@ -1,0 +1,19 @@
+{
+  "name": "sentry-issue-fixer",
+  "version": "1.0.0",
+  "description": "Automated Sentry error investigation and resolution - Fetches Sentry issues, analyzes device logs, and proposes fixes for iOS/Android/Web applications",
+  "author": "AppLab",
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/sentry-issue-fixer",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "sentry",
+    "error-tracking",
+    "debugging",
+    "ios",
+    "android",
+    "monitoring",
+    "crash-analysis",
+    "bug-fixing"
+  ]
+}
