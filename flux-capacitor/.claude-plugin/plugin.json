@@ -17,5 +17,7 @@
     "orchestration",
     "subagents",
     "ultrathink"
-  ]
+  ],
+  "agents": "./agents/",
+  "commands": "./commands/"
 }

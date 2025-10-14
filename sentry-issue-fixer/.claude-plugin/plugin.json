@@ -15,5 +15,8 @@
     "monitoring",
     "crash-analysis",
     "bug-fixing"
-  ]
+  ],
+  "agents": "./agents/",
+  "commands": "./commands/",
+  "mcpServers": "./.mcp.json"
 }
