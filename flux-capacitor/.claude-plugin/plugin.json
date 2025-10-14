@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Feature Development Lifecycle Orchestrator - Manages issue tracker integration and creates comprehensive implementation plans with subagent delegation for feature development",
   "author": "Dylan",
-  "homepage": "https://github.com/dylan/claude-code-plugins/tree/main/flux-capacitor",
-  "repository": "https://github.com/dylan/claude-code-plugins",
+  "homepage": "https://github.com/dviersel/claude-code-plugins/tree/main/flux-capacitor",
+  "repository": "https://github.com/dviersel/claude-code-plugins",
   "license": "MIT",
   "keywords": [
     "workflow",

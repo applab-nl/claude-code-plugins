@@ -38,7 +38,7 @@ Transform feature requests into comprehensive implementation plans with issue tr
 ### Add This Marketplace
 
 ```bash
-/plugin marketplace add dylan/claude-code-plugins
+/plugin marketplace add dviersel/claude-code-plugins
 ```
 
 ### Install a Plugin
@@ -156,8 +156,8 @@ Example marketplace entry:
 
 ### Getting Help
 - 📖 [Official Documentation](https://docs.claude.com/en/docs/claude-code/plugins-reference)
-- 🐛 [Report Issues](https://github.com/dylan/claude-code-plugins/issues)
-- 💬 [Discussions](https://github.com/dylan/claude-code-plugins/discussions)
+- 🐛 [Report Issues](https://github.com/dviersel/claude-code-plugins/issues)
+- 💬 [Discussions](https://github.com/dviersel/claude-code-plugins/discussions)
 
 ### Contributing
 We welcome contributions! Please:

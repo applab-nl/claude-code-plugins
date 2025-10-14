@@ -2,7 +2,7 @@
   "name": "claude-code-plugins",
   "owner": {
     "name": "Dylan",
-    "url": "https://github.com/dylan"
+    "url": "https://github.com/dviersel"
   },
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "plugins": [

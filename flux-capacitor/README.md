@@ -63,7 +63,7 @@ Intelligent recommendations for specialized agents:
 ### From Marketplace
 
 ```bash
-/plugin marketplace add dylan/claude-code-plugins
+/plugin marketplace add dviersel/claude-code-plugins
 /plugin install flux-capacitor@claude-code-plugins
 ```
 
@@ -250,5 +250,5 @@ Current version: 1.0.0
 ## Support
 
 For issues, feature requests, or questions:
-- GitHub Issues: https://github.com/dylan/claude-code-plugins/issues
+- GitHub Issues: https://github.com/dviersel/claude-code-plugins/issues
 - Documentation: https://docs.claude.com/en/docs/claude-code/plugins-reference
