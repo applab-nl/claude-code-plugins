@@ -1,0 +1,19 @@
+{
+  "name": "claude-code-plugins",
+  "owner": {
+    "name": "Dylan",
+    "url": "https://github.com/dylan"
+  },
+  "description": "A curated collection of Claude Code plugins for enhanced development workflows",
+  "plugins": [
+    {
+      "name": "flux-capacitor",
+      "path": "./flux-capacitor",
+      "version": "1.0.0",
+      "description": "Feature Development Lifecycle Orchestrator - Manages issue tracker integration and creates comprehensive implementation plans with subagent delegation",
+      "author": "Dylan",
+      "keywords": ["workflow", "planning", "issue-tracking", "linear", "feature-development", "orchestration"],
+      "license": "MIT"
+    }
+  ]
+}
