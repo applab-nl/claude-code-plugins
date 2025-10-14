@@ -8,10 +8,13 @@
   "plugins": [
     {
       "name": "flux-capacitor",
-      "path": "./flux-capacitor",
+      "source": "./flux-capacitor",
       "version": "1.0.0",
       "description": "Feature Development Lifecycle Orchestrator - Manages issue tracker integration and creates comprehensive implementation plans with subagent delegation",
-      "author": "Dylan",
+      "author": {
+        "name": "Dylan",
+        "url": "https://github.com/dviersel"
+      },
       "keywords": ["workflow", "planning", "issue-tracking", "linear", "feature-development", "orchestration"],
       "license": "MIT"
     }
