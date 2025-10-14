@@ -203,4 +203,4 @@ Special thanks to:
 
 **Version**: 1.0.0
 **Last Updated**: 2025-10-14
-**Maintainer**: Dylan
+**Maintainer**: AppLab
