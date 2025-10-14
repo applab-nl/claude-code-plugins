@@ -44,7 +44,7 @@ Transform feature requests into comprehensive implementation plans with issue tr
 ### Install a Plugin
 
 ```bash
-/plugin install flux-capacitor@dviersel/claude-code-plugins
+/plugin install flux-capacitor@dviersel-claude-code-plugins
 ```
 
 ### List Available Plugins
