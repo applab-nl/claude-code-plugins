@@ -5,6 +5,21 @@ All notable changes to the Flux Capacitor plugin will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2025-10-23
+
+### Fixed
+- **MCP Server Bundling**: Properly bundle all dependencies using tsup for zero-configuration installation
+  - MCP server now uses CommonJS format for better Node.js compatibility
+  - All dependencies bundled into single ~920KB file (previously missing from distribution)
+  - Eliminates "Cannot find package '@modelcontextprotocol/sdk'" error
+  - No `npm install` required in plugin directory
+  - Cross-platform compatibility ensured
+
+### Changed
+- Build system migrated from TypeScript compiler to tsup bundler
+- Output format changed from ESM to CJS for improved compatibility with dynamic requires
+- MCP server executable now `dist/index.cjs` (previously `dist/index.js`)
+
 ## [1.2.0] - 2025-10-23
 
 ### Added

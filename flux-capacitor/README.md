@@ -381,9 +381,41 @@ Contributions are welcome! Please submit issues and pull requests to the main re
 
 MIT License - See LICENSE file for details
 
+## Technical Details
+
+### MCP Server Bundling
+
+The flux-capacitor-mcp server is distributed as a **self-contained CommonJS bundle** (~920KB) that includes all dependencies. This ensures zero-configuration installation without requiring `npm install` in the plugin directory.
+
+**Build System:**
+- **Bundler**: [tsup](https://tsup.egoist.dev/) (esbuild-based)
+- **Format**: CommonJS (for compatibility with Node.js dynamic requires)
+- **Bundle Size**: ~920KB (bundled) vs ~100MB+ (with node_modules)
+- **Dependencies Included**: All runtime dependencies bundled into single file
+
+**Why CommonJS Instead of ESM?**
+- Some dependencies (e.g., `simple-git` via `@kwsites/file-exists`) use dynamic `require()` calls
+- ESM doesn't support dynamic require, causing "Dynamic require not supported" errors
+- CommonJS provides better compatibility with existing Node.js ecosystem packages
+
+**Building from Source:**
+```bash
+cd mcp-server/
+npm install
+npm run build
+# Output: dist/index.cjs (bundled executable)
+```
+
+**Bundle Configuration:**
+The bundling is configured in `mcp-server/tsup.config.ts`:
+- `noExternal: [/.*/]` - Bundles all dependencies
+- `format: ['cjs']` - CommonJS output
+- `platform: 'node'` - Node.js runtime optimizations
+- `treeshake: true` - Removes unused code
+
 ## Version
 
-Current version: 1.0.0
+Current version: 1.2.1
 
 ## Support
 
