@@ -1,0 +1,27 @@
+{
+  "name": "svelte-dev",
+  "version": "1.0.0",
+  "description": "Svelte 5 development specialist with integrated MCP server for documentation access, static code analysis, and comprehensive runes expertise ($state, $derived, $effect, $props)",
+  "author": {
+    "name": "AppLab",
+    "url": "https://github.com/applab-nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/svelte-dev",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "svelte",
+    "svelte5",
+    "sveltekit",
+    "runes",
+    "frontend",
+    "reactive",
+    "typescript",
+    "ssr",
+    "compiler",
+    "web-development",
+    "code-analysis"
+  ],
+  "agents": "./agents/svelte-specialist.md",
+  "mcpServers": "./.mcp.json"
+}
