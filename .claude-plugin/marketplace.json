@@ -9,7 +9,7 @@
     {
       "name": "flux-capacitor",
       "source": "./flux-capacitor",
-      "version": "1.0.0",
+      "version": "1.2.1",
       "description": "Feature Development Lifecycle Orchestrator - Manages issue tracker integration and creates comprehensive implementation plans with subagent delegation",
       "author": {
         "name": "AppLab",
@@ -28,6 +28,18 @@
         "url": "https://github.com/applab-nl"
       },
       "keywords": ["sentry", "error-tracking", "debugging", "ios", "android", "monitoring", "crash-analysis", "bug-fixing"],
+      "license": "MIT"
+    },
+    {
+      "name": "next-dev",
+      "source": "./next-dev",
+      "version": "1.0.0",
+      "description": "Next.js development specialist with integrated next-devtools MCP server for runtime diagnostics, automated upgrades, page testing, and comprehensive documentation access",
+      "author": {
+        "name": "AppLab",
+        "url": "https://github.com/applab-nl"
+      },
+      "keywords": ["nextjs", "frontend", "react", "typescript", "web-development", "app-router", "ssr", "server-components", "devtools", "testing", "playwright", "diagnostics"],
       "license": "MIT"
     }
   ]

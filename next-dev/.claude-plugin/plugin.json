@@ -1,0 +1,28 @@
+{
+  "name": "next-dev",
+  "version": "1.0.0",
+  "description": "Next.js development specialist with integrated next-devtools MCP server for runtime diagnostics, automated upgrades, page testing, and comprehensive documentation access",
+  "author": {
+    "name": "AppLab",
+    "url": "https://github.com/applab-nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/next-dev",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "nextjs",
+    "frontend",
+    "react",
+    "typescript",
+    "web-development",
+    "app-router",
+    "ssr",
+    "server-components",
+    "devtools",
+    "testing",
+    "playwright",
+    "diagnostics"
+  ],
+  "agents": "./agents/nextjs-specialist.md",
+  "mcpServers": "./.mcp.json"
+}
