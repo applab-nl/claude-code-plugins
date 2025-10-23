@@ -1,7 +1,7 @@
 {
   "name": "flux-capacitor",
-  "version": "1.0.0",
-  "description": "Feature Development Lifecycle Orchestrator - Manages issue tracker integration and creates comprehensive implementation plans with subagent delegation for feature development",
+  "version": "1.1.0",
+  "description": "Feature Development Lifecycle Orchestrator - Manages issue tracker integration, creates comprehensive implementation plans, and orchestrates isolated worktree development with dedicated Claude Code sessions",
   "author": "AppLab",
   "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/flux-capacitor",
   "repository": "https://github.com/applab-nl/claude-code-plugins",
@@ -16,7 +16,10 @@
     "feature-development",
     "orchestration",
     "subagents",
-    "ultrathink"
+    "ultrathink",
+    "worktree",
+    "parallel-development",
+    "session-management"
   ],
   "agents": "./agents/",
   "commands": "./commands/"
