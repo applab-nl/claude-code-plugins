@@ -289,26 +289,6 @@ We welcome contributions! Please:
 3. Add tests and documentation
 4. Submit a detailed pull request
 
-## Roadmap
-
-### Completed ✅
-- ✅ Flux Capacitor v1.2.1 (Feature planning, issue tracking & worktree orchestration)
-- ✅ Sentry Issue Fixer v1.0.0 (Error investigation & debugging)
-- ✅ Next.js Development Specialist v1.0.0 (Runtime diagnostics & upgrades)
-- ✅ Svelte 5 Development Specialist v1.0.0 (Runes expertise)
-- ✅ Flutter Development Specialist v1.0.0 (Mobile development with MCP)
-- ✅ Agents Collection v1.0.0 (13 specialized development agents)
-
-### Q4 2025
-- ⏳ GitHub Issues integration (Flux Capacitor)
-- ⏳ Jira integration (Flux Capacitor)
-- ⏳ Additional framework-specific specialists
-
-### Future
-- ⏳ API documentation generator
-- ⏳ Database migration helper
-- ⏳ Performance profiling tools
-
 ## License
 
 This marketplace and all included plugins are licensed under the MIT License unless otherwise specified. See individual plugin LICENSE files for details.
