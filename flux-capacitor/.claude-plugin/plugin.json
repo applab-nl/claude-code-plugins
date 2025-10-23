@@ -1,6 +1,6 @@
 {
   "name": "flux-capacitor",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Feature Development Lifecycle Orchestrator - Manages issue tracker integration, creates comprehensive implementation plans, and orchestrates isolated worktree development with dedicated Claude Code sessions",
   "author": {
     "name": "AppLab",
@@ -25,5 +25,5 @@
     "session-management"
   ],
   "agents": "./agents/flux-capacitor.md",
-  "commands": "./commands/flux-capacitor.md"
+  "commands": "./commands/run.md"
 }

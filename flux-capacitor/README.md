@@ -18,19 +18,19 @@ The Flux Capacitor plugin streamlines your feature development workflow by:
 
 **Mode 1: Issue Key**
 ```bash
-/flux-capacitor MEM-123
+/run MEM-123
 ```
 Fetches issue details from your tracker, generates a plan, updates issue status, and provides clear next steps.
 
 **Mode 2: Description with Issue Tracker**
 ```bash
-/flux-capacitor Add OAuth authentication with Google and GitHub
+/run Add OAuth authentication with Google and GitHub
 ```
 Searches for similar issues, optionally creates a new one, then follows Mode 1 workflow.
 
 **Mode 3: Plain Description (No Tracker)**
 ```bash
-/flux-capacitor Implement user profile management
+/run Implement user profile management
 ```
 Generates comprehensive plan without issue tracker integration.
 
@@ -96,12 +96,12 @@ Intelligent recommendations for specialized agents:
 
 1. **With Issue Key** (requires Linear MCP):
    ```bash
-   /flux-capacitor MEM-123
+   /run MEM-123
    ```
 
 2. **With Description**:
    ```bash
-   /flux-capacitor Add real-time notifications with Supabase
+   /run Add real-time notifications with Supabase
    ```
 
 3. **Approve the Plan**:
@@ -114,12 +114,12 @@ Intelligent recommendations for specialized agents:
 
 **Add context to issue key**:
 ```bash
-/flux-capacitor MEM-123 Focus on mobile-first approach
+/run MEM-123 Focus on mobile-first approach
 ```
 
 **Create detailed feature request**:
 ```bash
-/flux-capacitor Implement authentication system with OAuth (Google, GitHub), email/password, and magic links. Include MFA support.
+/run Implement authentication system with OAuth (Google, GitHub), email/password, and magic links. Include MFA support.
 ```
 
 ## How It Works
@@ -225,7 +225,7 @@ export LINEAR_API_KEY=your_api_key
 ### Example 1: Full Workflow with Workspace Orchestrator
 
 ```
-User: /flux-capacitor MEM-123
+User: /run MEM-123
 
 ✓ Detected issue key: MEM-123
 ✓ Linear MCP server found
@@ -284,7 +284,7 @@ When complete, clean up with: /flux-capacitor-cleanup mem-123
 ### Example 2: Fallback Without Workspace Orchestrator
 
 ```
-User: /flux-capacitor Add real-time notifications
+User: /run Add real-time notifications
 
 ✓ Detected feature description
 ✓ Linear MCP server found

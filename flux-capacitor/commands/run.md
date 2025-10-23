@@ -69,12 +69,13 @@ Use the Task tool to launch the flux-capacitor agent with prompt:
 [If empty or invalid]
 ❌ Invalid input
 
-Usage: /flux-capacitor <ISSUE-KEY|description>
+Usage: /flux-capacitor:run <ISSUE-KEY|description>
+        /run <ISSUE-KEY|description>
 
 Examples:
-  /flux-capacitor MEM-123
-  /flux-capacitor Add OAuth authentication with Google and GitHub
-  /flux-capacitor Implement user profile management
+  /run MEM-123
+  /flux-capacitor:run Add OAuth authentication with Google and GitHub
+  /run Implement user profile management
 
 The flux-capacitor will:
 ✓ Integrate with Linear/GitHub/Jira (if available)

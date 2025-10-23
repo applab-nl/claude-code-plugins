@@ -5,6 +5,29 @@ All notable changes to the Flux Capacitor plugin will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2025-10-23
+
+### Changed
+- Renamed command from `flux-capacitor` to `run` for brevity and improved UX
+  - Command invocation: `/run` or `/flux-capacitor:run` (instead of `/flux-capacitor:flux-capacitor`)
+  - Follows common CLI conventions (npm run, cargo run, docker run)
+  - Maintains semantic clarity while reducing typing overhead
+- Updated all documentation and examples to reflect new command name
+
+## [1.1.0] - 2025-10-23
+
+### Added
+- Workspace orchestration via flux-capacitor-mcp MCP server
+  - Git worktree creation for isolated development environments
+  - Dedicated Claude Code session launching in new terminal windows
+  - Parallel feature development support
+  - Automatic initialization script execution
+  - Session lifecycle management (create, check status, cleanup)
+
+### Changed
+- Enhanced workflow with automated worktree and session management
+- Improved user experience with parallel development capabilities
+
 ## [1.0.0] - 2025-10-14
 
 ### Added
