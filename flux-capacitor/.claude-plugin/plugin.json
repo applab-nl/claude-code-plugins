@@ -2,7 +2,10 @@
   "name": "flux-capacitor",
   "version": "1.1.0",
   "description": "Feature Development Lifecycle Orchestrator - Manages issue tracker integration, creates comprehensive implementation plans, and orchestrates isolated worktree development with dedicated Claude Code sessions",
-  "author": "AppLab",
+  "author": {
+    "name": "AppLab",
+    "url": "https://github.com/applab-nl"
+  },
   "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/flux-capacitor",
   "repository": "https://github.com/applab-nl/claude-code-plugins",
   "license": "MIT",
@@ -21,6 +24,6 @@
     "parallel-development",
     "session-management"
   ],
-  "agents": "./agents/",
-  "commands": "./commands/"
+  "agents": "./agents/flux-capacitor.md",
+  "commands": "./commands/flux-capacitor.md"
 }
