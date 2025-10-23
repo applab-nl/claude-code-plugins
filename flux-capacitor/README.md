@@ -86,9 +86,11 @@ Intelligent recommendations for specialized agents:
 ## Requirements
 
 - Claude Code CLI
+- Node.js 18+ (for bundled MCP server)
 - Git 2.30+ (for worktree support)
-- Optional but recommended: flux-capacitor-mcp MCP server for worktree and session management
 - Optional: Linear MCP server for issue tracking integration
+
+**Note**: The flux-capacitor-mcp server is now bundled with the plugin and starts automatically when the plugin is enabled. No separate installation required!
 
 ## Usage
 
@@ -169,36 +171,36 @@ Intelligent recommendations for specialized agents:
 
 ## Configuration
 
-### Workspace Orchestrator MCP (Recommended)
+### Workspace Orchestrator MCP (Bundled) ✨
 
-The flux-capacitor-mcp MCP server enables worktree creation and session launching. See the [flux-capacitor-mcp documentation](../../claude-code-config/mcp-servers/flux-capacitor-mcp/README.md) for full installation instructions.
+The flux-capacitor-mcp MCP server is **now bundled with the plugin** and starts automatically when you enable the plugin. No manual configuration required!
 
-**Quick Setup:**
+**Features Enabled Automatically:**
+- ✅ Isolated git worktree creation
+- ✅ Dedicated Claude Code session launching
+- ✅ Parallel feature development
+- ✅ Session lifecycle management
+- ✅ Automated worktree initialization scripts
 
-Add to `~/.claude/mcp_config.json`:
+**Advanced Configuration (Optional):**
+
+If you want to customize the MCP server behavior, you can override settings by adding to `~/.claude/mcp_config.json`:
 ```json
 {
   "mcpServers": {
     "flux-capacitor-mcp": {
-      "command": "node",
-      "args": [
-        "/path/to/claude-code-config/mcp-servers/flux-capacitor-mcp/dist/index.js"
-      ],
       "env": {
-        "LOG_LEVEL": "info",
-        "TERMINAL_APP": "auto-detect"
+        "LOG_LEVEL": "debug",
+        "TERMINAL_APP": "warp"
       }
     }
   }
 }
 ```
 
-**Features Enabled:**
-- Isolated git worktree creation
-- Dedicated Claude Code session launching
-- Parallel feature development
-- Session lifecycle management
-- Automated worktree initialization scripts
+Available environment variables:
+- `LOG_LEVEL`: `debug`, `info`, `warn`, `error` (default: `info`)
+- `TERMINAL_APP`: `auto-detect`, `warp`, `iterm2`, `terminal` (default: `auto-detect`)
 
 ### Linear Integration
 
@@ -222,14 +224,14 @@ export LINEAR_API_KEY=your_api_key
 
 ## Examples
 
-### Example 1: Full Workflow with Workspace Orchestrator
+### Example 1: Full Workflow (Default Experience)
 
 ```
 User: /run MEM-123
 
 ✓ Detected issue key: MEM-123
 ✓ Linear MCP server found
-✓ Workspace-orchestrator MCP server found
+✓ flux-capacitor-mcp server active (bundled)
 ✓ Fetching issue details...
 
 📋 Issue: Add OAuth authentication with Google and GitHub
@@ -281,14 +283,14 @@ You can:
 When complete, clean up with: /flux-capacitor-cleanup mem-123
 ```
 
-### Example 2: Fallback Without Workspace Orchestrator
+### Example 2: Description-Based Workflow
 
 ```
 User: /run Add real-time notifications
 
 ✓ Detected feature description
 ✓ Linear MCP server found
-⚠️  Workspace-orchestrator not available (will provide manual steps)
+✓ flux-capacitor-mcp server active (bundled)
 ✓ Searching for similar issues...
 
 Found 1 similar issue:
@@ -313,28 +315,25 @@ User: yes
 ✓ Assigning issue to you
 ✓ Adding comment with plan summary
 
+🔧 Creating isolated worktree...
+✓ Branch created: feature/mem-156-add-real-time-notifications
+✓ Worktree created: /Users/alice/projects/my-app-mem-156
+✓ Initialization scripts executed: 2
+
+🚀 Launching dedicated Claude Code session...
+
+✓ Session launched successfully!
+  Session ID: sess_my-app-mem-156_1729034567_xyz789
+  Terminal: iTerm2 (PID: 67890)
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 Manual Implementation Steps
+🎯 Feature Development Started!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Since flux-capacitor-mcp MCP is not available:
-
-1. Create feature branch:
-   git checkout -b feature/mem-156-add-real-time-notifications
-
-2. Review the implementation plan above
-
-3. Use these specialized subagents:
-   - supabase-integration-expert for real-time subscriptions
-   - frontend-specialist for notification UI
-   - test-engineer for testing
-
-4. Test thoroughly before committing
-
-5. Update issue status to "Review" when complete
-
-💡 Tip: Install flux-capacitor-mcp MCP for automated workflow!
-   See installation section above.
+The session will implement real-time notifications using:
+- supabase-integration-expert for real-time subscriptions
+- frontend-specialist for notification UI
+- test-engineer for testing
 ```
 
 ### Example 3: Parallel Feature Development

@@ -5,14 +5,24 @@ All notable changes to the Flux Capacitor plugin will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.1] - 2025-10-23
+## [1.2.0] - 2025-10-23
+
+### Added
+- **Bundled MCP Server**: flux-capacitor-mcp is now included with the plugin and starts automatically
+  - Zero-configuration workspace orchestration
+  - No separate installation or setup required
+  - Automatic git worktree creation
+  - Dedicated Claude Code session launching
+  - Enabled immediately upon plugin installation
 
 ### Changed
 - Renamed command from `flux-capacitor` to `run` for brevity and improved UX
   - Command invocation: `/run` or `/flux-capacitor:run` (instead of `/flux-capacitor:flux-capacitor`)
   - Follows common CLI conventions (npm run, cargo run, docker run)
   - Maintains semantic clarity while reducing typing overhead
-- Updated all documentation and examples to reflect new command name
+- Updated all documentation and examples to reflect bundled MCP server
+- Simplified requirements: only Node.js 18+ needed (MCP server auto-starts)
+- Removed manual MCP server installation instructions (no longer needed)
 
 ## [1.1.0] - 2025-10-23
 
