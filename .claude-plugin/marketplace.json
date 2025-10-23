@@ -77,6 +77,18 @@
       },
       "keywords": ["agents", "subagents", "specialists", "development", "code-review", "testing", "architecture", "debugging", "android", "ios", "frontend", "backend", "kotlin", "react", "nextjs", "svelte", "supabase", "git", "ci-cd", "refactoring", "dependencies", "monitoring", "sentry"],
       "license": "MIT"
+    },
+    {
+      "name": "commit-tools",
+      "source": "./commit-tools",
+      "version": "1.0.0",
+      "description": "Git commit automation tools with intelligent commit message generation - Review changes, create descriptive commits, and optionally push to remote",
+      "author": {
+        "name": "AppLab",
+        "url": "https://github.com/applab-nl"
+      },
+      "keywords": ["git", "commit", "automation", "version-control", "workflow", "productivity", "commit-messages"],
+      "license": "MIT"
     }
   ]
 }
