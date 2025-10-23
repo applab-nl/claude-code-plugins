@@ -53,6 +53,18 @@
       },
       "keywords": ["svelte", "svelte5", "sveltekit", "runes", "frontend", "reactive", "typescript", "ssr", "compiler", "web-development", "code-analysis"],
       "license": "MIT"
+    },
+    {
+      "name": "flutter-dev",
+      "source": "./flutter-dev",
+      "version": "1.0.0",
+      "description": "Flutter and Dart development specialist with integrated MCP server for code analysis, package management, testing, runtime introspection, and cross-platform mobile development",
+      "author": {
+        "name": "AppLab",
+        "url": "https://github.com/applab-nl"
+      },
+      "keywords": ["flutter", "dart", "mobile", "android", "ios", "widgets", "state-management", "cross-platform", "material-design", "riverpod", "supabase", "code-analysis", "pub-dev"],
+      "license": "MIT"
     }
   ]
 }

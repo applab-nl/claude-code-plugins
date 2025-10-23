@@ -1,0 +1,29 @@
+{
+  "name": "flutter-dev",
+  "version": "1.0.0",
+  "description": "Flutter and Dart development specialist with integrated MCP server for code analysis, package management, testing, runtime introspection, and cross-platform mobile development",
+  "author": {
+    "name": "AppLab",
+    "url": "https://github.com/applab-nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/flutter-dev",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "flutter",
+    "dart",
+    "mobile",
+    "android",
+    "ios",
+    "widgets",
+    "state-management",
+    "cross-platform",
+    "material-design",
+    "riverpod",
+    "supabase",
+    "code-analysis",
+    "pub-dev"
+  ],
+  "agents": "./agents/flutter-specialist.md",
+  "mcpServers": "./.mcp.json"
+}
