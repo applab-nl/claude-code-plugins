@@ -65,6 +65,18 @@
       },
       "keywords": ["flutter", "dart", "mobile", "android", "ios", "widgets", "state-management", "cross-platform", "material-design", "riverpod", "supabase", "code-analysis", "pub-dev"],
       "license": "MIT"
+    },
+    {
+      "name": "agents",
+      "source": "./agents",
+      "version": "1.0.0",
+      "description": "Curated collection of 13 specialized agents for comprehensive development workflows across frontend, backend, mobile, testing, debugging, architecture, and DevOps",
+      "author": {
+        "name": "AppLab",
+        "url": "https://github.com/applab-nl"
+      },
+      "keywords": ["agents", "subagents", "specialists", "development", "code-review", "testing", "architecture", "debugging", "android", "ios", "frontend", "backend", "kotlin", "react", "nextjs", "svelte", "supabase", "git", "ci-cd", "refactoring", "dependencies", "monitoring", "sentry"],
+      "license": "MIT"
     }
   ]
 }
