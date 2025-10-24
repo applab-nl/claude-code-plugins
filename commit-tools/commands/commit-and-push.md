@@ -12,9 +12,7 @@ description: Commit and push
 ## Your task
 
 Based on the above changes:
-
-1. Create a new branch if on main
-2. Review, commit and push all changes with a single elaborate message explaining the changes. Nice if you use some emoticons but don't overdo it. Refrain from mentioning Claude as an author.
-3. Push the branch to origin
-4. You have the capability to call multiple tools in a single response. You MUST do all of the above in a single message. Do not use any other tools or do anything else. Do not send any other text or messages besides these tool calls.
+1. Review, commit and push all changes with a single elaborate message explaining the changes. Nice if you use some emoticons but don't overdo it. Refrain from mentioning Claude as an author.
+2. Push the branch to origin
+3. You have the capability to call multiple tools in a single response. You MUST do all of the above in a single message. Do not use any other tools or do anything else. Do not send any other text or messages besides these tool calls.
 
