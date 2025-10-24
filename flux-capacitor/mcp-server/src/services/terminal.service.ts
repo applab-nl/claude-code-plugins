@@ -232,11 +232,23 @@ export class TerminalService {
         const random = crypto.randomBytes(4).toString('hex');
         const scriptPath = path.join(claudeDir, `warp-launch-${timestamp}-${random}.sh`);
 
+        // Resolve the command - handle both string and prompt-file objects
+        let claudeCommand: string;
+        if (typeof command === 'object' && command.type === 'prompt-file') {
+          // Read the prompt file and pass it to claude via stdin
+          // This avoids ALL shell escaping issues with complex prompts
+          const promptPath = command.promptFile;
+          logger.debug(`Using prompt file: ${promptPath}`);
+          claudeCommand = `cat "${promptPath}" | claude`;
+        } else {
+          claudeCommand = command;
+        }
+
         // Create script content
         // The script will: cd to worktree, execute command, then self-delete
         const scriptContent = `#!/bin/bash
 cd "${cwd}"
-${command}
+${claudeCommand}
 rm "$0"
 `;
 
@@ -319,7 +331,15 @@ rm "$0"
     }
 
     if (command) {
-      commands.push(command);
+      // Handle both string and prompt-file objects
+      if (typeof command === 'object' && command.type === 'prompt-file') {
+        // Use cat to pipe the prompt file to claude
+        const promptPath = command.promptFile;
+        logger.debug(`Using prompt file for iTerm2: ${promptPath}`);
+        commands.push(`cat "${promptPath}" | claude`);
+      } else {
+        commands.push(command);
+      }
     }
 
     const commandString = commands.join(' && ');
@@ -372,7 +392,15 @@ rm "$0"
     }
 
     if (command) {
-      commands.push(command);
+      // Handle both string and prompt-file objects
+      if (typeof command === 'object' && command.type === 'prompt-file') {
+        // Use cat to pipe the prompt file to claude
+        const promptPath = command.promptFile;
+        logger.debug(`Using prompt file for Terminal.app: ${promptPath}`);
+        commands.push(`cat "${promptPath}" | claude`);
+      } else {
+        commands.push(command);
+      }
     }
 
     const commandString = commands.join(' && ') || 'clear';

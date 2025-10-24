@@ -26592,9 +26592,17 @@ var TerminalService = class {
         const timestamp = Date.now();
         const random = crypto__default.default.randomBytes(4).toString("hex");
         const scriptPath = path3__default.default.join(claudeDir, `warp-launch-${timestamp}-${random}.sh`);
+        let claudeCommand;
+        if (typeof command === "object" && command.type === "prompt-file") {
+          const promptPath = command.promptFile;
+          logger6.debug(`Using prompt file: ${promptPath}`);
+          claudeCommand = `cat "${promptPath}" | claude`;
+        } else {
+          claudeCommand = command;
+        }
         const scriptContent = `#!/bin/bash
 cd "${cwd}"
-${command}
+${claudeCommand}
 rm "$0"
 `;
         logger6.debug(`Writing launch script: ${scriptPath}`);
@@ -26652,7 +26660,13 @@ rm "$0"
       commands.push(`cd "${cwd}"`);
     }
     if (command) {
-      commands.push(command);
+      if (typeof command === "object" && command.type === "prompt-file") {
+        const promptPath = command.promptFile;
+        logger6.debug(`Using prompt file for iTerm2: ${promptPath}`);
+        commands.push(`cat "${promptPath}" | claude`);
+      } else {
+        commands.push(command);
+      }
     }
     const commandString = commands.join(" && ");
     const escapedCommand = commandString.replace(/"/g, '\\"');
@@ -26690,7 +26704,13 @@ rm "$0"
       commands.push(`cd "${cwd}"`);
     }
     if (command) {
-      commands.push(command);
+      if (typeof command === "object" && command.type === "prompt-file") {
+        const promptPath = command.promptFile;
+        logger6.debug(`Using prompt file for Terminal.app: ${promptPath}`);
+        commands.push(`cat "${promptPath}" | claude`);
+      } else {
+        commands.push(command);
+      }
     }
     const commandString = commands.join(" && ") || "clear";
     const escapedCommand = commandString.replace(/"/g, '\\"');
@@ -26860,14 +26880,10 @@ var SessionService = class {
       contextFiles
     );
     logger7.debug(`Prompt file created: ${promptFile}`);
-    logger7.debug(`Reading prompt from file: ${promptFile}`);
-    const promptContent = await fs4__default.default.readFile(promptFile, "utf-8");
-    const claudeCommand = `claude "$(cat <<'PROMPT_EOF'
-${promptContent}
-PROMPT_EOF
-)"`;
+    const claudeCommand = { type: "prompt-file", promptFile };
     logger7.debug("Claude Code command", {
-      command: 'claude "<prompt content>"',
+      command: "claude (reading from file)",
+      promptFile,
       agentInPrompt: agentName || "none"
     });
     logger7.debug("Creating terminal service", { terminalApp: terminalApp || "default" });

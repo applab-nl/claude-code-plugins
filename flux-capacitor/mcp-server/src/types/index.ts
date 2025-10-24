@@ -194,7 +194,7 @@ export interface CreateTerminalParams {
   /** Window title */
   title?: string;
   /** Initial command to execute */
-  command?: string;
+  command?: string | { type: 'prompt-file'; promptFile: string };
 }
 
 export interface CreateTerminalResult {
@@ -315,7 +315,8 @@ export type SessionErrorCode =
   | 'SESSION_ALREADY_EXISTS'
   | 'TERMINAL_CREATION_FAILED'
   | 'CLAUDE_LAUNCH_FAILED'
-  | 'INVALID_WORKTREE';
+  | 'INVALID_WORKTREE'
+  | 'INVALID_PID';
 
 export class TerminalError extends Error {
   constructor(

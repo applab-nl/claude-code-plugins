@@ -5,6 +5,23 @@ All notable changes to the Flux Capacitor plugin will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2025-10-24
+
+### Fixed
+- **CRITICAL: Shell Script Escaping**: Fixed shell syntax errors when launching sessions with complex prompts
+  - Prompts containing unbalanced quotes, apostrophes, or special characters no longer break launch scripts
+  - Changed from inline bash here-documents to piping prompt files directly via stdin
+  - Eliminates nested shell escaping issues that caused "unexpected EOF" and syntax errors
+  - Affects all terminal backends: Warp, iTerm2, and Terminal.app
+  - Launch scripts now use `cat "prompt-file" | claude` instead of embedding prompt content
+  - Prevents shell metacharacter interpretation in user-provided prompts
+
+### Technical Details
+- Modified `session.service.ts` to pass prompt file path as object instead of string command
+- Updated `terminal.service.ts` to handle `{ type: 'prompt-file', promptFile: string }` command format
+- All terminal implementations (Warp, iTerm2, Terminal.app) now support prompt-file mode
+- Type definitions updated to support both string and prompt-file command formats
+
 ## [1.2.2] - 2025-10-24
 
 ### Fixed

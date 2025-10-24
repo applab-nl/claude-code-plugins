@@ -111,16 +111,13 @@ export class SessionService {
     logger.debug(`Prompt file created: ${promptFile}`);
 
     // Build Claude Code command
-    // NOTE: Claude Code doesn't have --agent flag
-    // Agents are invoked by mentioning them in the prompt
-    logger.debug(`Reading prompt from file: ${promptFile}`);
-    const promptContent = await fs.readFile(promptFile, 'utf-8');
-
-    // Use bash here-document to pass multi-line prompt safely
-    const claudeCommand = `claude "$(cat <<'PROMPT_EOF'\n${promptContent}\nPROMPT_EOF\n)"`;
+    // Pass the prompt file path to the terminal service, which will read it directly
+    // This avoids shell escaping issues with complex prompts
+    const claudeCommand = { type: 'prompt-file', promptFile } as const;
 
     logger.debug('Claude Code command', {
-      command: 'claude "<prompt content>"',
+      command: 'claude (reading from file)',
+      promptFile,
       agentInPrompt: agentName || 'none'
     });
 
