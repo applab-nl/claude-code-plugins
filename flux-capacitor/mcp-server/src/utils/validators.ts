@@ -143,9 +143,33 @@ export function generateWorktreeName(repoPath: string, branch: string): string {
 }
 
 /**
+ * Validate that a PID is safe to signal
+ * CRITICAL: PIDs <= 0 have special meanings in Unix:
+ * - pid = 0: Signals all processes in current process group
+ * - pid = -1: Signals all processes user owns
+ * - pid < -1: Signals specific process group
+ * Using these values can cause catastrophic system-wide failures.
+ */
+export function isValidPid(pid: number | undefined | null): boolean {
+  return (
+    typeof pid === 'number' &&
+    !isNaN(pid) &&
+    Number.isInteger(pid) &&
+    Number.isFinite(pid) &&
+    pid > 0
+  );
+}
+
+/**
  * Check if a process is running
+ * IMPORTANT: Only checks valid PIDs to prevent system-wide signal broadcasts
  */
 export async function isProcessAlive(pid: number): Promise<boolean> {
+  // CRITICAL: Validate PID before ANY signal operation
+  if (!isValidPid(pid)) {
+    return false;
+  }
+
   try {
     // process.kill with signal 0 doesn't actually kill the process,
     // it just checks if it exists and we have permission to signal it

@@ -7,7 +7,7 @@ import type {
   CleanupWorktreeParams,
   CleanupWorktreeResult,
 } from '../types/index.js';
-import { CleanupWorktreeSchema } from '../utils/validators.js';
+import { CleanupWorktreeSchema, isValidPid } from '../utils/validators.js';
 import { createGitService } from '../services/git.service.js';
 import { getStateService } from '../services/state.service.js';
 import { getLogger } from '../utils/logger.js';
@@ -17,8 +17,19 @@ const logger = getLogger();
 
 /**
  * Terminate a process by PID
+ * CRITICAL SAFETY: Validates PID before ANY signal operation
  */
 async function terminateProcess(pid: number): Promise<boolean> {
+  // CRITICAL: Validate PID before ANY signal operation
+  // PIDs <= 0 have special meanings that can kill system-wide processes:
+  // - pid = 0: Signals ALL processes in current process group
+  // - pid = -1: Signals ALL processes user owns
+  // - pid < -1: Signals specific process group
+  if (!isValidPid(pid)) {
+    logger.error(`CRITICAL: Invalid PID detected: ${pid}. Refusing to send signals to prevent system-wide process termination.`);
+    return false;
+  }
+
   try {
     // Try graceful termination first (SIGTERM)
     logger.debug(`Sending SIGTERM to process ${pid}`);
@@ -28,12 +39,17 @@ async function terminateProcess(pid: number): Promise<boolean> {
     logger.debug('Waiting 2s for graceful shutdown');
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    // Check if still alive
+    // Check if still alive (protected by isValidPid above)
     try {
       process.kill(pid, 0);
       // Still alive, force kill
       logger.debug(`Process ${pid} still alive, sending SIGKILL`);
-      process.kill(pid, 'SIGKILL');
+      try {
+        process.kill(pid, 'SIGKILL');
+      } catch (killError) {
+        logger.warn(`Failed to SIGKILL process ${pid}`, killError);
+        return false;
+      }
     } catch {
       // Process is dead
       logger.debug(`Process ${pid} terminated gracefully`);
@@ -103,6 +119,16 @@ export async function cleanupWorktree(
   for (const session of sessions) {
     if (session.status === 'active') {
       logger.info(`Terminating active session ${session.sessionId}`);
+
+      // CRITICAL SAFETY: Validate PID before attempting termination
+      if (!isValidPid(session.terminalPid)) {
+        logger.error(
+          `CRITICAL: Session ${session.sessionId} has invalid PID: ${session.terminalPid}. ` +
+          `Marking session as failed and skipping termination to prevent system-wide process kill.`
+        );
+        await stateService.updateSessionStatus(session.sessionId, 'failed');
+        continue;
+      }
 
       const terminated = await terminateProcess(session.terminalPid);
       if (terminated) {

@@ -16,7 +16,7 @@ import { SessionError } from '../types/index.js';
 import { createTerminalService } from './terminal.service.js';
 import { getStateService } from './state.service.js';
 import { getLogger } from '../utils/logger.js';
-import { isProcessAlive } from '../utils/validators.js';
+import { isProcessAlive, isValidPid } from '../utils/validators.js';
 
 const logger = getLogger();
 
@@ -151,6 +151,15 @@ export class SessionService {
         );
       }
 
+      // CRITICAL SAFETY: Validate PID before storing in state
+      // Invalid PIDs (especially -1, 0) can cause catastrophic failures during cleanup
+      if (!isValidPid(terminalResult.pid)) {
+        throw new SessionError(
+          `Invalid terminal PID: ${terminalResult.pid}. Cannot create session with invalid process ID.`,
+          'INVALID_PID'
+        );
+      }
+
       // Create session record
       const session: Session = {
         sessionId,
@@ -269,6 +278,18 @@ export class SessionService {
 
     if (session.status !== 'active') {
       logger.warn('Session is not active', { sessionId, status: session.status });
+      return false;
+    }
+
+    // CRITICAL SAFETY: Validate PID before attempting termination
+    if (!isValidPid(session.terminalPid)) {
+      logger.error(
+        `CRITICAL: Session ${sessionId} has invalid PID: ${session.terminalPid}. ` +
+        `Cannot terminate. Marking session as failed.`
+      );
+      const stateService = getStateService();
+      await stateService.init();
+      await stateService.updateSessionStatus(sessionId, 'failed');
       return false;
     }
 

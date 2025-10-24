@@ -5,6 +5,27 @@ All notable changes to the Flux Capacitor plugin will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2025-10-24
+
+### Fixed
+- **CRITICAL: Process Termination Safety**: Fixed catastrophic bug in cleanup_worktree that could kill system-wide processes
+  - Added comprehensive PID validation before ALL signal operations
+  - Invalid PIDs (0, -1, negative values) now rejected to prevent system-wide process termination
+  - PID validation in `isValidPid()` checks for: number type, not NaN, integer, finite, and > 0
+  - Protected `terminateProcess()`, `isProcessAlive()`, and session termination methods
+  - Added safety checks in cleanup loop to detect and handle corrupted session state
+  - Invalid PIDs in stored sessions now marked as 'failed' instead of attempting termination
+  - Prevents Unix signal broadcast behaviors:
+    - `pid=0`: Would signal all processes in current process group
+    - `pid=-1`: Would signal all processes user owns
+    - `pid<-1`: Would signal specific process group
+  - Added detailed error logging for invalid PID detection
+
+### Security
+- Prevents potential catastrophic failures where cleanup_worktree could inadvertently kill Claude Code itself and all related processes
+- Validates PIDs at multiple layers: storage, retrieval, and before ANY process.kill() operation
+- Protects against corrupted state files containing invalid PIDs
+
 ## [1.2.1] - 2025-10-23
 
 ### Fixed

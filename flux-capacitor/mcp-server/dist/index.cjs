@@ -14074,7 +14074,13 @@ function generateWorktreeName(repoPath, branch) {
   const branchName = sanitizeFilename(branch);
   return `${repoName}-${branchName}`;
 }
+function isValidPid(pid) {
+  return typeof pid === "number" && !isNaN(pid) && Number.isInteger(pid) && Number.isFinite(pid) && pid > 0;
+}
 async function isProcessAlive(pid) {
+  if (!isValidPid(pid)) {
+    return false;
+  }
   try {
     process.kill(pid, 0);
     return true;
@@ -26272,6 +26278,10 @@ var listWorktreesToolDefinition = {
 init_cjs_shims();
 var logger5 = getLogger();
 async function terminateProcess(pid) {
+  if (!isValidPid(pid)) {
+    logger5.error(`CRITICAL: Invalid PID detected: ${pid}. Refusing to send signals to prevent system-wide process termination.`);
+    return false;
+  }
   try {
     logger5.debug(`Sending SIGTERM to process ${pid}`);
     process.kill(pid, "SIGTERM");
@@ -26280,7 +26290,12 @@ async function terminateProcess(pid) {
     try {
       process.kill(pid, 0);
       logger5.debug(`Process ${pid} still alive, sending SIGKILL`);
-      process.kill(pid, "SIGKILL");
+      try {
+        process.kill(pid, "SIGKILL");
+      } catch (killError) {
+        logger5.warn(`Failed to SIGKILL process ${pid}`, killError);
+        return false;
+      }
     } catch {
       logger5.debug(`Process ${pid} terminated gracefully`);
     }
@@ -26326,6 +26341,13 @@ async function cleanupWorktree(params) {
   for (const session of sessions) {
     if (session.status === "active") {
       logger5.info(`Terminating active session ${session.sessionId}`);
+      if (!isValidPid(session.terminalPid)) {
+        logger5.error(
+          `CRITICAL: Session ${session.sessionId} has invalid PID: ${session.terminalPid}. Marking session as failed and skipping termination to prevent system-wide process kill.`
+        );
+        await stateService.updateSessionStatus(session.sessionId, "failed");
+        continue;
+      }
       const terminated = await terminateProcess(session.terminalPid);
       if (terminated) {
         await stateService.updateSessionStatus(session.sessionId, "terminated");
@@ -26870,6 +26892,12 @@ PROMPT_EOF
           "TERMINAL_CREATION_FAILED"
         );
       }
+      if (!isValidPid(terminalResult.pid)) {
+        throw new SessionError(
+          `Invalid terminal PID: ${terminalResult.pid}. Cannot create session with invalid process ID.`,
+          "INVALID_PID"
+        );
+      }
       const session = {
         sessionId,
         worktreePath,
@@ -26966,6 +26994,15 @@ PROMPT_EOF
     }
     if (session.status !== "active") {
       logger7.warn("Session is not active", { sessionId, status: session.status });
+      return false;
+    }
+    if (!isValidPid(session.terminalPid)) {
+      logger7.error(
+        `CRITICAL: Session ${sessionId} has invalid PID: ${session.terminalPid}. Cannot terminate. Marking session as failed.`
+      );
+      const stateService = getStateService();
+      await stateService.init();
+      await stateService.updateSessionStatus(sessionId, "failed");
       return false;
     }
     try {
