@@ -1,6 +1,6 @@
 {
   "name": "flutter-dev",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Flutter and Dart development specialist with integrated MCP server for code analysis, package management, testing, runtime introspection, and cross-platform mobile development",
   "author": {
     "name": "AppLab",
@@ -25,5 +25,6 @@
     "pub-dev"
   ],
   "agents": "./agents/flutter-specialist.md",
+  "commands": "./commands/analyze-and-fix.md",
   "mcpServers": "./.mcp.json"
 }

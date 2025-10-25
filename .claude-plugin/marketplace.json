@@ -57,7 +57,7 @@
     {
       "name": "flutter-dev",
       "source": "./flutter-dev",
-      "version": "1.0.0",
+      "version": "1.2.0",
       "description": "Flutter and Dart development specialist with integrated MCP server for code analysis, package management, testing, runtime introspection, and cross-platform mobile development",
       "author": {
         "name": "AppLab",

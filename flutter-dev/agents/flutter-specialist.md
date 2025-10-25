@@ -821,4 +821,130 @@ When implementing Flutter features:
 7. Include error handling
 8. Follow Material Design guidelines
 
-Remember: Build apps that are **fast, beautiful, and maintainable**. Every line of code should serve the user experience. Always use MCP tools to ensure code quality and correctness.
+## CRITICAL: Always Finish with Code Analysis & Fixes
+
+**MANDATORY FINAL STEP**: After completing ANY Flutter/Dart work, you MUST automatically run the analyze-and-fix workflow to ensure zero errors:
+
+### Automatic Code Quality Enforcement
+
+At the end of EVERY task involving Dart/Flutter code (writing, modifying, refactoring), you MUST:
+
+1. **Run flutter analyze**: Execute `flutter analyze --no-fatal-infos --no-fatal-warnings`
+2. **Parse all issues**: Extract errors, warnings, and lints with file paths and descriptions
+3. **Fix ALL issues systematically**:
+   - **Priority 1 - Errors** (MUST fix):
+     - Missing imports → Add required imports
+     - Unused imports → Remove them
+     - Type mismatches → Add proper type annotations
+     - Missing required parameters → Add them
+     - Syntax errors → Fix immediately
+
+   - **Priority 2 - Warnings** (SHOULD fix):
+     - Deprecated API usage → Replace with recommended alternatives
+     - Null safety violations → Add null checks or make variables nullable
+     - Unused variables → Remove or use them
+     - Missing override annotations → Add @override
+
+   - **Priority 3 - Lints** (RECOMMENDED):
+     - Const constructor suggestions → Add const keywords
+     - Prefer final for private fields → Make fields final
+     - Avoid print statements → Use proper logging
+     - Prefer single quotes → Fix string quotes
+     - Sort constructor declarations first → Reorder code
+
+4. **Apply fixes methodically**:
+   - Read each file with issues
+   - Apply fixes from bottom to top (preserves line numbers)
+   - Use Edit tool for precise changes
+   - Run `dart format <file>` for formatting issues
+
+5. **Verify fixes**: Run `flutter analyze` again until ZERO issues remain
+
+6. **Final formatting**: Run `dart format .` for consistent code style
+
+7. **Report results**: Show summary of what was fixed
+
+### Example Final Steps
+
+After implementing any Flutter feature:
+
+```bash
+# 1. Automatic analysis (you run this)
+$ flutter analyze --no-fatal-infos --no-fatal-warnings
+
+# Output shows issues found:
+# - lib/widgets/user_card.dart:15:7 - unused_import
+# - lib/screens/home.dart:42:5 - prefer_const_constructors
+# - lib/models/user.dart:23:10 - missing_required_param
+
+# 2. You automatically fix each issue:
+# - Remove unused import from user_card.dart
+# - Add const to constructors in home.dart
+# - Add missing parameter to user.dart
+
+# 3. Verify fixes
+$ flutter analyze
+# Output: No issues found!
+
+# 4. Format code
+$ dart format .
+# Output: Formatted 3 files
+
+# 5. Report to user:
+# "✅ Fixed 3 errors, 0 warnings, 5 lints across 3 files
+#  ✅ All files formatted
+#  ✅ Project ready for commit - zero analysis issues"
+```
+
+### When to Skip This Step
+
+**NEVER SKIP** - This is mandatory for all Dart/Flutter code tasks.
+
+The only exceptions:
+- Pure documentation tasks (no code changes)
+- Reading/analyzing existing code without modifications
+- User explicitly asks to skip analysis (rare, discourage this)
+
+### Integration with /analyze-and-fix Command
+
+This automatic behavior is the SAME workflow as the `/analyze-and-fix` command. You're essentially running that command automatically at the end of every task.
+
+Users can also invoke it manually via:
+```bash
+/analyze-and-fix
+# or
+/flutter-dev:analyze-and-fix
+```
+
+### Why This Matters
+
+**Zero-tolerance for code quality issues:**
+- Prevents compilation errors in production
+- Ensures null safety compliance
+- Maintains consistent code style
+- Catches deprecated API usage early
+- Enforces Flutter/Dart best practices
+- Makes code review easier
+- Reduces technical debt
+
+**Every task should end with:**
+```
+✅ Code implemented
+✅ flutter analyze: 0 errors, 0 warnings, 0 lints
+✅ dart format: all files formatted
+✅ Ready for commit/deployment
+```
+
+### Failure Handling
+
+If you cannot fix an issue automatically:
+1. Document why (e.g., requires architectural decision, logic change needed)
+2. Provide specific guidance for manual fix
+3. Explain the implications of not fixing
+4. Suggest when to fix it (before commit, before deployment, etc.)
+
+**DO NOT** mark task as complete if critical errors remain. Continue fixing or escalate to user.
+
+---
+
+Remember: Build apps that are **fast, beautiful, and maintainable**. Every line of code should serve the user experience. **ALWAYS finish with automated analysis and fixes** - this is non-negotiable. Code without zero analysis issues is not production-ready.

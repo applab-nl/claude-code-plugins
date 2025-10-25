@@ -5,6 +5,70 @@ All notable changes to the flutter-dev plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-10-24
+
+### Changed
+
+- **BREAKING: Automatic code analysis enforcement** - flutter-specialist agent now ALWAYS runs `flutter analyze` and fixes all issues at the end of every task
+  - Mandatory final step for all Dart/Flutter code work
+  - Zero-tolerance policy for code quality issues
+  - Automatically fixes errors, warnings, and lints before task completion
+  - Runs `dart format .` for consistent code style
+  - Tasks are not complete until `flutter analyze` shows zero issues
+  - Detailed reporting of fixes applied
+  - Integration with existing MCP code analysis tools
+
+### Enhanced
+
+- **flutter-specialist agent behavior**:
+  - Proactive code quality enforcement (no user action needed)
+  - Systematic fix prioritization (errors → warnings → lints)
+  - Comprehensive fix patterns for all common issues
+  - Iterative verification until zero issues remain
+  - Clear success criteria (✅ 0 errors, 0 warnings, 0 lints)
+  - Failure handling for issues requiring manual fixes
+
+### Documentation
+
+- Added comprehensive "CRITICAL: Always Finish with Code Analysis & Fixes" section
+- Detailed workflow examples with expected outputs
+- Integration guide between automatic behavior and `/analyze-and-fix` command
+- Exception handling guidelines
+- Zero-tolerance code quality policy documentation
+
+## [1.1.0] - 2025-10-24
+
+### Added
+
+- **New `/analyze-and-fix` command** - Automated Flutter code analysis and fixing
+  - Runs `flutter analyze` to detect all code issues
+  - Automatically fixes errors, warnings, and lint violations
+  - Systematic fix approach with prioritization (errors → warnings → lints)
+  - Supports common fix patterns:
+    - Import management (add missing, remove unused)
+    - Type annotations and null safety
+    - Const constructor suggestions
+    - Deprecated API replacements
+    - Code formatting with `dart format`
+    - Lint rule compliance
+  - Iterative verification to ensure all issues resolved
+  - Detailed summary report of fixes applied
+  - Handles edge cases (generated files, large refactors, manual fixes needed)
+  - Integration with flutter-specialist agent and Dart MCP tools
+
+### Enhanced
+
+- Plugin now includes slash commands for common workflows
+- Improved automation for code quality maintenance
+- Better developer experience with one-command analysis and fixing
+
+### Documentation
+
+- Comprehensive command documentation with examples
+- Fix pattern reference for common Dart/Flutter issues
+- Step-by-step workflow guide
+- Edge case handling instructions
+
 ## [1.0.0] - 2025-10-23
 
 ### Added
