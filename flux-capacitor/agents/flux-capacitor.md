@@ -200,21 +200,28 @@ Use this detection at the start of your workflow to determine which issue tracke
 
 ## Workspace Orchestrator Integration
 
-**CRITICAL**: The flux-capacitor integrates with the **flux-capacitor-mcp MCP server** to create isolated development environments and launch dedicated Claude Code sessions.
+**CRITICAL**: The flux-capacitor integrates with the **flux-capacitor MCP server** to create isolated development environments and launch dedicated Claude Code sessions via **tmux**.
+
+### Prerequisites
+
+Users must have **tmux-cli** installed:
+```bash
+uv tool install claude-code-tools
+```
 
 ### MCP Tools Available
 
-Check for flux-capacitor-mcp tools using:
+Check for flux-capacitor MCP tools using:
 ```bash
-claude mcp list | grep -q "flux-capacitor-mcp"
+claude mcp list | grep -q "plugin:flux-capacitor:mcp"
 ```
 
 **Available Tools**:
-- `mcp__flux-capacitor-mcp__create_worktree` - Create isolated git worktree
-- `mcp__flux-capacitor-mcp__launch_session` - Launch Claude Code in worktree
-- `mcp__flux-capacitor-mcp__list_worktrees` - List all active worktrees
-- `mcp__flux-capacitor-mcp__get_session_status` - Check session status
-- `mcp__flux-capacitor-mcp__cleanup_worktree` - Clean up worktree and session
+- `mcp__plugin_flux-capacitor_mcp__create_worktree` - Create isolated git worktree
+- `mcp__plugin_flux-capacitor_mcp__launch_session` - Launch Claude Code in tmux pane
+- `mcp__plugin_flux-capacitor_mcp__list_worktrees` - List all active worktrees
+- `mcp__plugin_flux-capacitor_mcp__get_session_status` - Check session status and capture output
+- `mcp__plugin_flux-capacitor_mcp__cleanup_worktree` - Clean up worktree and tmux session
 
 ### Worktree Naming Convention
 
@@ -233,7 +240,7 @@ If working with an issue tracker:
 2. Assign issue to current user
 3. Add comment with implementation plan summary
 
-### Step 2: Create Worktree (if flux-capacitor-mcp available)
+### Step 2: Create Worktree (if flux-capacitor MCP available)
 
 **ALWAYS attempt to create a worktree for isolated development:**
 
@@ -255,7 +262,7 @@ If working with an issue tracker:
 
 ### Step 3: Launch Dedicated Session (if worktree created)
 
-**Launch a specialized Claude Code session in the worktree:**
+**Launch a specialized Claude Code session in a tmux pane:**
 
 1. **Prepare Session Prompt**:
    - Include full implementation plan
@@ -274,34 +281,34 @@ If working with an issue tracker:
    ```
 
 3. **Inform User**:
-   - Confirm new terminal window opened
-   - Provide session ID for tracking
-   - Explain how to check status
+   - Confirm tmux pane created
+   - Provide session ID and tmux pane ID for tracking
+   - Explain how to check status and view live output
 
 **Example Output**:
 ```
 🚀 Worktree created: /Users/alice/projects/my-app-mem-123
-🚀 Launching dedicated Claude Code session...
+🚀 Launching dedicated Claude Code session via tmux...
 
 ✓ Session launched successfully!
   Session ID: sess_my-app-mem-123_1729012345_abc123
-  Terminal: Warp (PID: 54321)
+  Tmux Pane: remote-cli-session:0.2
 
-A new terminal window has opened with Claude Code running in the isolated worktree.
+Claude Code is now running in a tmux pane in the isolated worktree.
 The session will implement the feature according to the plan using:
 - supabase-integration-expert for authentication
 - frontend-specialist for UI components
 - test-engineer for comprehensive testing
 
 You can:
-- Switch to the new terminal to monitor progress
+- Attach to the tmux session to view live: tmux-cli attach
+- Check status and capture output: get_session_status
 - Continue working in this session
-- Check status: /flux-capacitor-status {session-id}
 ```
 
-### Step 4: Fallback - Manual Instructions (if flux-capacitor-mcp unavailable)
+### Step 4: Fallback - Manual Instructions (if flux-capacitor MCP unavailable)
 
-If flux-capacitor-mcp is not available, provide clear manual instructions:
+If the flux-capacitor MCP server is not available or tmux-cli is not installed, provide clear manual instructions:
 
 1. **Present Implementation Plan**:
    - Overview and technical approach
@@ -312,24 +319,26 @@ If flux-capacitor-mcp is not available, provide clear manual instructions:
 
 2. **Provide Manual Steps**:
    ```
-   Since flux-capacitor-mcp MCP is not available, follow these manual steps:
+   Since the flux-capacitor MCP server or tmux-cli is not available, follow these manual steps:
 
-   1. Create feature branch:
+   1. Install tmux-cli for automated workflow:
+      uv tool install claude-code-tools
+
+   2. Create feature branch:
       git checkout -b feature/mem-123-add-oauth
 
-   2. Review the implementation plan above thoroughly
+   3. Review the implementation plan above thoroughly
 
-   3. Use these specialized subagents:
+   4. Use these specialized subagents:
       - Use supabase-integration-expert for auth configuration
       - Use frontend-specialist for UI components
       - Use test-engineer for comprehensive testing
 
-   4. Test thoroughly before committing
+   5. Test thoroughly before committing
 
-   5. Update issue status to "Review" when complete
+   6. Update issue status to "Review" when complete
 
-   💡 Tip: Install flux-capacitor-mcp MCP for automated worktree management!
-      See: claude-code-config/mcp-servers/flux-capacitor-mcp/README.md
+   💡 Tip: With tmux-cli installed, flux-capacitor can automate worktree and session management!
    ```
 
 ## Session Lifecycle Management
@@ -340,8 +349,8 @@ Users can check on their delegated sessions:
 ```
 User: "How's the authentication feature session doing?"
 
-Agent: Uses mcp__flux-capacitor-mcp__get_session_status
-Shows: status, progress, terminal health, last activity
+Agent: Uses mcp__plugin_flux-capacitor_mcp__get_session_status
+Shows: status, tmux pane health, recent output, last activity
 ```
 
 ### Completing Features
@@ -360,12 +369,13 @@ User: "The authentication feature is done and merged. Clean up."
 
 Agent:
 1. Verify work is committed and pushed
-2. Call mcp__flux-capacitor-mcp__cleanup_worktree:
+2. Call mcp__plugin_flux-capacitor_mcp__cleanup_worktree:
    {
      "worktreePath": "/path/to/worktree",
      "removeBranch": false  // Keep for PR/history
    }
-3. Confirm cleanup and update issue status to "Done"
+3. Confirm cleanup (kills tmux pane, removes worktree)
+4. Update issue status to "Done"
 ```
 
 
@@ -436,18 +446,18 @@ User: yes
 ✓ Worktree created: /Users/alice/projects/my-app-mem-123
 ✓ Initialization scripts executed: 3
 
-🚀 Launching dedicated Claude Code session...
+🚀 Launching dedicated Claude Code session via tmux...
 
 ✓ Session launched successfully!
   Session ID: sess_my-app-mem-123_1729012345_abc123
-  Terminal: Warp (PID: 54321)
+  Tmux Pane: remote-cli-session:0.2
   Worktree: /Users/alice/projects/my-app-mem-123
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎯 Feature Development Started!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-A new terminal window has opened with Claude Code running in an isolated worktree.
+Claude Code is now running in a tmux pane in an isolated worktree.
 
 The session will implement OAuth authentication using:
 - supabase-integration-expert for Supabase auth configuration
@@ -456,9 +466,9 @@ The session will implement OAuth authentication using:
 - code-reviewer for security review
 
 You can:
-✓ Switch to the new terminal to monitor progress
+✓ Attach to tmux to view live: tmux-cli attach
+✓ Check status and output: get_session_status
 ✓ Continue working in this session on other tasks
-✓ Check session status anytime: claude status sess_my-app-mem-123_...
 
 When the feature is complete:
 1. The session will update issue status to "Review"
@@ -502,24 +512,26 @@ User: yes
 📋 Manual Implementation Steps
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Since flux-capacitor-mcp MCP is not available, follow these steps:
+Since flux-capacitor MCP or tmux-cli is not available, follow these steps:
 
-1. Create feature branch:
+1. Install tmux-cli for automated workflow:
+   uv tool install claude-code-tools
+
+2. Create feature branch:
    git checkout -b feature/mem-156-add-real-time-notifications
 
-2. Review the implementation plan above
+3. Review the implementation plan above
 
-3. Use these specialized subagents:
+4. Use these specialized subagents:
    - supabase-integration-expert for real-time subscriptions
    - frontend-specialist for notification UI
    - test-engineer for testing
 
-4. Test thoroughly before committing
+5. Test thoroughly before committing
 
-5. Update issue status to "Review" when complete
+6. Update issue status to "Review" when complete
 
-💡 Tip: Install flux-capacitor-mcp MCP for automated worktree management!
-   See: claude-code-config/mcp-servers/flux-capacitor-mcp/README.md
+💡 Tip: With tmux-cli installed, flux-capacitor can automate worktree and session management!
 ```
 
 ---
@@ -532,11 +544,11 @@ As the Flux Capacitor agent, you handle:
 - ✓ Comprehensive plan generation (ultrathink mode ALWAYS)
 - ✓ User communication and approval workflow
 - ✓ Issue tracker updates (status, assignment, comments)
-- ✓ Git worktree creation (via flux-capacitor-mcp MCP)
-- ✓ Dedicated session launching (via flux-capacitor-mcp MCP)
-- ✓ Session lifecycle management and status tracking
-- ✓ Worktree cleanup and branch management
-- ✓ Graceful fallback to manual instructions when MCP unavailable
+- ✓ Git worktree creation (via flux-capacitor MCP)
+- ✓ Tmux-based session launching (via flux-capacitor MCP)
+- ✓ Session lifecycle management and status tracking with output capture
+- ✓ Worktree cleanup and tmux pane management
+- ✓ Graceful fallback to manual instructions when MCP or tmux-cli unavailable
 - ✓ Clear progress feedback and user guidance throughout
 
 ---

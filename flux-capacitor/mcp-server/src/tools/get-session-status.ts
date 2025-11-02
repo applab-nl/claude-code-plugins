@@ -1,6 +1,6 @@
 /**
  * MCP Tool: get_session_status
- * Check the status of a Claude Code session
+ * Check the status of a Claude Code session running in tmux
  */
 
 import type {
@@ -9,8 +9,8 @@ import type {
 } from '../types/index.js';
 import { GetSessionStatusSchema } from '../utils/validators.js';
 import { SessionService } from '../services/session.service.js';
+import { getTmuxService } from '../services/tmux.service.js';
 import { getLogger } from '../utils/logger.js';
-import { isProcessAlive } from '../utils/validators.js';
 
 const logger = getLogger();
 
@@ -36,14 +36,28 @@ export async function getSessionStatus(
       status: 'unknown',
       worktreePath: '',
       startedAt: '',
-      terminalPid: -1,
-      terminalAlive: false,
-      terminalApp: 'warp',
+      tmuxPaneId: '',
+      paneAlive: false,
     };
   }
 
-  // Check if terminal is still alive
-  const terminalAlive = await isProcessAlive(session.terminalPid);
+  // Check if pane still exists (SessionService already does this check)
+  const tmuxService = getTmuxService();
+  const paneAlive = await tmuxService.paneExists(session.tmuxPaneId);
+
+  // Capture recent output from the pane if it's alive
+  let recentOutput: string | undefined;
+  if (paneAlive) {
+    try {
+      const output = await tmuxService.capture(session.tmuxPaneId);
+      // Get last 50 lines
+      const lines = output.split('\n');
+      recentOutput = lines.slice(-50).join('\n');
+    } catch (error) {
+      logger.warn('Failed to capture recent output', { sessionId, error });
+      recentOutput = undefined;
+    }
+  }
 
   return {
     sessionId: session.sessionId,
@@ -51,10 +65,10 @@ export async function getSessionStatus(
     worktreePath: session.worktreePath,
     startedAt: session.startedAt.toISOString(),
     completedAt: session.completedAt?.toISOString(),
-    terminalPid: session.terminalPid,
-    terminalAlive,
+    tmuxPaneId: session.tmuxPaneId,
+    paneAlive,
     lastActivity: session.lastActivity?.toISOString(),
-    terminalApp: session.terminalApp,
+    recentOutput,
   };
 }
 
@@ -62,7 +76,7 @@ export async function getSessionStatus(
 export const getSessionStatusToolDefinition = {
   name: 'get_session_status',
   description:
-    'Check the status of a Claude Code session including whether the terminal is still alive and when it was last active.',
+    'Check the status of a Claude Code session running in tmux, including whether the tmux pane is still alive, when it was last active, and recent output from the session.',
   inputSchema: {
     type: 'object',
     properties: {

@@ -45,7 +45,7 @@ export async function launchSession(
   } else {
     logger.info('Session launched successfully', {
       sessionId: result.sessionId,
-      terminalApp: result.terminalApp,
+      tmuxPaneId: result.tmuxPaneId,
     });
   }
 
@@ -56,7 +56,7 @@ export async function launchSession(
 export const launchSessionToolDefinition = {
   name: 'launch_session',
   description:
-    'Create a new terminal window and launch a Claude Code session with a specific prompt and context. The session will run in an isolated worktree.',
+    'Launch a Claude Code session in a tmux pane with a specific prompt and context. The session will run in an isolated worktree. Requires tmux-cli to be installed.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -79,12 +79,6 @@ export const launchSessionToolDefinition = {
         type: 'string',
         description:
           'Optional specific agent to use (e.g., "local-coordinator", "flutter-specialist")',
-      },
-      terminalApp: {
-        type: 'string',
-        enum: ['warp', 'iterm2', 'terminal', 'custom'],
-        description:
-          'Optional terminal application to use (default: warp). Options: warp, iterm2, terminal, custom',
       },
     },
     required: ['worktreePath', 'prompt'],

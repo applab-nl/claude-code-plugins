@@ -1,66 +1,20 @@
 /**
  * MCP Tool: cleanup_worktree
- * Remove a worktree and clean up associated resources
+ * Remove a worktree and clean up associated resources including tmux panes
  */
 
 import type {
   CleanupWorktreeParams,
   CleanupWorktreeResult,
 } from '../types/index.js';
-import { CleanupWorktreeSchema, isValidPid } from '../utils/validators.js';
+import { CleanupWorktreeSchema } from '../utils/validators.js';
 import { createGitService } from '../services/git.service.js';
 import { getStateService } from '../services/state.service.js';
+import { getTmuxService } from '../services/tmux.service.js';
 import { getLogger } from '../utils/logger.js';
 import { execa } from 'execa';
 
 const logger = getLogger();
-
-/**
- * Terminate a process by PID
- * CRITICAL SAFETY: Validates PID before ANY signal operation
- */
-async function terminateProcess(pid: number): Promise<boolean> {
-  // CRITICAL: Validate PID before ANY signal operation
-  // PIDs <= 0 have special meanings that can kill system-wide processes:
-  // - pid = 0: Signals ALL processes in current process group
-  // - pid = -1: Signals ALL processes user owns
-  // - pid < -1: Signals specific process group
-  if (!isValidPid(pid)) {
-    logger.error(`CRITICAL: Invalid PID detected: ${pid}. Refusing to send signals to prevent system-wide process termination.`);
-    return false;
-  }
-
-  try {
-    // Try graceful termination first (SIGTERM)
-    logger.debug(`Sending SIGTERM to process ${pid}`);
-    process.kill(pid, 'SIGTERM');
-
-    // Wait a bit for graceful shutdown
-    logger.debug('Waiting 2s for graceful shutdown');
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Check if still alive (protected by isValidPid above)
-    try {
-      process.kill(pid, 0);
-      // Still alive, force kill
-      logger.debug(`Process ${pid} still alive, sending SIGKILL`);
-      try {
-        process.kill(pid, 'SIGKILL');
-      } catch (killError) {
-        logger.warn(`Failed to SIGKILL process ${pid}`, killError);
-        return false;
-      }
-    } catch {
-      // Process is dead
-      logger.debug(`Process ${pid} terminated gracefully`);
-    }
-
-    return true;
-  } catch (error) {
-    logger.warn(`Failed to terminate process ${pid}`, error);
-    return false;
-  }
-}
 
 /**
  * Find the parent repository for a worktree
@@ -110,31 +64,27 @@ export async function cleanupWorktree(
   const stateService = getStateService();
   await stateService.init();
 
-  // Find and terminate associated sessions
+  // Find and terminate associated sessions (kill tmux panes)
   logger.debug('Finding sessions associated with worktree');
   const sessions = await stateService.findSessionsByWorktree(worktreePath);
   logger.debug(`Found ${sessions.length} sessions for worktree`);
   let sessionsTerminated = 0;
 
+  const tmuxService = getTmuxService();
+
   for (const session of sessions) {
     if (session.status === 'active') {
       logger.info(`Terminating active session ${session.sessionId}`);
 
-      // CRITICAL SAFETY: Validate PID before attempting termination
-      if (!isValidPid(session.terminalPid)) {
-        logger.error(
-          `CRITICAL: Session ${session.sessionId} has invalid PID: ${session.terminalPid}. ` +
-          `Marking session as failed and skipping termination to prevent system-wide process kill.`
-        );
-        await stateService.updateSessionStatus(session.sessionId, 'failed');
-        continue;
-      }
-
-      const terminated = await terminateProcess(session.terminalPid);
-      if (terminated) {
+      try {
+        // Kill the tmux pane
+        await tmuxService.kill(session.tmuxPaneId);
         await stateService.updateSessionStatus(session.sessionId, 'terminated');
         sessionsTerminated++;
-        logger.debug(`Session ${session.sessionId} terminated`);
+        logger.debug(`Session ${session.sessionId} terminated (pane ${session.tmuxPaneId} killed)`);
+      } catch (error) {
+        logger.error(`Failed to kill tmux pane for session ${session.sessionId}`, error);
+        await stateService.updateSessionStatus(session.sessionId, 'failed');
       }
     } else {
       logger.debug(`Session ${session.sessionId} is not active (status: ${session.status})`);
@@ -205,7 +155,7 @@ export async function cleanupWorktree(
 export const cleanupWorktreeToolDefinition = {
   name: 'cleanup_worktree',
   description:
-    'Remove a git worktree and clean up associated resources including active sessions. Optionally removes the git branch as well.',
+    'Remove a git worktree and clean up associated resources including active tmux sessions. Optionally removes the git branch as well.',
   inputSchema: {
     type: 'object',
     properties: {

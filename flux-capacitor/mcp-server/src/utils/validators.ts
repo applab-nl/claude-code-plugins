@@ -22,7 +22,6 @@ export const LaunchSessionSchema = z.object({
   prompt: z.string().min(1, 'Prompt is required'),
   contextFiles: z.array(z.string()).optional(),
   agentName: z.string().optional(),
-  terminalApp: z.enum(['warp', 'iterm2', 'terminal', 'custom']).optional(),
 });
 
 export const ListWorktreesSchema = z.object({
@@ -143,6 +142,7 @@ export function generateWorktreeName(repoPath: string, branch: string): string {
 }
 
 /**
+ * @deprecated PID validation is deprecated. Use tmux-based session management instead.
  * Validate that a PID is safe to signal
  * CRITICAL: PIDs <= 0 have special meanings in Unix:
  * - pid = 0: Signals all processes in current process group
@@ -161,6 +161,7 @@ export function isValidPid(pid: number | undefined | null): boolean {
 }
 
 /**
+ * @deprecated Process checking is deprecated. Use tmux-based session management instead.
  * Check if a process is running
  * IMPORTANT: Only checks valid PIDs to prevent system-wide signal broadcasts
  */

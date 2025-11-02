@@ -93,10 +93,8 @@ export interface Session {
   sessionId: string;
   /** Path to the worktree this session is working in */
   worktreePath: string;
-  /** Terminal process ID */
-  terminalPid: number;
-  /** Claude Code process ID (if detectable) */
-  claudePid?: number;
+  /** Tmux pane ID (e.g., "remote-cli-session:0.2") */
+  tmuxPaneId: string;
   /** Session status */
   status: SessionStatus;
   /** When the session was started */
@@ -105,8 +103,6 @@ export interface Session {
   completedAt?: Date;
   /** Last activity timestamp */
   lastActivity?: Date;
-  /** Terminal application used */
-  terminalApp: TerminalApp;
   /** Agent name used in this session */
   agentName?: string;
   /** Initial prompt provided */
@@ -122,21 +118,15 @@ export interface LaunchSessionParams {
   contextFiles?: string[];
   /** Optional specific agent to use (e.g., "local-coordinator") */
   agentName?: string;
-  /** Optional terminal app to use (default: warp) */
-  terminalApp?: TerminalApp;
 }
 
 export interface LaunchSessionResult {
   /** Unique session identifier */
   sessionId: string;
-  /** Terminal process ID */
-  terminalPid: number;
-  /** Claude Code process ID (if detectable) */
-  claudePid?: number;
+  /** Tmux pane ID */
+  tmuxPaneId: string;
   /** Launch status */
   status: 'launched' | 'failed';
-  /** Terminal application used */
-  terminalApp: TerminalApp;
   /** Error message if failed */
   error?: string;
 }
@@ -157,65 +147,73 @@ export interface GetSessionStatusResult {
   startedAt: string;
   /** When session completed (if applicable) */
   completedAt?: string;
-  /** Terminal process ID */
-  terminalPid: number;
-  /** Whether terminal process is still alive */
-  terminalAlive: boolean;
+  /** Tmux pane ID */
+  tmuxPaneId: string;
+  /** Whether tmux pane is still alive */
+  paneAlive: boolean;
   /** Last activity timestamp */
   lastActivity?: string;
-  /** Terminal app used */
-  terminalApp: TerminalApp;
+  /** Recent output from the pane (last 50 lines) */
+  recentOutput?: string;
 }
 
 // ============================================================================
-// Terminal Types
+// Tmux Types
 // ============================================================================
 
+export interface TmuxPane {
+  /** Pane identifier (e.g., "remote-cli-session:0.2") */
+  id: string;
+  /** Pane index */
+  index: number;
+  /** Whether this is the active pane */
+  active: boolean;
+}
+
+export interface TmuxSendOptions {
+  /** Whether to send Enter key after text (default: true) */
+  enter?: boolean;
+  /** Delay before sending Enter, or false to send immediately (default: 1 second) */
+  delayEnter?: boolean | number;
+}
+
+// ============================================================================
+// Terminal Types (Deprecated - kept for migration compatibility)
+// ============================================================================
+
+/** @deprecated Terminal types are deprecated. Use tmux-based session management instead. */
 export type TerminalApp = 'warp' | 'iterm2' | 'terminal' | 'custom';
 
+/** @deprecated Terminal config is deprecated. Sessions now use tmux. */
 export interface TerminalConfig {
-  /** Terminal application to use (or 'custom' with command) */
   app: TerminalApp;
-  /** Custom command template for creating terminals (if app is 'custom') */
   customCommand?: string;
-  /** Priority order for auto-detection */
   detectOrder?: TerminalApp[];
-  /** iTerm2 profile name to use (default: iTerm2's default profile) */
   iterm2Profile?: string;
-  /** Terminal.app profile/settings name to use (default: Basic) */
   terminalProfile?: string;
 }
 
+/** @deprecated Terminal creation is deprecated. Use tmux-based session management instead. */
 export interface CreateTerminalParams {
-  /** Shell to use (default: user's default shell) */
   shell?: string;
-  /** Working directory */
   cwd?: string;
-  /** Window title */
   title?: string;
-  /** Initial command to execute */
   command?: string | { type: 'prompt-file'; promptFile: string };
 }
 
+/** @deprecated Terminal result is deprecated. Use tmux-based session management instead. */
 export interface CreateTerminalResult {
-  /** Process ID of the terminal */
   pid: number;
-  /** Terminal application used */
   app: TerminalApp;
-  /** Whether creation was successful */
   success: boolean;
-  /** Error message if failed */
   error?: string;
 }
 
+/** @deprecated Terminal instance is deprecated. Use tmux-based session management instead. */
 export interface TerminalInstance {
-  /** Process ID */
   pid: number;
-  /** Terminal app */
   app: TerminalApp;
-  /** Working directory */
   cwd: string;
-  /** Execute a command in this terminal */
   execute: (command: string) => Promise<void>;
 }
 
@@ -313,11 +311,38 @@ export class SessionError extends Error {
 export type SessionErrorCode =
   | 'SESSION_NOT_FOUND'
   | 'SESSION_ALREADY_EXISTS'
-  | 'TERMINAL_CREATION_FAILED'
+  | 'TMUX_NOT_AVAILABLE'
+  | 'PANE_LAUNCH_FAILED'
   | 'CLAUDE_LAUNCH_FAILED'
   | 'INVALID_WORKTREE'
-  | 'INVALID_PID';
+  | 'INVALID_PANE_ID';
 
+export class TmuxError extends Error {
+  constructor(
+    message: string,
+    public code: TmuxErrorCode,
+    public details?: unknown
+  ) {
+    super(message);
+    this.name = 'TmuxError';
+  }
+}
+
+export type TmuxErrorCode =
+  | 'TMUX_NOT_AVAILABLE'
+  | 'LAUNCH_FAILED'
+  | 'SEND_FAILED'
+  | 'CAPTURE_FAILED'
+  | 'LIST_FAILED'
+  | 'WAIT_FAILED'
+  | 'KILL_FAILED'
+  | 'INTERRUPT_FAILED'
+  | 'ESCAPE_FAILED'
+  | 'STATUS_FAILED'
+  | 'ATTACH_FAILED'
+  | 'CLEANUP_FAILED';
+
+/** @deprecated TerminalError is deprecated. Use TmuxError instead. */
 export class TerminalError extends Error {
   constructor(
     message: string,
@@ -329,6 +354,7 @@ export class TerminalError extends Error {
   }
 }
 
+/** @deprecated TerminalErrorCode is deprecated. Use TmuxErrorCode instead. */
 export type TerminalErrorCode =
   | 'NO_TERMINAL_AVAILABLE'
   | 'TERMINAL_NOT_FOUND'

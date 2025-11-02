@@ -8,7 +8,7 @@ The Flux Capacitor plugin streamlines your feature development workflow by:
 - Integrating with issue trackers (Linear, GitHub Issues, Jira)
 - Generating comprehensive implementation plans using ultrathink mode
 - Creating isolated git worktrees for parallel development
-- Launching dedicated Claude Code sessions in new terminals
+- Launching dedicated Claude Code sessions in **tmux panes** for fast, robust operation
 - Providing clear subagent delegation strategies
 - Managing the complete feature lifecycle from planning to completion and cleanup
 
@@ -40,13 +40,14 @@ Generates comprehensive plan without issue tracker integration.
 - **GitHub Issues**: Coming soon
 - **Jira**: Coming soon
 
-### 🛠️ Workspace Orchestration (via flux-capacitor-mcp MCP)
+### 🛠️ Workspace Orchestration (via Tmux)
 
 - **Git Worktrees**: Create isolated development environments automatically
-- **Session Launch**: Open dedicated Claude Code sessions in new terminal windows
+- **Tmux Sessions**: Launch Claude Code sessions in tmux panes (4-6x faster than terminal windows!)
+- **Output Capture**: Monitor session progress and capture output in real-time
 - **Parallel Development**: Work on multiple features simultaneously without context switching
 - **Auto-initialization**: Run setup scripts on worktree creation
-- **Lifecycle Management**: Track sessions, check status, and clean up when done
+- **Lifecycle Management**: Track sessions, check status, capture output, and clean up when done
 
 ### 🧠 Ultrathink Planning
 
@@ -86,11 +87,15 @@ Intelligent recommendations for specialized agents:
 ## Requirements
 
 - Claude Code CLI
+- **tmux-cli** (required for session management):
+  ```bash
+  uv tool install claude-code-tools
+  ```
 - Node.js 18+ (for bundled MCP server)
 - Git 2.30+ (for worktree support)
 - Optional: Linear MCP server for issue tracking integration
 
-**Note**: The flux-capacitor-mcp server is now bundled with the plugin and starts automatically when the plugin is enabled. No separate installation required!
+**Note**: The flux-capacitor MCP server is now bundled with the plugin and starts automatically when enabled. No separate installation required!
 
 ## Usage
 
@@ -154,8 +159,9 @@ Intelligent recommendations for specialized agents:
    - Executes initialization scripts (`.worktree-init/`)
 
 7. **Session Launch** (if flux-capacitor-mcp available):
-   - Opens new terminal window (Warp, iTerm2, or Terminal.app)
-   - Launches Claude Code in the worktree
+   - Creates new tmux pane (4-6x faster than terminal windows)
+   - Changes to worktree directory
+   - Launches Claude Code in the tmux pane
    - Passes full implementation plan to the session
    - Assigns appropriate specialized agent
 
@@ -190,8 +196,7 @@ If you want to customize the MCP server behavior, you can override settings by a
   "mcpServers": {
     "flux-capacitor-mcp": {
       "env": {
-        "LOG_LEVEL": "debug",
-        "TERMINAL_APP": "warp"
+        "LOG_LEVEL": "debug"
       }
     }
   }
@@ -200,7 +205,6 @@ If you want to customize the MCP server behavior, you can override settings by a
 
 Available environment variables:
 - `LOG_LEVEL`: `debug`, `info`, `warn`, `error` (default: `info`)
-- `TERMINAL_APP`: `auto-detect`, `warp`, `iterm2`, `terminal` (default: `auto-detect`)
 
 ### Linear Integration
 
@@ -261,13 +265,13 @@ User: yes
 
 ✓ Session launched successfully!
   Session ID: sess_my-app-mem-123_1729012345_abc123
-  Terminal: Warp (PID: 54321)
+  Tmux Pane: remote-cli-session:0.2
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎯 Feature Development Started!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-A new terminal window has opened with Claude Code running in the worktree.
+A new tmux pane has been created with Claude Code running in the worktree.
 
 The session will implement OAuth authentication using:
 - supabase-integration-expert for auth configuration
@@ -276,9 +280,9 @@ The session will implement OAuth authentication using:
 - code-reviewer for security review
 
 You can:
-✓ Switch to the new terminal to monitor progress
+✓ Attach to the tmux pane to monitor progress (tmux-cli attach)
 ✓ Continue working in this session on other tasks
-✓ Check status anytime
+✓ Check status anytime to capture recent output
 
 When complete, clean up with: /flux-capacitor-cleanup mem-123
 ```
@@ -324,7 +328,7 @@ User: yes
 
 ✓ Session launched successfully!
   Session ID: sess_my-app-mem-156_1729034567_xyz789
-  Terminal: iTerm2 (PID: 67890)
+  Tmux Pane: remote-cli-session:0.3
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎯 Feature Development Started!
@@ -345,17 +349,17 @@ Claude: I'll set up parallel worktrees for both features.
 
 [Creates first worktree for MEM-123: authentication]
 ✓ Worktree 1: /Users/alice/projects/my-app-mem-123
-✓ Session launched in Terminal 1
+✓ Session launched in tmux pane: remote-cli-session:0.2
 
 [Creates second worktree for MEM-124: payment]
 ✓ Worktree 2: /Users/alice/projects/my-app-mem-124
-✓ Session launched in Terminal 2
+✓ Session launched in tmux pane: remote-cli-session:0.3
 
 Both features are now running in isolated environments:
-- Terminal 1: OAuth authentication (supabase-integration-expert)
-- Terminal 2: Payment integration (kotlin-backend-specialist)
+- Pane 0.2: OAuth authentication (supabase-integration-expert)
+- Pane 0.3: Payment integration (kotlin-backend-specialist)
 
-You can switch between terminals to monitor both features.
+You can attach to either tmux pane to monitor both features.
 No git stashing or context switching needed!
 ```
 

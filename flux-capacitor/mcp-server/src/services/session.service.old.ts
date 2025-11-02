@@ -1,6 +1,6 @@
 /**
- * Session service for managing Claude Code sessions via tmux
- * Handles session creation, tracking, and lifecycle management using tmux-cli
+ * Session service for managing Claude Code sessions
+ * Handles session creation, tracking, and lifecycle management
  */
 
 import fs from 'fs/promises';
@@ -10,11 +10,13 @@ import type {
   Session,
   LaunchSessionParams,
   LaunchSessionResult,
+  TerminalApp,
 } from '../types/index.js';
 import { SessionError } from '../types/index.js';
-import { getTmuxService } from './tmux.service.js';
+import { createTerminalService } from './terminal.service.js';
 import { getStateService } from './state.service.js';
 import { getLogger } from '../utils/logger.js';
+import { isProcessAlive, isValidPid } from '../utils/validators.js';
 
 const logger = getLogger();
 
@@ -37,8 +39,8 @@ export class SessionService {
   }
 
   /**
-   * Create a prompt file for the initial Claude Code prompt
-   * Helps avoid command line length limits
+   * Create a prompt file for large prompts
+   * Claude Code can read prompts from files to avoid command line length limits
    */
   static async createPromptFile(
     worktreePath: string,
@@ -54,8 +56,8 @@ export class SessionService {
 
     let content = `# Claude Code Session\n\n`;
 
-    // If agent is specified, mention it in the prompt
-    // Claude Code invokes agents by mentioning them
+    // If agent is specified, prepend it to the prompt
+    // Claude Code invokes agents by mentioning them in the prompt
     if (agentName) {
       content += `Use the ${agentName} subagent for this task.\n\n`;
       logger.debug(`Including agent invocation in prompt: ${agentName}`);
@@ -79,16 +81,17 @@ export class SessionService {
   }
 
   /**
-   * Launch a new Claude Code session in a tmux pane
+   * Launch a new Claude Code session in a terminal
    */
   static async launchSession(
     params: LaunchSessionParams
   ): Promise<LaunchSessionResult> {
-    const { worktreePath, prompt, contextFiles, agentName } = params;
+    const { worktreePath, prompt, contextFiles, agentName, terminalApp } = params;
 
-    logger.info('Launching Claude Code session via tmux', {
+    logger.info('Launching Claude Code session', {
       worktreePath,
       agentName,
+      terminalApp: terminalApp || 'default (warp)',
       contextFilesCount: contextFiles?.length || 0,
     });
 
@@ -96,93 +99,103 @@ export class SessionService {
     const sessionId = this.generateSessionId(worktreePath);
     logger.debug(`Session ID: ${sessionId}`);
 
-    // Check if tmux-cli is available
-    const tmuxService = getTmuxService();
-    const isAvailable = await tmuxService.isAvailable();
-    if (!isAvailable) {
-      logger.error('tmux-cli is not available');
-      return {
-        sessionId,
-        tmuxPaneId: '',
-        status: 'failed',
-        error: 'tmux-cli is not available. Please install: uv tool install claude-code-tools',
-      };
-    }
+    // Create prompt file for the session
+    // Agent name is embedded in the prompt (Claude Code invokes agents by mentioning them)
+    logger.debug('Creating prompt file');
+    const promptFile = await this.createPromptFile(
+      worktreePath,
+      prompt,
+      agentName,  // Pass agent name to be included in prompt
+      contextFiles
+    );
+    logger.debug(`Prompt file created: ${promptFile}`);
+
+    // Build Claude Code command
+    // Pass the prompt file path to the terminal service, which will read it directly
+    // This avoids shell escaping issues with complex prompts
+    const claudeCommand = { type: 'prompt-file', promptFile } as const;
+
+    logger.debug('Claude Code command', {
+      command: 'claude (reading from file)',
+      promptFile,
+      agentInPrompt: agentName || 'none'
+    });
+
+    // Create terminal and launch Claude Code
+    logger.debug('Creating terminal service', { terminalApp: terminalApp || 'default' });
+    const terminalService = createTerminalService(
+      terminalApp ? { app: terminalApp } : undefined
+    );
 
     try {
-      // Step 1: Launch a shell in a new tmux pane
-      // ALWAYS launch shell first to prevent losing output on errors
-      logger.debug('Launching zsh in tmux pane');
-      const paneId = await tmuxService.launch('zsh');
-      logger.info(`Tmux pane created: ${paneId}`);
+      logger.debug('Creating terminal with command');
+      const terminalResult = await terminalService.createTerminal({
+        cwd: worktreePath,
+        title: `Claude Code - ${path.basename(worktreePath)}`,
+        command: claudeCommand,
+      });
 
-      // Step 2: Change to worktree directory
-      logger.debug(`Changing directory to: ${worktreePath}`);
-      await tmuxService.send(paneId, `cd "${worktreePath}"`, { delayEnter: 0.5 });
-      await tmuxService.waitIdle(paneId, { idleTime: 2, timeout: 10 });
+      logger.debug('Terminal creation result:', {
+        success: terminalResult.success,
+        pid: terminalResult.pid,
+        app: terminalResult.app,
+      });
 
-      // Step 3: Create prompt file
-      logger.debug('Creating prompt file');
-      const promptFile = await this.createPromptFile(
-        worktreePath,
-        prompt,
-        agentName,
-        contextFiles
-      );
+      if (!terminalResult.success) {
+        throw new SessionError(
+          'Failed to create terminal',
+          'TERMINAL_CREATION_FAILED'
+        );
+      }
 
-      // Step 4: Start Claude Code
-      logger.debug('Starting Claude Code');
-      await tmuxService.send(paneId, 'claude', { delayEnter: 0.5 });
-
-      // Wait for Claude to start (it shows a welcome message)
-      logger.debug('Waiting for Claude Code to start');
-      await tmuxService.waitIdle(paneId, { idleTime: 3, timeout: 30 });
-
-      // Step 5: Send the prompt
-      // Read the prompt file and send it line by line to avoid issues with long prompts
-      logger.debug(`Sending prompt from file: ${promptFile}`);
-      const promptContent = await fs.readFile(promptFile, 'utf-8');
-
-      // Send the prompt content
-      await tmuxService.send(paneId, promptContent, { delayEnter: 1 });
-
-      logger.info('Prompt sent to Claude Code');
+      // CRITICAL SAFETY: Validate PID before storing in state
+      // Invalid PIDs (especially -1, 0) can cause catastrophic failures during cleanup
+      if (!isValidPid(terminalResult.pid)) {
+        throw new SessionError(
+          `Invalid terminal PID: ${terminalResult.pid}. Cannot create session with invalid process ID.`,
+          'INVALID_PID'
+        );
+      }
 
       // Create session record
       const session: Session = {
         sessionId,
         worktreePath,
-        tmuxPaneId: paneId,
+        terminalPid: terminalResult.pid,
         status: 'active',
         startedAt: new Date(),
+        terminalApp: terminalResult.app,
         agentName,
         prompt,
       };
 
       logger.debug('Saving session to state', { sessionId });
-
       // Save to state
       const stateService = getStateService();
       await stateService.init();
       await stateService.saveSession(session);
+      logger.debug('Session saved to state');
 
       logger.info('Session launched successfully', {
         sessionId,
-        tmuxPaneId: paneId,
+        terminalPid: terminalResult.pid,
+        terminalApp: terminalResult.app,
       });
 
       return {
         sessionId,
-        tmuxPaneId: paneId,
+        terminalPid: terminalResult.pid,
         status: 'launched',
+        terminalApp: terminalResult.app,
       };
     } catch (error) {
       logger.error('Failed to launch session', error);
 
       return {
         sessionId,
-        tmuxPaneId: '',
+        terminalPid: -1,
         status: 'failed',
+        terminalApp: 'warp' as TerminalApp,
         error: (error as Error).message,
       };
     }
@@ -205,43 +218,23 @@ export class SessionService {
     logger.debug(`Session found:`, {
       sessionId: session.sessionId,
       status: session.status,
-      tmuxPaneId: session.tmuxPaneId,
+      terminalPid: session.terminalPid,
     });
 
-    // Check if pane still exists
-    logger.debug(`Checking if pane ${session.tmuxPaneId} exists`);
-    const tmuxService = getTmuxService();
-    const paneExists = await tmuxService.paneExists(session.tmuxPaneId);
-    logger.debug(`Pane exists: ${paneExists}`);
+    // Check if terminal is still alive
+    logger.debug(`Checking if terminal process ${session.terminalPid} is alive`);
+    const terminalAlive = await isProcessAlive(session.terminalPid);
+    logger.debug(`Terminal alive: ${terminalAlive}`);
 
-    // Update status if pane died
-    if (!paneExists && session.status === 'active') {
-      logger.debug(`Pane no longer exists, updating session status to terminated`);
+    // Update status if terminal died
+    if (!terminalAlive && session.status === 'active') {
+      logger.debug(`Terminal died, updating session status to terminated`);
       await stateService.updateSessionStatus(sessionId, 'terminated');
       session.status = 'terminated';
       session.completedAt = new Date();
     }
 
     return session;
-  }
-
-  /**
-   * Get recent output from a session
-   */
-  static async getSessionOutput(sessionId: string): Promise<string | null> {
-    const session = await this.getSessionStatus(sessionId);
-    if (!session) {
-      return null;
-    }
-
-    try {
-      const tmuxService = getTmuxService();
-      const output = await tmuxService.capture(session.tmuxPaneId);
-      return output;
-    } catch (error) {
-      logger.error(`Failed to capture output for session ${sessionId}`, error);
-      return null;
-    }
   }
 
   /**
@@ -285,10 +278,37 @@ export class SessionService {
       return false;
     }
 
-    // Kill the tmux pane
+    // CRITICAL SAFETY: Validate PID before attempting termination
+    if (!isValidPid(session.terminalPid)) {
+      logger.error(
+        `CRITICAL: Session ${sessionId} has invalid PID: ${session.terminalPid}. ` +
+        `Cannot terminate. Marking session as failed.`
+      );
+      const stateService = getStateService();
+      await stateService.init();
+      await stateService.updateSessionStatus(sessionId, 'failed');
+      return false;
+    }
+
+    // Terminate the terminal process
     try {
-      const tmuxService = getTmuxService();
-      await tmuxService.kill(session.tmuxPaneId);
+      // Try graceful termination first (SIGTERM)
+      logger.debug(`Sending SIGTERM to process ${session.terminalPid}`);
+      process.kill(session.terminalPid, 'SIGTERM');
+
+      // Wait a bit for graceful shutdown
+      logger.debug('Waiting 2s for graceful shutdown');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Check if still alive
+      const stillAlive = await isProcessAlive(session.terminalPid);
+      if (stillAlive) {
+        // Force kill
+        logger.debug(`Process still alive, sending SIGKILL`);
+        process.kill(session.terminalPid, 'SIGKILL');
+      } else {
+        logger.debug('Process terminated gracefully');
+      }
 
       // Update status
       const stateService = getStateService();
