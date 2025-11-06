@@ -1,12 +1,12 @@
 {
-  "name": "commit-tools",
+  "name": "git-tools",
   "version": "1.0.0",
   "description": "Git commit automation tools with intelligent commit message generation - Review changes, create descriptive commits, and optionally push to remote",
   "author": {
     "name": "AppLab",
     "url": "https://github.com/applab-nl"
   },
-  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/commit-tools",
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/git-tools",
   "repository": "https://github.com/applab-nl/claude-code-plugins",
   "license": "MIT",
   "keywords": [

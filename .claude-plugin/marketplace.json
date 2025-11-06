@@ -79,8 +79,8 @@
       "license": "MIT"
     },
     {
-      "name": "commit-tools",
-      "source": "./commit-tools",
+      "name": "git-tools",
+      "source": "./git-tools",
       "version": "1.0.0",
       "description": "Git commit automation tools with intelligent commit message generation - Review changes, create descriptive commits, and optionally push to remote",
       "author": {
