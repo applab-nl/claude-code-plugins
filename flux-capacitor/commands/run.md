@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git *), Bash(basename:*), Bash(dirname:*), Bash(pwd:*)
+allowed-tools: Bash(git *), Bash(basename:*), Bash(dirname:*), Bash(pwd:*), Bash(find:*), Bash(test:*), Bash(echo:*)
 description: Launch feature development in isolated worktree with flux-capacitor agent
 ---
 
@@ -73,17 +73,47 @@ else
   BRANCH="feature/$SANITIZED"
 fi
 
-# Find flux script
-FLUX="${CLAUDE_PLUGIN_ROOT:-~/.claude/plugins/flux-capacitor}/scripts/flux"
-[ -f "$FLUX" ] || FLUX="$(find ~/.claude -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
-[ -f "$FLUX" ] || FLUX="$(find ~ -maxdepth 5 -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
+# Find flux script - try multiple locations
+FLUX=""
 
-if [ ! -x "$FLUX" ]; then
+# Try CLAUDE_PLUGIN_ROOT if set
+if [ -n "$CLAUDE_PLUGIN_ROOT" ] && [ -x "$CLAUDE_PLUGIN_ROOT/scripts/flux" ]; then
+  FLUX="$CLAUDE_PLUGIN_ROOT/scripts/flux"
+fi
+
+# Try standard plugin location
+if [ -z "$FLUX" ] && [ -x "$HOME/.claude/plugins/flux-capacitor/scripts/flux" ]; then
+  FLUX="$HOME/.claude/plugins/flux-capacitor/scripts/flux"
+fi
+
+# Try local development location (common for marketplace development)
+if [ -z "$FLUX" ] && [ -x "/Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux" ]; then
+  FLUX="/Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux"
+fi
+
+# Search in ~/.claude as fallback
+if [ -z "$FLUX" ]; then
+  FLUX=$(find "$HOME/.claude" -type f -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)
+fi
+
+# Search home directory as last resort (limited depth for performance)
+if [ -z "$FLUX" ]; then
+  FLUX=$(find "$HOME/projects" -maxdepth 5 -type f -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)
+fi
+
+if [ -z "$FLUX" ] || [ ! -x "$FLUX" ]; then
   echo "Error: flux script not found"
+  echo ""
+  echo "Searched locations:"
+  echo "  - \$CLAUDE_PLUGIN_ROOT/scripts/flux"
+  echo "  - ~/.claude/plugins/flux-capacitor/scripts/flux"
+  echo "  - ~/projects/*/flux-capacitor/scripts/flux"
   echo ""
   echo "Please ensure flux-capacitor plugin is installed correctly"
   exit 1
 fi
+
+echo "Using flux script: $FLUX"
 
 # Create augmented prompt
 PROMPT="You are in an isolated worktree for feature development.
