@@ -9,8 +9,8 @@
     {
       "name": "flux-capacitor",
       "source": "./flux-capacitor",
-      "version": "1.4.0",
-      "description": "Feature Development Lifecycle Orchestrator - Manages issue tracker integration and creates comprehensive implementation plans with subagent delegation",
+      "version": "2.0.0",
+      "description": "Feature Development Lifecycle Orchestrator - Fast worktree-based parallel development with comprehensive planning, issue tracker integration, and intelligent subagent delegation",
       "author": {
         "name": "AppLab",
         "url": "https://github.com/applab-nl"
