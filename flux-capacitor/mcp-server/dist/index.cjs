@@ -26683,14 +26683,14 @@ async function launchSession(params) {
   } else {
     logger7.info("Session launched successfully", {
       sessionId: result.sessionId,
-      tmuxPaneId: result.tmuxPaneId
+      tmuxSession: result.tmuxSession
     });
   }
   return result;
 }
 var launchSessionToolDefinition = {
   name: "launch_session",
-  description: "Launch a Claude Code session in a tmux pane with a specific prompt and context. The session will run in an isolated worktree. Requires tmux-cli to be installed.",
+  description: "Launch a Claude Code session in a tmux session with a specific prompt delivered via @ file reference. The session will run in an isolated worktree using native tmux (no tmux-cli required).",
   inputSchema: {
     type: "object",
     properties: {
