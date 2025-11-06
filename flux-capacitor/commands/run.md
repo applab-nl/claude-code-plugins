@@ -1,103 +1,125 @@
-You are the **Flux Capacitor Orchestrator** - a specialized command handler that launches comprehensive feature development workflows.
+---
+allowed-tools: Bash(git *), Bash(basename:*), Bash(dirname:*), Bash(pwd:*)
+description: Launch feature development in isolated worktree with flux-capacitor agent
+---
 
-## Your Mission
+## Context
 
-Process the user's input to determine the appropriate workflow mode and delegate to the flux-capacitor agent for full lifecycle orchestration.
+- Repository root: !`git rev-parse --show-toplevel 2>/dev/null || echo "not-a-repo"`
+- Repository name: !`basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || echo "unknown"`
+- Current branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
+- Current directory: !`pwd`
+- Arguments: `$ARGUMENTS`
 
-## Input Parsing
+## Your Task
 
-Analyze `$ARGUMENTS` to detect:
+**Launch feature development in isolated worktree with tmux session.** Execute commands with minimal shots.
 
-### Pattern 1: Issue Key (e.g., "MEM-123", "PROJ-456")
-Regex: `^([A-Z]{2,10})-(\d+)(.*)$`
-- Group 1: Team prefix
-- Group 2: Issue number
-- Group 3: Optional additional context
+### Step 1: Parse Arguments and Generate Branch Name
 
-**Action**: Pass to flux-capacitor agent in Mode 1 (Issue Key)
+Parse `$ARGUMENTS` to detect pattern:
 
-### Pattern 2: Feature Description (e.g., "Add OAuth authentication")
-No issue key pattern match, but contains meaningful text.
+**Pattern 1: Issue Key** (e.g., `MEM-123`, `PROJ-456`)
+- Regex: `^[A-Z]{2,10}-\d+`
+- Branch: `feature/{key-lowercase}` (e.g., `feature/mem-123`)
+- Mode: `issue-key`
 
-**Action**: Pass to flux-capacitor agent in Mode 2/3 (depending on tracker availability)
+**Pattern 2: Description** (anything else)
+- Sanitize: lowercase, replace spaces/special chars with `-`, limit to 50 chars
+- Branch: `feature/{sanitized-description}`
+- Mode: `description`
 
-### Pattern 3: Empty or Invalid
-No arguments provided or unintelligible input.
+**Pattern 3: Empty**
+- Show usage and stop
 
-**Action**: Show usage help
+### Step 2: Create Worktree and Launch Session (Single Command)
 
-## Execution Flow
+**CRITICAL: The tmux session MUST launch with working directory set to the worktree.**
 
+Execute in a single bash command block:
+
+```bash
+# Parse arguments and generate branch name
+ARGS="$ARGUMENTS"
+MODE=""
+BRANCH=""
+
+# Detect issue key pattern
+if echo "$ARGS" | grep -qiE '^[A-Z]{2,10}-[0-9]+'; then
+  MODE="issue-key"
+  ISSUE_KEY=$(echo "$ARGS" | grep -oiE '^[A-Z]{2,10}-[0-9]+')
+  BRANCH="feature/$(echo "$ISSUE_KEY" | tr '[:upper:]' '[:lower:]')"
+else
+  MODE="description"
+  SANITIZED=$(echo "$ARGS" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | sed 's/^-//;s/-$//' | cut -c1-50)
+  BRANCH="feature/$SANITIZED"
+fi
+
+# Find flux script
+FLUX="${CLAUDE_PLUGIN_ROOT:-~/.claude/plugins/flux-capacitor}/scripts/flux"
+[ -f "$FLUX" ] || FLUX="$(find ~/.claude -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
+[ -f "$FLUX" ] || FLUX="$(find ~ -maxdepth 5 -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
+
+# Create augmented prompt
+PROMPT="You are in an isolated worktree for feature development.
+
+**Input**: $ARGS
+**Mode**: $MODE
+**Branch**: $BRANCH
+
+Invoke the flux-capacitor agent to handle:
+- Issue tracker integration (if mode is 'issue-key')
+- Comprehensive planning with ultrathink mode
+- Subagent delegation strategy
+- Implementation guidance
+
+The flux-capacitor agent will guide you through the complete feature implementation."
+
+# Launch worktree + tmux session + Claude (atomic operation)
+"$FLUX" launch . "$BRANCH" "$PROMPT" "flux-capacitor"
 ```
-1. Parse $ARGUMENTS
-2. Detect pattern and extract components
-3. Invoke flux-capacitor agent with:
-   - Input mode
-   - Parsed arguments
-   - Current working directory context
-4. Flux-capacitor handles:
-   - Issue tracker integration
-   - Ultrathink planning
-   - Worktree creation
-   - Session launch
-   - State management
+
+### Step 3: Report Success
+
+After flux script completes, report:
+- Session ID (from flux output)
+- Worktree path (from flux output)
+- Branch name
+- Commands to check status/attach
+
+**Example Output:**
+```
+✓ Worktree created: /Users/alice/projects/my-app-feature-mem-123
+✓ Branch: feature/mem-123
+✓ Session launched: sess_my-app-feature-mem-123_1730890123_abc123
+
+Claude Code is now running in the isolated worktree.
+The flux-capacitor agent will handle planning and implementation.
+
+Commands:
+  flux attach sess_my-app-feature-mem-123_1730890123_abc123
+  flux status sess_my-app-feature-mem-123_1730890123_abc123
 ```
 
-## Implementation
+## Critical Safety Requirements
 
-Parse the input and delegate to the flux-capacitor agent:
-
-```
-Input: $ARGUMENTS = "{user_input}"
-
-Parsing...
-
-[If matches issue key pattern]
-✓ Detected issue key: {ISSUE-KEY}
-✓ Delegating to flux-capacitor agent (Mode 1: Issue Key)
-
-Use the Task tool to launch the flux-capacitor agent with prompt:
-"Process issue {ISSUE-KEY} for feature development. Current directory: {cwd}. Follow Mode 1 workflow: fetch issue, generate plan, create worktree, launch session."
-
-[If matches feature description pattern]
-✓ Detected feature description: "{description}"
-✓ Delegating to flux-capacitor agent (Mode 2/3: Description-based)
-
-Use the Task tool to launch the flux-capacitor agent with prompt:
-"Process feature request: '{description}'. Current directory: {cwd}. Check for issue tracker availability and follow Mode 2 (with tracker) or Mode 3 (without tracker) workflow."
-
-[If empty or invalid]
-❌ Invalid input
-
-Usage: /flux-capacitor:run <ISSUE-KEY|description>
-        /run <ISSUE-KEY|description>
-
-Examples:
-  /run MEM-123
-  /flux-capacitor:run Add OAuth authentication with Google and GitHub
-  /run Implement user profile management
-
-The flux-capacitor will:
-✓ Integrate with Linear/GitHub/Jira (if available)
-✓ Generate comprehensive implementation plan (ultrathink mode)
-✓ Create isolated git worktree
-✓ Launch dedicated Claude Code session
-✓ Manage full feature lifecycle
-```
+1. **Working Directory Isolation**: The flux script's `-c "$worktree_path"` flag ensures tmux launches in the worktree
+2. **Prompt File Location**: Created at `$worktree_path/.claude/prompt.md` (inside worktree)
+3. **No Spillover**: Everything happens in the new worktree - zero risk of cross-contamination
 
 ## Error Handling
 
-- **No arguments**: Show usage help
-- **Invalid issue key format**: Treat as description
-- **Task tool unavailable**: Explain that flux-capacitor requires agent support
+- **No arguments**: Show usage and stop
+- **Not a git repo**: Error and stop
+- **Flux script not found**: Error with installation instructions
+- **Flux script fails**: Show error output from flux
 
-## Success Criteria
+## Usage Examples
 
-- ✓ Input correctly parsed and classified
-- ✓ Flux-capacitor agent invoked with proper mode
-- ✓ User sees clear progress feedback
-- ✓ Error cases handled gracefully
+```bash
+# Issue key
+/run MEM-123
 
----
-
-**Remember**: You are just the entry point. The flux-capacitor agent does all the heavy lifting. Your job is to parse input correctly and hand off to the agent.
+# Description
+/run Add OAuth authentication with Google
+```

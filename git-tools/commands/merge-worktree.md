@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git merge:*), Bash(git checkout:*), Bash(git status:*), Bash(git log:*), Bash(git branch:*), Bash(pwd:*)
+allowed-tools: Bash(git merge:*), Bash(git checkout:*), Bash(git switch:*), Bash(git status:*), Bash(git log:*), Bash(git branch:*), Bash(git rev-parse:*)
 description: Merge a worktree's branch back to main or base branch
 ---
 
@@ -7,46 +7,44 @@ description: Merge a worktree's branch back to main or base branch
 
 - Current directory: !`pwd`
 - Current branch: !`git branch --show-current`
-- Git status: !`git status --porcelain`
-- Recent commits on current branch: !`git log --oneline -5`
+- Git status (check if clean): !`git status --porcelain`
+- Default branches available: !`git branch --list main master`
+- All branches: !`git branch -a --format='%(refname:short)'`
 
 ## Your task
 
-Merge a feature branch from a worktree back to the main/base branch.
+Merge a feature branch from a worktree back to the main/base branch. **This is a two-step process for safety.**
 
-**Safety checks:**
-1. Verify current working directory is clean (no uncommitted changes)
-2. Verify we're on the target branch (main/master) or switch to it
-3. Verify source branch exists and has commits to merge
+**STEP 1 - Analysis and Confirmation (ALWAYS DO THIS FIRST):**
 
-**Steps:**
-1. Ask the user:
-   - Branch name to merge (e.g., `feature/oauth-implementation`)
-   - Target branch (defaults to `main`)
-   - Merge strategy: `--ff-only`, `--no-ff`, or default
+If no branch name provided, ask user: "Which branch should I merge?"
 
-2. Switch to target branch if needed:
+Then analyze and present:
+1. **Safety check:** If `git status --porcelain` shows output, STOP and warn: "Working directory must be clean before merging"
+2. **Target branch:** Detect main/master (prefer main if both exist)
+3. **Source branch:** Verify it exists
+4. **Commits to merge:** Show `git log {target}..{source} --oneline`
+5. **Ask user:** "Ready to merge {source} into {target}? This will switch to {target} and merge. (yes/no)"
+
+**STEP 2 - Execute Merge (ONLY AFTER USER CONFIRMS):**
+
+1. Switch to target branch:
    ```bash
-   git checkout main
+   git switch main
    ```
 
-3. Perform the merge:
+2. Perform merge:
    ```bash
-   git merge feature/oauth-implementation
+   git merge {source-branch}
    ```
 
-4. Handle conflicts:
-   - If conflicts occur, inform user and show conflicted files
-   - Provide clear instructions for resolution
-   - Do NOT auto-resolve conflicts
+3. Handle result:
+   - **Success:** Report merge commit, remind user about `/remove-worktree`
+   - **Conflicts:** Show conflicted files, provide resolution instructions, DO NOT auto-resolve
+   - **Error:** Report error clearly
 
-5. Confirm successful merge:
-   - Show merge commit details
-   - Show updated branch status
-
-**Important:**
-- NEVER force merge or skip conflict resolution
-- Always verify clean working directory before merging
-- Provide clear error messages if preconditions aren't met
-
-After successful merge, remind user they can remove the worktree with `/git-tools:remove-worktree`.
+**Critical Safety Rules:**
+- NEVER merge if working directory is not clean
+- NEVER auto-resolve conflicts
+- ALWAYS ask for confirmation before executing merge
+- STOP immediately if any safety check fails
