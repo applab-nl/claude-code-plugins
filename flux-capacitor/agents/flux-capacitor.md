@@ -200,34 +200,32 @@ Use this detection at the start of your workflow to determine which issue tracke
 
 ## Workspace Orchestrator Integration
 
-**CRITICAL**: The flux-capacitor integrates with the **flux-capacitor MCP server** to create isolated development environments and launch dedicated Claude Code sessions via **tmux**.
+**CRITICAL**: The flux-capacitor uses the **flux CLI script** to create isolated development environments and launch dedicated Claude Code sessions via **tmux** - fast, simple, no MCP server needed.
 
 ### Prerequisites
 
-Users must have **tmux-cli** installed:
+Users must have **tmux** installed (built-in on macOS):
 ```bash
-uv tool install claude-code-tools
+# macOS: already installed
+# Linux: apt install tmux  or  dnf install tmux
 ```
 
-### MCP Tools Available
+### Flux CLI Commands
 
-Check for flux-capacitor MCP tools using:
-```bash
-claude mcp list | grep -q "plugin:flux-capacitor:mcp"
-```
+The `flux` script is located at `${CLAUDE_PLUGIN_ROOT}/scripts/flux` and provides:
 
-**Available Tools**:
-- `mcp__plugin_flux-capacitor_mcp__create_worktree` - Create isolated git worktree
-- `mcp__plugin_flux-capacitor_mcp__launch_session` - Launch Claude Code in tmux pane
-- `mcp__plugin_flux-capacitor_mcp__list_worktrees` - List all active worktrees
-- `mcp__plugin_flux-capacitor_mcp__get_session_status` - Check session status and capture output
-- `mcp__plugin_flux-capacitor_mcp__cleanup_worktree` - Clean up worktree and tmux session
+**Available Commands**:
+- `flux launch <repo> <branch> <prompt> [agent]` - Create worktree and launch Claude session (atomic, < 3 seconds)
+- `flux list` - List all active sessions
+- `flux status <session-id>` - Check session status and recent output
+- `flux attach <session-id>` - Attach to running session
+- `flux cleanup <session-id> [--force]` - Clean up worktree and session
 
-### Worktree Naming Convention
+### Branch Naming Convention
 
-Generate worktree names using pattern:
-- With issue key: `{repo-name}-{issue-key-lowercase}` (e.g., `my-app-mem-123`)
-- Without issue key: `{repo-name}-{sanitized-description}` (e.g., `my-app-add-oauth`)
+Generate branch names using pattern:
+- With issue key: `feature/{issue-key-lowercase}-{short-description}` (e.g., `feature/mem-123-oauth`)
+- Without issue key: `feature/{sanitized-description}` (e.g., `feature/add-oauth`)
 
 ## Execution Flow
 
@@ -240,106 +238,69 @@ If working with an issue tracker:
 2. Assign issue to current user
 3. Add comment with implementation plan summary
 
-### Step 2: Create Worktree (if flux-capacitor MCP available)
+### Step 2: Launch Session with Flux CLI
 
-**ALWAYS attempt to create a worktree for isolated development:**
+**ALWAYS use the flux CLI to create worktree and launch session atomically:**
 
-1. **Detect Repository**: Use current working directory or ask user
+1. **Detect Repository**: Use current working directory
+   ```bash
+   pwd  # Get current directory
+   ```
+
 2. **Generate Branch Name**:
    - With issue key: `feature/{issue-key-lowercase}-{short-description}`
    - Without: `feature/{sanitized-description}`
-3. **Call create_worktree**:
-   ```json
-   {
-     "repository": "/absolute/path/to/repo",
-     "branch": "feature/mem-123-add-oauth",
-     "baseBranch": "main"
-   }
-   ```
-4. **Handle Response**:
-   - Success: Proceed to Step 3
-   - Failure: Fall back to manual instructions (Step 4)
 
-### Step 3: Launch Dedicated Session (if worktree created)
-
-**Launch a specialized Claude Code session in a tmux pane:**
-
-1. **Prepare Session Prompt**:
+3. **Prepare Implementation Prompt**:
    - Include full implementation plan
    - Specify which subagents to use
    - Add context about the feature
    - Reference success criteria and testing plan
 
-2. **Call launch_session**:
-   ```json
-   {
-     "worktreePath": "/path/to/worktree",
-     "prompt": "Implement {feature title} according to the plan below.\n\n{full implementation plan}\n\nUse these specialized agents:\n- {agent-1} for {task-1}\n- {agent-2} for {task-2}\n\nSuccess criteria:\n{criteria}\n\nTest thoroughly before marking complete.",
-     "contextFiles": ["relevant/file/paths"],
-     "agentName": "primary-specialist-name"
-   }
+4. **Launch Session** using flux CLI:
+   ```bash
+   ${CLAUDE_PLUGIN_ROOT}/scripts/flux launch . "feature/mem-123-oauth" "Implement OAuth authentication according to the plan below.
+
+   ## Implementation Plan
+   {full implementation plan}
+
+   ## Subagents to Use
+   - supabase-integration-expert for authentication setup
+   - frontend-specialist for login UI
+   - test-engineer for comprehensive testing
+
+   ## Success Criteria
+   {criteria}
+
+   Test thoroughly before marking complete." "supabase-integration-expert"
    ```
 
-3. **Inform User**:
-   - Confirm tmux pane created
-   - Provide session ID and tmux pane ID for tracking
-   - Explain how to check status and view live output
+5. **Capture Output**: The flux script will output:
+   - Session ID
+   - Tmux session name
+   - Worktree path
+   - Commands for monitoring
 
 **Example Output**:
 ```
-🚀 Worktree created: /Users/alice/projects/my-app-mem-123
-🚀 Launching dedicated Claude Code session via tmux...
+ℹ Creating worktree and session...
+ℹ Repository: /Users/alice/projects/my-app
+ℹ Branch: feature/mem-123-oauth
+ℹ Worktree: /Users/alice/projects/my-app-feature-mem-123-oauth
+✓ Worktree created
+ℹ Launching Claude Code in tmux...
+✓ Session launched!
 
-✓ Session launched successfully!
-  Session ID: sess_my-app-mem-123_1729012345_abc123
-  Tmux Pane: remote-cli-session:0.2
+Session ID: sess_my-app-feature-mem-123-oauth_1730890123_abc123
+Tmux session: flux-sess_my-app-feature-mem-123-oauth_1730890123_abc123
+Worktree: /Users/alice/projects/my-app-feature-mem-123-oauth
 
-Claude Code is now running in a tmux pane in the isolated worktree.
-The session will implement the feature according to the plan using:
-- supabase-integration-expert for authentication
-- frontend-specialist for UI components
-- test-engineer for comprehensive testing
-
-You can:
-- Attach to the tmux session to view live: tmux-cli attach
-- Check status and capture output: get_session_status
-- Continue working in this session
+Commands:
+  flux attach sess_my-app-feature-mem-123-oauth_1730890123_abc123    # Attach to session
+  flux status sess_my-app-feature-mem-123-oauth_1730890123_abc123    # Check status
+  flux list                                                            # List all sessions
+  flux cleanup sess_my-app-feature-mem-123-oauth_1730890123_abc123   # Clean up when done
 ```
-
-### Step 4: Fallback - Manual Instructions (if flux-capacitor MCP unavailable)
-
-If the flux-capacitor MCP server is not available or tmux-cli is not installed, provide clear manual instructions:
-
-1. **Present Implementation Plan**:
-   - Overview and technical approach
-   - Detailed implementation steps with subagent recommendations
-   - Success criteria
-   - Testing plan
-   - Estimated effort
-
-2. **Provide Manual Steps**:
-   ```
-   Since the flux-capacitor MCP server or tmux-cli is not available, follow these manual steps:
-
-   1. Install tmux-cli for automated workflow:
-      uv tool install claude-code-tools
-
-   2. Create feature branch:
-      git checkout -b feature/mem-123-add-oauth
-
-   3. Review the implementation plan above thoroughly
-
-   4. Use these specialized subagents:
-      - Use supabase-integration-expert for auth configuration
-      - Use frontend-specialist for UI components
-      - Use test-engineer for comprehensive testing
-
-   5. Test thoroughly before committing
-
-   6. Update issue status to "Review" when complete
-
-   💡 Tip: With tmux-cli installed, flux-capacitor can automate worktree and session management!
-   ```
 
 ## Session Lifecycle Management
 
@@ -349,18 +310,19 @@ Users can check on their delegated sessions:
 ```
 User: "How's the authentication feature session doing?"
 
-Agent: Uses mcp__plugin_flux-capacitor_mcp__get_session_status
-Shows: status, tmux pane health, recent output, last activity
+Agent: Run flux status command:
+  ${CLAUDE_PLUGIN_ROOT}/scripts/flux status <session-id>
+
+Shows: tmux session health, recent output (last 20 lines), branch info
 ```
 
 ### Completing Features
 
 When the delegated session completes:
 1. **Session marks itself complete** (via hooks or manual)
-2. **Orchestrator detects completion** (via status check)
-3. **Update issue tracker**: Change status to "Review"
-4. **Prompt for merge**: Ask user if ready to merge worktree back
-5. **Cleanup worktree**: Use `cleanup_worktree` (keep branch for PR)
+2. **Update issue tracker**: Change status to "Review"
+3. **Prompt for merge**: Ask user if ready to merge worktree back
+4. **Cleanup worktree**: Use flux cleanup (keeps branch for PR)
 
 ### Cleanup Workflow
 
@@ -369,12 +331,10 @@ User: "The authentication feature is done and merged. Clean up."
 
 Agent:
 1. Verify work is committed and pushed
-2. Call mcp__plugin_flux-capacitor_mcp__cleanup_worktree:
-   {
-     "worktreePath": "/path/to/worktree",
-     "removeBranch": false  // Keep for PR/history
-   }
-3. Confirm cleanup (kills tmux pane, removes worktree)
+2. Run flux cleanup:
+   ${CLAUDE_PLUGIN_ROOT}/scripts/flux cleanup <session-id>
+
+3. Confirm cleanup (kills tmux session, removes worktree, keeps branch)
 4. Update issue status to "Done"
 ```
 
@@ -387,6 +347,12 @@ Agent:
 - Handle API rate limits gracefully
 - Fall back to plain mode if tracker unavailable
 - Present plan to user even if tracker updates fail
+
+### Flux CLI Failures
+
+- If tmux not installed: Show install instructions
+- If git worktree fails: Show error and manual worktree creation steps
+- If session launch fails: Provide manual Claude Code launch instructions
 
 ## Communication Style
 
@@ -544,11 +510,11 @@ As the Flux Capacitor agent, you handle:
 - ✓ Comprehensive plan generation (ultrathink mode ALWAYS)
 - ✓ User communication and approval workflow
 - ✓ Issue tracker updates (status, assignment, comments)
-- ✓ Git worktree creation (via flux-capacitor MCP)
-- ✓ Tmux-based session launching (via flux-capacitor MCP)
+- ✓ Atomic worktree creation and session launching (via flux CLI, < 3 seconds)
+- ✓ Native tmux integration (no MCP server overhead)
 - ✓ Session lifecycle management and status tracking with output capture
-- ✓ Worktree cleanup and tmux pane management
-- ✓ Graceful fallback to manual instructions when MCP or tmux-cli unavailable
+- ✓ Worktree cleanup and tmux session management
+- ✓ Simple bash CLI - fast, transparent, debuggable
 - ✓ Clear progress feedback and user guidance throughout
 
 ---

@@ -1,0 +1,359 @@
+#!/bin/bash
+# flux - Flux Capacitor CLI for worktree and session management
+# Fast, simple, direct - no MCP server needed
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+STATE_DIR="${HOME}/.flux-capacitor"
+SESSIONS_FILE="${STATE_DIR}/sessions.json"
+
+# Ensure state directory exists
+mkdir -p "$STATE_DIR"
+[[ ! -f "$SESSIONS_FILE" ]] && echo "[]" > "$SESSIONS_FILE"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Helper functions
+log_info() { echo -e "${BLUE}ℹ${NC} $*"; }
+log_success() { echo -e "${GREEN}✓${NC} $*"; }
+log_error() { echo -e "${RED}✗${NC} $*" >&2; }
+log_warn() { echo -e "${YELLOW}⚠${NC} $*"; }
+
+# Check if tmux is installed
+check_tmux() {
+  if ! command -v tmux >/dev/null 2>&1; then
+    log_error "tmux is not installed"
+    echo "Install: brew install tmux (macOS) or apt install tmux (Linux)"
+    exit 1
+  fi
+}
+
+# Generate session ID
+generate_session_id() {
+  local worktree_name="$1"
+  echo "sess_${worktree_name}_$(date +%s)_$(openssl rand -hex 4)"
+}
+
+# Create worktree and launch session
+launch() {
+  check_tmux
+
+  local repo_path="${1:-.}"
+  local branch="$2"
+  local prompt="$3"
+  local agent="${4:-}"
+
+  # Get absolute repo path
+  repo_path="$(cd "$repo_path" && pwd)"
+
+  # Validate repo
+  if [[ ! -d "$repo_path/.git" ]]; then
+    log_error "Not a git repository: $repo_path"
+    exit 1
+  fi
+
+  # Generate worktree name
+  local worktree_name="$(basename "$repo_path")-${branch//\//-}"
+  local worktree_path="$(dirname "$repo_path")/$worktree_name"
+  local session_id="$(generate_session_id "$worktree_name")"
+  local tmux_session="flux-${session_id}"
+
+  log_info "Creating worktree and session..."
+  log_info "Repository: $repo_path"
+  log_info "Branch: $branch"
+  log_info "Worktree: $worktree_path"
+
+  # Create worktree if it doesn't exist
+  if [[ ! -d "$worktree_path" ]]; then
+    cd "$repo_path"
+
+    # Create branch if it doesn't exist
+    if ! git rev-parse --verify "$branch" >/dev/null 2>&1; then
+      log_info "Creating branch: $branch"
+      git branch "$branch"
+    fi
+
+    log_info "Creating worktree..."
+    git worktree add "$worktree_path" "$branch"
+    log_success "Worktree created"
+  else
+    log_warn "Worktree already exists, reusing it"
+  fi
+
+  # Create prompt file
+  local prompt_file="$worktree_path/.claude/prompt.md"
+  mkdir -p "$(dirname "$prompt_file")"
+
+  if [[ -n "$agent" ]]; then
+    echo "# Implementation Plan
+
+Use the ${agent} agent for this task.
+
+${prompt}" > "$prompt_file"
+  else
+    echo "# Implementation Plan
+
+${prompt}" > "$prompt_file"
+  fi
+
+  log_info "Launching Claude Code in tmux..."
+
+  # Launch Claude in tmux session
+  tmux new-session -d -s "$tmux_session" -c "$worktree_path" \
+    "claude \"Implement the plan in @$prompt_file\"; exec bash"
+
+  # Save session info
+  local session_data=$(cat <<EOF
+{
+  "sessionId": "$session_id",
+  "tmuxSession": "$tmux_session",
+  "worktreePath": "$worktree_path",
+  "branch": "$branch",
+  "repository": "$repo_path",
+  "startedAt": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+  "status": "active"
+}
+EOF
+)
+
+  # Add to sessions file
+  local sessions=$(cat "$SESSIONS_FILE")
+  echo "$sessions" | jq ". += [$session_data]" > "$SESSIONS_FILE"
+
+  log_success "Session launched!"
+  echo ""
+  echo "Session ID: $session_id"
+  echo "Tmux session: $tmux_session"
+  echo "Worktree: $worktree_path"
+  echo ""
+  echo "Commands:"
+  echo "  flux attach $session_id    # Attach to session"
+  echo "  flux status $session_id    # Check status"
+  echo "  flux list                  # List all sessions"
+  echo "  flux cleanup $session_id   # Clean up when done"
+}
+
+# Attach to session
+attach() {
+  check_tmux
+  local session_id="$1"
+
+  local tmux_session=$(cat "$SESSIONS_FILE" | jq -r ".[] | select(.sessionId == \"$session_id\") | .tmuxSession")
+
+  if [[ -z "$tmux_session" || "$tmux_session" == "null" ]]; then
+    log_error "Session not found: $session_id"
+    exit 1
+  fi
+
+  if ! tmux has-session -t "$tmux_session" 2>/dev/null; then
+    log_error "Tmux session no longer exists: $tmux_session"
+    exit 1
+  fi
+
+  log_info "Attaching to session: $tmux_session"
+  log_info "Press Ctrl-B D to detach"
+  tmux attach -t "$tmux_session"
+}
+
+# Get session status
+status() {
+  check_tmux
+  local session_id="$1"
+
+  local session=$(cat "$SESSIONS_FILE" | jq ".[] | select(.sessionId == \"$session_id\")")
+
+  if [[ -z "$session" || "$session" == "null" ]]; then
+    log_error "Session not found: $session_id"
+    exit 1
+  fi
+
+  local tmux_session=$(echo "$session" | jq -r ".tmuxSession")
+  local worktree=$(echo "$session" | jq -r ".worktreePath")
+  local branch=$(echo "$session" | jq -r ".branch")
+  local started=$(echo "$session" | jq -r ".startedAt")
+
+  echo "Session: $session_id"
+  echo "Tmux: $tmux_session"
+  echo "Worktree: $worktree"
+  echo "Branch: $branch"
+  echo "Started: $started"
+
+  if tmux has-session -t "$tmux_session" 2>/dev/null; then
+    log_success "Status: Active"
+    echo ""
+    echo "Recent output (last 20 lines):"
+    echo "---"
+    tmux capture-pane -t "$tmux_session" -p -S -20
+  else
+    log_warn "Status: Terminated (tmux session ended)"
+  fi
+}
+
+# List all sessions
+list() {
+  check_tmux
+
+  local sessions=$(cat "$SESSIONS_FILE")
+  local count=$(echo "$sessions" | jq 'length')
+
+  if [[ "$count" == "0" ]]; then
+    log_info "No sessions found"
+    exit 0
+  fi
+
+  echo "Active Sessions:"
+  echo ""
+
+  echo "$sessions" | jq -r '.[] | "\(.sessionId)\t\(.branch)\t\(.tmuxSession)"' | while IFS=$'\t' read -r sid branch tmux; do
+    if tmux has-session -t "$tmux" 2>/dev/null; then
+      echo -e "${GREEN}●${NC} $sid"
+      echo "  Branch: $branch"
+      echo "  Tmux: $tmux"
+    else
+      echo -e "${YELLOW}○${NC} $sid (terminated)"
+      echo "  Branch: $branch"
+    fi
+    echo ""
+  done
+}
+
+# Cleanup session and worktree
+cleanup() {
+  check_tmux
+  local session_id="$1"
+  local force="${2:-false}"
+
+  local session=$(cat "$SESSIONS_FILE" | jq ".[] | select(.sessionId == \"$session_id\")")
+
+  if [[ -z "$session" || "$session" == "null" ]]; then
+    log_error "Session not found: $session_id"
+    exit 1
+  fi
+
+  local tmux_session=$(echo "$session" | jq -r ".tmuxSession")
+  local worktree=$(echo "$session" | jq -r ".worktreePath")
+  local repo=$(echo "$session" | jq -r ".repository")
+  local branch=$(echo "$session" | jq -r ".branch")
+
+  log_info "Cleaning up session: $session_id"
+
+  # Kill tmux session if running
+  if tmux has-session -t "$tmux_session" 2>/dev/null; then
+    log_info "Terminating tmux session..."
+    tmux kill-session -t "$tmux_session"
+    log_success "Tmux session terminated"
+  fi
+
+  # Remove worktree
+  if [[ -d "$worktree" ]]; then
+    log_info "Removing worktree: $worktree"
+    cd "$repo"
+
+    if [[ "$force" == "true" ]]; then
+      git worktree remove "$worktree" --force
+    else
+      git worktree remove "$worktree"
+    fi
+
+    log_success "Worktree removed"
+  fi
+
+  # Remove from sessions file
+  local sessions=$(cat "$SESSIONS_FILE")
+  echo "$sessions" | jq "del(.[] | select(.sessionId == \"$session_id\"))" > "$SESSIONS_FILE"
+
+  log_success "Cleanup complete"
+}
+
+# Show help
+help() {
+  cat <<EOF
+Flux Capacitor - Fast worktree and session management
+
+Usage: flux <command> [options]
+
+Commands:
+  launch <repo> <branch> <prompt> [agent]
+      Create worktree and launch Claude Code session
+      Example: flux launch . feature/auth "Add OAuth" "frontend-specialist"
+
+  attach <session-id>
+      Attach to running session
+
+  status <session-id>
+      Show session status and recent output
+
+  list
+      List all sessions
+
+  cleanup <session-id> [--force]
+      Clean up session and worktree
+
+  help
+      Show this help message
+
+Examples:
+  # Launch new session
+  flux launch . feature/new-dashboard "Implement dashboard with charts"
+
+  # Attach to session
+  flux attach sess_myapp_1699...
+
+  # Check status
+  flux status sess_myapp_1699...
+
+  # Cleanup when done
+  flux cleanup sess_myapp_1699...
+EOF
+}
+
+# Main command router
+main() {
+  if [[ $# -eq 0 ]]; then
+    help
+    exit 0
+  fi
+
+  local command="$1"
+  shift
+
+  case "$command" in
+    launch)
+      [[ $# -lt 3 ]] && { log_error "Usage: flux launch <repo> <branch> <prompt> [agent]"; exit 1; }
+      launch "$@"
+      ;;
+    attach)
+      [[ $# -lt 1 ]] && { log_error "Usage: flux attach <session-id>"; exit 1; }
+      attach "$@"
+      ;;
+    status)
+      [[ $# -lt 1 ]] && { log_error "Usage: flux status <session-id>"; exit 1; }
+      status "$@"
+      ;;
+    list)
+      list
+      ;;
+    cleanup)
+      [[ $# -lt 1 ]] && { log_error "Usage: flux cleanup <session-id> [--force]"; exit 1; }
+      local force="false"
+      [[ "$2" == "--force" ]] && force="true"
+      cleanup "$1" "$force"
+      ;;
+    help|--help|-h)
+      help
+      ;;
+    *)
+      log_error "Unknown command: $command"
+      help
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"

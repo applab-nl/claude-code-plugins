@@ -25,6 +25,5 @@
     "session-management"
   ],
   "agents": "./agents/flux-capacitor.md",
-  "commands": "./commands/run.md",
-  "mcpServers": "./.mcp.json"
+  "commands": "./commands/run.md"
 }
