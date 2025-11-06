@@ -5,10 +5,9 @@ description: Launch feature development in isolated worktree with flux-capacitor
 
 ## Context
 
-- Repository root: !`git rev-parse --show-toplevel 2>/dev/null || echo "not-a-repo"`
-- Repository name: !`basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || echo "unknown"`
-- Current branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Current directory: !`pwd`
+- Git repository root: !`git rev-parse --show-toplevel 2>/dev/null || echo ""`
+- Current branch: !`git branch --show-current 2>/dev/null || echo ""`
 - Arguments: `$ARGUMENTS`
 
 ## Your Task
@@ -39,8 +38,27 @@ Parse `$ARGUMENTS` to detect pattern:
 Execute in a single bash command block:
 
 ```bash
+# Verify we're in a git repository
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+if [ -z "$REPO_ROOT" ]; then
+  echo "Error: Not in a git repository"
+  echo "Please run this command from within a git repository"
+  exit 1
+fi
+
 # Parse arguments and generate branch name
 ARGS="$ARGUMENTS"
+if [ -z "$ARGS" ]; then
+  echo "Error: No arguments provided"
+  echo ""
+  echo "Usage: /run <ISSUE-KEY|description>"
+  echo ""
+  echo "Examples:"
+  echo "  /run MEM-123"
+  echo "  /run Add OAuth authentication with Google"
+  exit 1
+fi
+
 MODE=""
 BRANCH=""
 
@@ -60,6 +78,13 @@ FLUX="${CLAUDE_PLUGIN_ROOT:-~/.claude/plugins/flux-capacitor}/scripts/flux"
 [ -f "$FLUX" ] || FLUX="$(find ~/.claude -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
 [ -f "$FLUX" ] || FLUX="$(find ~ -maxdepth 5 -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
 
+if [ ! -x "$FLUX" ]; then
+  echo "Error: flux script not found"
+  echo ""
+  echo "Please ensure flux-capacitor plugin is installed correctly"
+  exit 1
+fi
+
 # Create augmented prompt
 PROMPT="You are in an isolated worktree for feature development.
 
@@ -76,7 +101,11 @@ Invoke the flux-capacitor agent to handle:
 The flux-capacitor agent will guide you through the complete feature implementation."
 
 # Launch worktree + tmux session + Claude (atomic operation)
-"$FLUX" launch . "$BRANCH" "$PROMPT" "flux-capacitor"
+echo "Launching feature development session..."
+echo "  Mode: $MODE"
+echo "  Branch: $BRANCH"
+echo ""
+"$FLUX" launch "$REPO_ROOT" "$BRANCH" "$PROMPT" "flux-capacitor"
 ```
 
 ### Step 3: Report Success
