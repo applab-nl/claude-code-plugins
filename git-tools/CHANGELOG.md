@@ -1,9 +1,44 @@
 # Changelog
 
-All notable changes to the Commit Tools plugin will be documented in this file.
+All notable changes to the Git Tools plugin will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.1.0] - 2025-01-06
+
+### Added
+
+#### Git Worktree Management
+- `/create-worktree` - Create isolated git worktrees for parallel feature development
+  - Interactive branch name and base branch selection
+  - Automatic worktree naming convention (repo-name-branch-name)
+  - Creates worktrees in sibling directories for clean isolation
+  - Handles branch creation if needed
+- `/merge-worktree` - Merge feature branch back to main/base branch
+  - Safety checks for clean working directory
+  - Automatic branch switching to target branch
+  - Conflict detection and clear resolution guidance
+  - Multiple merge strategies supported (--ff-only, --no-ff, default)
+  - Post-merge verification
+- `/remove-worktree` - Clean up git worktrees and associated branches
+  - Safety checks to prevent data loss
+  - Interactive confirmation for branch deletion
+  - Force removal option for uncommitted changes
+  - Prevents removal of main/master branches
+  - Clear status reporting after removal
+
+**Worktree Features:**
+- Parallel feature development without branch switching
+- Complete isolation between features
+- No stashing or context switching required
+- Easy cleanup when features are complete
+- Safe merge workflows with conflict handling
+
+### Changed
+- Plugin renamed from `commit-tools` to `git-tools`
+- Updated description to reflect comprehensive Git automation capabilities
+- Added keywords: `worktree`, `branching`
 
 ## [1.0.0] - 2025-10-23
 

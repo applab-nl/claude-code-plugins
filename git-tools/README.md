@@ -1,12 +1,20 @@
-# Commit Tools Plugin
+# Git Tools Plugin
 
-**Git Commit Automation** - Intelligent commit message generation and workflow automation for streamlined version control.
+**Comprehensive Git Automation** - Intelligent commit message generation, git worktree management, and streamlined workflows for modern version control.
 
 ## Overview
 
-The Commit Tools plugin provides slash commands that automate the Git commit workflow. These commands analyze your changes, generate comprehensive commit messages following best practices, and handle the entire commit (and optionally push) process with a single command.
+The Git Tools plugin provides slash commands that automate common Git workflows. From intelligent commit message generation to git worktree management for isolated parallel development, these commands help you work more efficiently with Git.
+
+**Key Features:**
+- Automated commit workflow with intelligent message generation
+- Git worktree management for isolated feature development
+- Merge and cleanup workflows with safety checks
+- Best practices enforcement and error handling
 
 ## Available Commands
+
+### Commit Automation
 
 ### `/commit`
 
@@ -74,6 +82,116 @@ Pushing to remote...
 ✓ Pushed to origin/main successfully
 ```
 
+### Git Worktree Management
+
+#### `/create-worktree`
+
+Create an isolated git worktree for parallel feature development.
+
+**What it does:**
+1. Asks for branch name and optional base branch
+2. Generates worktree directory name (e.g., `my-app-feature-oauth`)
+3. Creates the worktree in a sibling directory
+4. Creates the branch if it doesn't exist
+5. Provides navigation command to the new worktree
+
+**Usage:**
+```bash
+/create-worktree
+```
+
+**Benefits:**
+- Work on multiple features simultaneously without branch switching
+- Complete isolation between features
+- No stashing or context switching required
+- Clean separation of concerns
+
+**Example:**
+```
+Current repo: /Users/alice/projects/my-app
+Branch: feature/oauth-implementation
+
+✓ Created worktree at: /Users/alice/projects/my-app-feature-oauth-implementation
+✓ Branch: feature/oauth-implementation
+
+Navigate with: cd /Users/alice/projects/my-app-feature-oauth-implementation
+```
+
+#### `/merge-worktree`
+
+Merge a feature branch from a worktree back to the main/base branch.
+
+**What it does:**
+1. Verifies working directory is clean
+2. Asks for source branch and target branch
+3. Switches to target branch if needed
+4. Performs the merge with chosen strategy
+5. Handles conflicts with clear guidance
+6. Verifies successful merge
+
+**Usage:**
+```bash
+/merge-worktree
+```
+
+**Safety features:**
+- Checks for clean working directory
+- Detects and reports conflicts
+- Multiple merge strategies (--ff-only, --no-ff, default)
+- Never auto-resolves conflicts
+- Post-merge verification
+
+**Example:**
+```
+Source branch: feature/oauth-implementation
+Target branch: main
+Merge strategy: default
+
+✓ Switched to branch 'main'
+✓ Merged feature/oauth-implementation into main
+✓ Merge successful - no conflicts
+
+You can now remove the worktree with: /remove-worktree
+```
+
+#### `/remove-worktree`
+
+Remove a git worktree and optionally delete its associated branch.
+
+**What it does:**
+1. Lists existing worktrees
+2. Asks which worktree to remove
+3. Checks for uncommitted changes
+4. Optionally deletes the associated branch
+5. Confirms removal and cleanup
+
+**Usage:**
+```bash
+/remove-worktree
+```
+
+**Safety features:**
+- Warns about uncommitted changes
+- Interactive confirmation for branch deletion
+- Prevents removal of main/master branches
+- Cannot remove current worktree
+- Force option available if needed
+
+**Example:**
+```
+Existing worktrees:
+  - /Users/alice/projects/my-app (main)
+  - /Users/alice/projects/my-app-feature-oauth (feature/oauth)
+
+Remove worktree: /Users/alice/projects/my-app-feature-oauth
+Delete branch 'feature/oauth'? yes
+
+✓ Worktree removed
+✓ Branch 'feature/oauth' deleted
+
+Remaining worktrees: 1
+```
+
 ## Commit Message Quality
 
 Both commands generate high-quality commit messages that:
@@ -116,13 +234,13 @@ Both commands generate high-quality commit messages that:
 
 ```bash
 /plugin marketplace add applab-nl/claude-code-plugins
-/plugin install commit-tools@applab-plugins
+/plugin install git-tools@applab-plugins
 ```
 
 ### Manual Installation
 
 1. Clone this repository
-2. Copy the `commit-tools` directory to your plugins location
+2. Copy the `git-tools` directory to your plugins location
 3. Enable the plugin in Claude Code
 
 ## Requirements
@@ -256,7 +374,7 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-**Current Version**: 1.0.0
+**Current Version**: 1.1.0
 
 ---
 
