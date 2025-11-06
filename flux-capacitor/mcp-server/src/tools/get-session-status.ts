@@ -3,13 +3,13 @@
  * Check the status of a Claude Code session running in tmux
  */
 
+import { execa } from 'execa';
 import type {
   GetSessionStatusParams,
   GetSessionStatusResult,
 } from '../types/index.js';
 import { GetSessionStatusSchema } from '../utils/validators.js';
 import { SessionService } from '../services/session.service.js';
-import { getTmuxService } from '../services/tmux.service.js';
 import { getLogger } from '../utils/logger.js';
 
 const logger = getLogger();
@@ -35,24 +35,33 @@ export async function getSessionStatus(
       sessionId,
       status: 'unknown',
       worktreePath: '',
+      branch: '',
       startedAt: '',
-      tmuxPaneId: '',
-      paneAlive: false,
+      tmuxSession: '',
+      sessionAlive: false,
     };
   }
 
-  // Check if pane still exists (SessionService already does this check)
-  const tmuxService = getTmuxService();
-  const paneAlive = await tmuxService.paneExists(session.tmuxPaneId);
+  // Check if tmux session still exists (native tmux)
+  let sessionAlive = false;
+  try {
+    await execa('tmux', ['has-session', '-t', session.tmuxSession]);
+    sessionAlive = true;
+  } catch {
+    sessionAlive = false;
+  }
 
-  // Capture recent output from the pane if it's alive
+  // Capture recent output from the session if it's alive
   let recentOutput: string | undefined;
-  if (paneAlive) {
+  if (sessionAlive) {
     try {
-      const output = await tmuxService.capture(session.tmuxPaneId);
-      // Get last 50 lines
-      const lines = output.split('\n');
-      recentOutput = lines.slice(-50).join('\n');
+      const result = await execa('tmux', [
+        'capture-pane',
+        '-t', session.tmuxSession,
+        '-p',        // print to stdout
+        '-S', '-100' // last 100 lines
+      ]);
+      recentOutput = result.stdout;
     } catch (error) {
       logger.warn('Failed to capture recent output', { sessionId, error });
       recentOutput = undefined;
@@ -63,10 +72,11 @@ export async function getSessionStatus(
     sessionId: session.sessionId,
     status: session.status,
     worktreePath: session.worktreePath,
+    branch: session.branch,
     startedAt: session.startedAt.toISOString(),
     completedAt: session.completedAt?.toISOString(),
-    tmuxPaneId: session.tmuxPaneId,
-    paneAlive,
+    tmuxSession: session.tmuxSession,
+    sessionAlive,
     lastActivity: session.lastActivity?.toISOString(),
     recentOutput,
   };
@@ -76,7 +86,7 @@ export async function getSessionStatus(
 export const getSessionStatusToolDefinition = {
   name: 'get_session_status',
   description:
-    'Check the status of a Claude Code session running in tmux, including whether the tmux pane is still alive, when it was last active, and recent output from the session.',
+    'Check the status of a Claude Code session running in tmux, including whether the tmux session is still alive, when it was last active, and recent output from the session (last 100 lines).',
   inputSchema: {
     type: 'object',
     properties: {

@@ -68,8 +68,11 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 
 // node_modules/tsup/assets/cjs_shims.js
+var getImportMetaUrl, importMetaUrl;
 var init_cjs_shims = __esm({
   "node_modules/tsup/assets/cjs_shims.js"() {
+    getImportMetaUrl = () => typeof document === "undefined" ? new URL(`file:${__filename}`).href : document.currentScript && document.currentScript.src || new URL("main.js", document.baseURI).href;
+    importMetaUrl = /* @__PURE__ */ getImportMetaUrl();
   }
 });
 
@@ -6263,14 +6266,14 @@ var require_ajv = __commonJS({
       return metaOpts;
     }
     function setLogger(self) {
-      var logger13 = self._opts.logger;
-      if (logger13 === false) {
+      var logger12 = self._opts.logger;
+      if (logger12 === false) {
         self.logger = { log: noop3, warn: noop3, error: noop3 };
       } else {
-        if (logger13 === void 0) logger13 = console;
-        if (!(typeof logger13 == "object" && logger13.log && logger13.warn && logger13.error))
+        if (logger12 === void 0) logger12 = console;
+        if (!(typeof logger12 == "object" && logger12.log && logger12.warn && logger12.error))
           throw new Error("logger must implement log, warn and error methods");
-        self.logger = logger13;
+        self.logger = logger12;
       }
     }
     function noop3() {
@@ -15210,10 +15213,10 @@ var init_tasks_pending_queue = __esm2({
       }
       createProgress(task) {
         const name = _TasksPendingQueue.getName(task.commands[0]);
-        const logger13 = createLogger(this.logLabel, name);
+        const logger12 = createLogger(this.logLabel, name);
         return {
           task,
-          logger: logger13,
+          logger: logger12,
           name
         };
       }
@@ -15224,14 +15227,14 @@ var init_tasks_pending_queue = __esm2({
         return progress;
       }
       fatal(err) {
-        for (const [task, { logger: logger13 }] of Array.from(this._queue.entries())) {
+        for (const [task, { logger: logger12 }] of Array.from(this._queue.entries())) {
           if (task === err.task) {
-            logger13.info(`Failed %o`, err);
-            logger13(
+            logger12.info(`Failed %o`, err);
+            logger12(
               `Fatal exception, any as-yet un-started tasks run through this executor will not be attempted`
             );
           } else {
-            logger13.info(
+            logger12.info(
               `A fatal exception occurred in a previous task, the queue has been purged: %o`,
               err.message
             );
@@ -15271,15 +15274,15 @@ function pluginContext(task, commands) {
     commands
   };
 }
-function onErrorReceived(target, logger13) {
+function onErrorReceived(target, logger12) {
   return (err) => {
-    logger13(`[ERROR] child process exception %o`, err);
+    logger12(`[ERROR] child process exception %o`, err);
     target.push(Buffer.from(String(err.stack), "ascii"));
   };
 }
-function onDataReceived(target, name, logger13, output) {
+function onDataReceived(target, name, logger12, output) {
   return (buffer) => {
-    logger13(`%s received %L bytes`, name, buffer);
+    logger12(`%s received %L bytes`, name, buffer);
     output(`%B`, buffer);
     target.push(buffer);
   };
@@ -15322,8 +15325,8 @@ var init_git_executor_chain = __esm2({
         const onScheduleComplete = await this._scheduler.next();
         const onQueueComplete = () => this._queue.complete(task);
         try {
-          const { logger: logger13 } = this._queue.attempt(task);
-          return await (isEmptyTask(task) ? this.attemptEmptyTask(task, logger13) : this.attemptRemoteTask(task, logger13));
+          const { logger: logger12 } = this._queue.attempt(task);
+          return await (isEmptyTask(task) ? this.attemptEmptyTask(task, logger12) : this.attemptRemoteTask(task, logger12));
         } catch (e) {
           throw this.onFatalException(task, e);
         } finally {
@@ -15337,7 +15340,7 @@ var init_git_executor_chain = __esm2({
         this._queue.fatal(gitError);
         return gitError;
       }
-      async attemptRemoteTask(task, logger13) {
+      async attemptRemoteTask(task, logger12) {
         const binary = this._plugins.exec("spawn.binary", "", pluginContext(task, task.commands));
         const args = this._plugins.exec(
           "spawn.args",
@@ -15349,23 +15352,23 @@ var init_git_executor_chain = __esm2({
           binary,
           args,
           this.outputHandler,
-          logger13.step("SPAWN")
+          logger12.step("SPAWN")
         );
-        const outputStreams = await this.handleTaskData(task, args, raw, logger13.step("HANDLE"));
-        logger13(`passing response to task's parser as a %s`, task.format);
+        const outputStreams = await this.handleTaskData(task, args, raw, logger12.step("HANDLE"));
+        logger12(`passing response to task's parser as a %s`, task.format);
         if (isBufferTask(task)) {
           return callTaskParser(task.parser, outputStreams);
         }
         return callTaskParser(task.parser, outputStreams.asStrings());
       }
-      async attemptEmptyTask(task, logger13) {
-        logger13(`empty task bypassing child process to call to task's parser`);
+      async attemptEmptyTask(task, logger12) {
+        logger12(`empty task bypassing child process to call to task's parser`);
         return task.parser(this);
       }
-      handleTaskData(task, args, result, logger13) {
+      handleTaskData(task, args, result, logger12) {
         const { exitCode, rejection, stdOut, stdErr } = result;
         return new Promise((done, fail) => {
-          logger13(`Preparing to handle process response exitCode=%d stdOut=`, exitCode);
+          logger12(`Preparing to handle process response exitCode=%d stdOut=`, exitCode);
           const { error } = this._plugins.exec(
             "task.error",
             { error: rejection },
@@ -15375,13 +15378,13 @@ var init_git_executor_chain = __esm2({
             }
           );
           if (error && task.onError) {
-            logger13.info(`exitCode=%s handling with custom error handler`);
+            logger12.info(`exitCode=%s handling with custom error handler`);
             return task.onError(
               result,
               error,
               (newStdOut) => {
-                logger13.info(`custom error handler treated as success`);
-                logger13(`custom error returned a %s`, objectToString(newStdOut));
+                logger12.info(`custom error handler treated as success`);
+                logger12(`custom error returned a %s`, objectToString(newStdOut));
                 done(
                   new GitOutputStreams(
                     Array.isArray(newStdOut) ? Buffer.concat(newStdOut) : newStdOut,
@@ -15393,7 +15396,7 @@ var init_git_executor_chain = __esm2({
             );
           }
           if (error) {
-            logger13.info(
+            logger12.info(
               `handling as error: exitCode=%s stdErr=%s rejection=%o`,
               exitCode,
               stdErr.length,
@@ -15401,12 +15404,12 @@ var init_git_executor_chain = __esm2({
             );
             return fail(error);
           }
-          logger13.info(`retrieving task output complete`);
+          logger12.info(`retrieving task output complete`);
           done(new GitOutputStreams(Buffer.concat(stdOut), Buffer.concat(stdErr)));
         });
       }
-      async gitResponse(task, command, args, outputHandler, logger13) {
-        const outputLogger = logger13.sibling("output");
+      async gitResponse(task, command, args, outputHandler, logger12) {
+        const outputLogger = logger12.sibling("output");
         const spawnOptions = this._plugins.exec(
           "spawn.options",
           {
@@ -15419,8 +15422,8 @@ var init_git_executor_chain = __esm2({
         return new Promise((done) => {
           const stdOut = [];
           const stdErr = [];
-          logger13.info(`%s %o`, command, args);
-          logger13("%O", spawnOptions);
+          logger12.info(`%s %o`, command, args);
+          logger12("%O", spawnOptions);
           let rejection = this._beforeSpawn(task, args);
           if (rejection) {
             return done({
@@ -15439,15 +15442,15 @@ var init_git_executor_chain = __esm2({
           const spawned = child_process.spawn(command, args, spawnOptions);
           spawned.stdout.on(
             "data",
-            onDataReceived(stdOut, "stdOut", logger13, outputLogger.step("stdOut"))
+            onDataReceived(stdOut, "stdOut", logger12, outputLogger.step("stdOut"))
           );
           spawned.stderr.on(
             "data",
-            onDataReceived(stdErr, "stdErr", logger13, outputLogger.step("stdErr"))
+            onDataReceived(stdErr, "stdErr", logger12, outputLogger.step("stdErr"))
           );
-          spawned.on("error", onErrorReceived(stdErr, logger13));
+          spawned.on("error", onErrorReceived(stdErr, logger12));
           if (outputHandler) {
-            logger13(`Passing child process stdOut/stdErr to custom outputHandler`);
+            logger12(`Passing child process stdOut/stdErr to custom outputHandler`);
             outputHandler(command, spawned.stdout, spawned.stderr, [...args]);
           }
           this._plugins.exec("spawn.after", void 0, {
@@ -25368,14 +25371,6 @@ var SessionError = class extends Error {
     this.name = "SessionError";
   }
 };
-var TmuxError = class extends Error {
-  constructor(message, code, details) {
-    super(message);
-    this.code = code;
-    this.details = details;
-    this.name = "TmuxError";
-  }
-};
 var TerminalError = class extends Error {
   constructor(message, code, details) {
     super(message);
@@ -26269,281 +26264,21 @@ var listWorktreesToolDefinition = {
 
 // src/tools/cleanup-worktree.ts
 init_cjs_shims();
-
-// src/services/tmux.service.ts
-init_cjs_shims();
 var logger5 = getLogger();
-var TmuxService = class {
-  /**
-   * Check if tmux-cli is available
-   */
-  async isAvailable() {
-    try {
-      await execa("tmux-cli", ["--help"]);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-  /**
-   * Launch a new tmux pane with a command
-   * Returns the pane ID (e.g., "remote-cli-session:0.2")
-   */
-  async launch(command) {
-    logger5.debug(`Launching tmux pane with command: ${command}`);
-    try {
-      const result = await execa("tmux-cli", ["launch", command]);
-      const paneId = result.stdout.trim();
-      if (!paneId) {
-        throw new TmuxError(
-          "Failed to get pane ID from tmux-cli launch",
-          "LAUNCH_FAILED"
-        );
-      }
-      logger5.info(`Tmux pane launched: ${paneId}`);
-      return paneId;
-    } catch (error) {
-      logger5.error("Failed to launch tmux pane", error);
-      throw new TmuxError(
-        `Failed to launch tmux pane: ${error.message}`,
-        "LAUNCH_FAILED",
-        error
-      );
-    }
-  }
-  /**
-   * Send text to a tmux pane
-   */
-  async send(paneId, text, options) {
-    logger5.debug(`Sending to pane ${paneId}: ${text.substring(0, 50)}...`);
-    const args = ["send", text, `--pane=${paneId}`];
-    if (options?.enter === false) {
-      args.push("--enter=False");
-    }
-    if (options?.delayEnter === false) {
-      args.push("--delay-enter=False");
-    } else if (typeof options?.delayEnter === "number") {
-      args.push(`--delay-enter=${options.delayEnter}`);
-    }
-    try {
-      await execa("tmux-cli", args);
-      logger5.debug(`Sent to pane ${paneId}`);
-    } catch (error) {
-      logger5.error(`Failed to send to pane ${paneId}`, error);
-      throw new TmuxError(
-        `Failed to send to pane ${paneId}: ${error.message}`,
-        "SEND_FAILED",
-        error
-      );
-    }
-  }
-  /**
-   * Capture output from a tmux pane
-   */
-  async capture(paneId) {
-    logger5.debug(`Capturing output from pane ${paneId}`);
-    try {
-      const result = await execa("tmux-cli", ["capture", `--pane=${paneId}`]);
-      logger5.debug(`Captured ${result.stdout.length} bytes from pane ${paneId}`);
-      return result.stdout;
-    } catch (error) {
-      logger5.error(`Failed to capture from pane ${paneId}`, error);
-      throw new TmuxError(
-        `Failed to capture from pane ${paneId}: ${error.message}`,
-        "CAPTURE_FAILED",
-        error
-      );
-    }
-  }
-  /**
-   * List all tmux panes
-   */
-  async listPanes() {
-    logger5.debug("Listing all tmux panes");
-    try {
-      const result = await execa("tmux-cli", ["list_panes"]);
-      const panes = JSON.parse(result.stdout);
-      logger5.debug(`Found ${panes.length} tmux panes`);
-      return panes;
-    } catch (error) {
-      logger5.error("Failed to list tmux panes", error);
-      throw new TmuxError(
-        `Failed to list tmux panes: ${error.message}`,
-        "LIST_FAILED",
-        error
-      );
-    }
-  }
-  /**
-   * Check if a tmux pane exists
-   */
-  async paneExists(paneId) {
-    logger5.debug(`Checking if pane ${paneId} exists`);
-    try {
-      const panes = await this.listPanes();
-      const exists2 = panes.some((p) => p.id === paneId);
-      logger5.debug(`Pane ${paneId} exists: ${exists2}`);
-      return exists2;
-    } catch (error) {
-      logger5.error(`Failed to check if pane ${paneId} exists`, error);
-      return false;
-    }
-  }
-  /**
-   * Wait for a pane to become idle (no output changes)
-   */
-  async waitIdle(paneId, options) {
-    logger5.debug(`Waiting for pane ${paneId} to become idle`, options);
-    const args = ["wait_idle", `--pane=${paneId}`];
-    if (options?.idleTime) {
-      args.push(`--idle-time=${options.idleTime}`);
-    }
-    if (options?.timeout) {
-      args.push(`--timeout=${options.timeout}`);
-    }
-    try {
-      await execa("tmux-cli", args);
-      logger5.debug(`Pane ${paneId} is now idle`);
-    } catch (error) {
-      logger5.error(`Failed to wait for pane ${paneId} to become idle`, error);
-      throw new TmuxError(
-        `Failed to wait for pane ${paneId} to become idle: ${error.message}`,
-        "WAIT_FAILED",
-        error
-      );
-    }
-  }
-  /**
-   * Kill a tmux pane
-   */
-  async kill(paneId) {
-    logger5.debug(`Killing pane ${paneId}`);
-    try {
-      await execa("tmux-cli", ["kill", `--pane=${paneId}`]);
-      logger5.info(`Killed pane ${paneId}`);
-    } catch (error) {
-      logger5.error(`Failed to kill pane ${paneId}`, error);
-      throw new TmuxError(
-        `Failed to kill pane ${paneId}: ${error.message}`,
-        "KILL_FAILED",
-        error
-      );
-    }
-  }
-  /**
-   * Send interrupt (Ctrl+C) to a pane
-   */
-  async interrupt(paneId) {
-    logger5.debug(`Sending interrupt to pane ${paneId}`);
-    try {
-      await execa("tmux-cli", ["interrupt", `--pane=${paneId}`]);
-      logger5.debug(`Sent interrupt to pane ${paneId}`);
-    } catch (error) {
-      logger5.error(`Failed to send interrupt to pane ${paneId}`, error);
-      throw new TmuxError(
-        `Failed to send interrupt to pane ${paneId}: ${error.message}`,
-        "INTERRUPT_FAILED",
-        error
-      );
-    }
-  }
-  /**
-   * Send escape key to a pane
-   */
-  async escape(paneId) {
-    logger5.debug(`Sending escape to pane ${paneId}`);
-    try {
-      await execa("tmux-cli", ["escape", `--pane=${paneId}`]);
-      logger5.debug(`Sent escape to pane ${paneId}`);
-    } catch (error) {
-      logger5.error(`Failed to send escape to pane ${paneId}`, error);
-      throw new TmuxError(
-        `Failed to send escape to pane ${paneId}: ${error.message}`,
-        "ESCAPE_FAILED",
-        error
-      );
-    }
-  }
-  /**
-   * Get status information about tmux
-   */
-  async getStatus() {
-    logger5.debug("Getting tmux status");
-    try {
-      const result = await execa("tmux-cli", ["status"]);
-      return result.stdout;
-    } catch (error) {
-      logger5.error("Failed to get tmux status", error);
-      throw new TmuxError(
-        `Failed to get tmux status: ${error.message}`,
-        "STATUS_FAILED",
-        error
-      );
-    }
-  }
-  /**
-   * Attach to the remote tmux session (for viewing)
-   * Only works in remote mode (outside tmux)
-   */
-  async attach() {
-    logger5.debug("Attaching to tmux session");
-    try {
-      await execa("tmux-cli", ["attach"], {
-        stdio: "inherit"
-        // Allow interactive attachment
-      });
-    } catch (error) {
-      logger5.error("Failed to attach to tmux session", error);
-      throw new TmuxError(
-        `Failed to attach to tmux session: ${error.message}`,
-        "ATTACH_FAILED",
-        error
-      );
-    }
-  }
-  /**
-   * Cleanup the entire tmux session
-   * WARNING: This kills all panes in the managed session
-   */
-  async cleanup() {
-    logger5.debug("Cleaning up tmux session");
-    try {
-      await execa("tmux-cli", ["cleanup"]);
-      logger5.info("Tmux session cleaned up");
-    } catch (error) {
-      logger5.error("Failed to cleanup tmux session", error);
-      throw new TmuxError(
-        `Failed to cleanup tmux session: ${error.message}`,
-        "CLEANUP_FAILED",
-        error
-      );
-    }
-  }
-};
-var tmuxServiceInstance = null;
-function getTmuxService() {
-  if (!tmuxServiceInstance) {
-    tmuxServiceInstance = new TmuxService();
-  }
-  return tmuxServiceInstance;
-}
-
-// src/tools/cleanup-worktree.ts
-var logger6 = getLogger();
 async function findParentRepository(worktreePath) {
   try {
-    logger6.debug(`Finding parent repository for worktree: ${worktreePath}`);
+    logger5.debug(`Finding parent repository for worktree: ${worktreePath}`);
     const { stdout } = await execa("git", ["rev-parse", "--git-common-dir"], {
       cwd: worktreePath
     });
     const commonDir = stdout.trim();
-    logger6.debug(`Git common dir: ${commonDir}`);
+    logger5.debug(`Git common dir: ${commonDir}`);
     if (commonDir.endsWith(".git")) {
       const parentRepo = commonDir.substring(0, commonDir.length - 4);
-      logger6.debug(`Parent repository: ${parentRepo}`);
+      logger5.debug(`Parent repository: ${parentRepo}`);
       return parentRepo;
     }
-    logger6.debug(`Using common dir as parent: ${commonDir}`);
+    logger5.debug(`Using common dir as parent: ${commonDir}`);
     return commonDir;
   } catch (error) {
     throw new Error(
@@ -26556,64 +26291,63 @@ async function cleanupWorktree(params) {
     params
   );
   const { worktreePath, force = false, removeBranch = false } = validated;
-  logger6.info("Cleaning up worktree", { worktreePath, force, removeBranch });
+  logger5.info("Cleaning up worktree", { worktreePath, force, removeBranch });
   const stateService = getStateService();
   await stateService.init();
-  logger6.debug("Finding sessions associated with worktree");
+  logger5.debug("Finding sessions associated with worktree");
   const sessions = await stateService.findSessionsByWorktree(worktreePath);
-  logger6.debug(`Found ${sessions.length} sessions for worktree`);
+  logger5.debug(`Found ${sessions.length} sessions for worktree`);
   let sessionsTerminated = 0;
-  const tmuxService = getTmuxService();
   for (const session of sessions) {
     if (session.status === "active") {
-      logger6.info(`Terminating active session ${session.sessionId}`);
+      logger5.info(`Terminating active session ${session.sessionId}`);
       try {
-        await tmuxService.kill(session.tmuxPaneId);
+        await execa("tmux", ["kill-session", "-t", session.tmuxSession]);
         await stateService.updateSessionStatus(session.sessionId, "terminated");
         sessionsTerminated++;
-        logger6.debug(`Session ${session.sessionId} terminated (pane ${session.tmuxPaneId} killed)`);
+        logger5.debug(`Session ${session.sessionId} terminated (tmux session ${session.tmuxSession} killed)`);
       } catch (error) {
-        logger6.error(`Failed to kill tmux pane for session ${session.sessionId}`, error);
+        logger5.error(`Failed to kill tmux session for session ${session.sessionId}`, error);
         await stateService.updateSessionStatus(session.sessionId, "failed");
       }
     } else {
-      logger6.debug(`Session ${session.sessionId} is not active (status: ${session.status})`);
+      logger5.debug(`Session ${session.sessionId} is not active (status: ${session.status})`);
     }
   }
   const parentRepo = await findParentRepository(worktreePath);
-  logger6.debug("Found parent repository", { parentRepo });
+  logger5.debug("Found parent repository", { parentRepo });
   const gitService = createGitService(parentRepo);
   await gitService.validateRepository();
-  logger6.debug("Getting worktree info before removal");
+  logger5.debug("Getting worktree info before removal");
   const worktreeInfo = await gitService.getWorktreeInfo(worktreePath);
   if (!worktreeInfo) {
     throw new Error(`Worktree not found: ${worktreePath}`);
   }
   const branch = worktreeInfo.branch;
-  logger6.debug(`Worktree branch: ${branch}`);
-  logger6.debug("Removing worktree");
+  logger5.debug(`Worktree branch: ${branch}`);
+  logger5.debug("Removing worktree");
   await gitService.removeWorktree(worktreePath, force);
-  logger6.debug("Worktree removed");
+  logger5.debug("Worktree removed");
   let branchRemoved = false;
   if (removeBranch && branch) {
     try {
-      logger6.debug(`Attempting to remove branch: ${branch}`);
+      logger5.debug(`Attempting to remove branch: ${branch}`);
       branchRemoved = await gitService.deleteBranch(branch, force);
       if (branchRemoved) {
-        logger6.info(`Branch ${branch} removed`);
+        logger5.info(`Branch ${branch} removed`);
       } else {
-        logger6.warn(`Could not remove branch ${branch} (may have unmerged changes)`);
+        logger5.warn(`Could not remove branch ${branch} (may have unmerged changes)`);
       }
     } catch (error) {
-      logger6.error(`Failed to remove branch ${branch}`, error);
+      logger5.error(`Failed to remove branch ${branch}`, error);
     }
   } else {
-    logger6.debug(`Not removing branch (removeBranch: ${removeBranch}, branch: ${branch})`);
+    logger5.debug(`Not removing branch (removeBranch: ${removeBranch}, branch: ${branch})`);
   }
-  logger6.debug("Removing worktree from state");
+  logger5.debug("Removing worktree from state");
   await stateService.deleteWorktree(worktreePath);
-  logger6.debug("Worktree removed from state");
-  logger6.info("Worktree cleanup complete", {
+  logger5.debug("Worktree removed from state");
+  logger5.info("Worktree cleanup complete", {
     path: worktreePath,
     branchRemoved,
     sessionsTerminated
@@ -26655,7 +26389,9 @@ init_cjs_shims();
 
 // src/services/session.service.ts
 init_cjs_shims();
-var logger7 = getLogger();
+var logger6 = getLogger();
+var __filename2 = url.fileURLToPath(importMetaUrl);
+var __dirname$1 = path3.dirname(__filename2);
 var SessionService = class {
   /**
    * Generate a unique session ID
@@ -26665,7 +26401,7 @@ var SessionService = class {
     const hash = crypto__default.default.createHash("sha256").update(worktreePath + timestamp).digest("hex").substring(0, 8);
     const dirName = path3__default.default.basename(worktreePath);
     const sessionId = `sess_${dirName}_${timestamp}_${hash}`;
-    logger7.debug(`Generated session ID: ${sessionId}`);
+    logger6.debug(`Generated session ID: ${sessionId}`);
     return sessionId;
   }
   /**
@@ -26674,7 +26410,7 @@ var SessionService = class {
    */
   static async createPromptFile(worktreePath, prompt, agentName, contextFiles) {
     const promptDir = path3__default.default.join(worktreePath, ".claude");
-    logger7.debug(`Creating prompt directory: ${promptDir}`);
+    logger6.debug(`Creating prompt directory: ${promptDir}`);
     await fs5__default.default.mkdir(promptDir, { recursive: true });
     const promptFile = path3__default.default.join(promptDir, "session-prompt.md");
     let content = `# Claude Code Session
@@ -26684,7 +26420,7 @@ var SessionService = class {
       content += `Use the ${agentName} subagent for this task.
 
 `;
-      logger7.debug(`Including agent invocation in prompt: ${agentName}`);
+      logger6.debug(`Including agent invocation in prompt: ${agentName}`);
     }
     content += `${prompt}
 
@@ -26700,83 +26436,100 @@ var SessionService = class {
       content += `
 `;
     }
-    logger7.debug(`Writing prompt file: ${promptFile} (${content.length} bytes)`);
+    logger6.debug(`Writing prompt file: ${promptFile} (${content.length} bytes)`);
     await fs5__default.default.writeFile(promptFile, content, "utf-8");
-    logger7.debug("Created prompt file", { promptFile });
+    logger6.debug("Created prompt file", { promptFile });
     return promptFile;
   }
   /**
-   * Launch a new Claude Code session in a tmux pane
+   * Launch a new Claude Code session using atomic script launcher
    */
   static async launchSession(params) {
     const { worktreePath, prompt, contextFiles, agentName } = params;
-    logger7.info("Launching Claude Code session via tmux", {
+    logger6.info("Launching Claude Code session via atomic script", {
       worktreePath,
       agentName,
       contextFilesCount: contextFiles?.length || 0
     });
     const sessionId = this.generateSessionId(worktreePath);
-    logger7.debug(`Session ID: ${sessionId}`);
-    const tmuxService = getTmuxService();
-    const isAvailable = await tmuxService.isAvailable();
-    if (!isAvailable) {
-      logger7.error("tmux-cli is not available");
-      return {
-        sessionId,
-        tmuxPaneId: "",
-        status: "failed",
-        error: "tmux-cli is not available. Please install: uv tool install claude-code-tools"
-      };
-    }
+    logger6.debug(`Session ID: ${sessionId}`);
     try {
-      logger7.debug("Launching zsh in tmux pane");
-      const paneId = await tmuxService.launch("zsh");
-      logger7.info(`Tmux pane created: ${paneId}`);
-      logger7.debug(`Changing directory to: ${worktreePath}`);
-      await tmuxService.send(paneId, `cd "${worktreePath}"`, { delayEnter: 0.5 });
-      await tmuxService.waitIdle(paneId, { idleTime: 2, timeout: 10 });
-      logger7.debug("Creating prompt file");
+      logger6.debug("Creating prompt file");
       const promptFile = await this.createPromptFile(
         worktreePath,
         prompt,
         agentName,
         contextFiles
       );
-      logger7.debug("Starting Claude Code");
-      await tmuxService.send(paneId, "claude", { delayEnter: 0.5 });
-      logger7.debug("Waiting for Claude Code to start");
-      await tmuxService.waitIdle(paneId, { idleTime: 3, timeout: 30 });
-      logger7.debug(`Sending prompt from file: ${promptFile}`);
-      const promptContent = await fs5__default.default.readFile(promptFile, "utf-8");
-      await tmuxService.send(paneId, promptContent, { delayEnter: 1 });
-      logger7.info("Prompt sent to Claude Code");
+      let repoPath;
+      let branch;
+      try {
+        const { stdout } = await execa("git", ["rev-parse", "--show-toplevel"], {
+          cwd: worktreePath
+        });
+        repoPath = stdout.trim();
+        const gitService = createGitService(repoPath);
+        branch = await gitService.getCurrentBranch(worktreePath);
+      } catch {
+        const parentDir = path3__default.default.dirname(worktreePath);
+        try {
+          const { stdout } = await execa("git", ["rev-parse", "--show-toplevel"], {
+            cwd: parentDir
+          });
+          repoPath = stdout.trim();
+        } catch {
+          throw new Error(`Could not find git repository for worktree: ${worktreePath}`);
+        }
+        branch = `feature/${sessionId}`;
+      }
+      const worktreeName = path3__default.default.basename(worktreePath);
+      const scriptPath = path3__default.default.join(__dirname$1, "../../scripts/launch-claude-session.sh");
+      const scriptArgs = [
+        "--repo-path",
+        repoPath,
+        "--branch",
+        branch,
+        "--worktree-name",
+        worktreeName,
+        "--prompt-file",
+        promptFile,
+        "--session-id",
+        sessionId
+      ];
+      logger6.debug("Executing launch script", { scriptPath, args: scriptArgs });
+      const result = await execa(scriptPath, scriptArgs, {
+        timeout: 3e4
+        // 30s max for git operations
+      });
+      const tmuxSession = result.stdout.trim();
+      logger6.info("Session launched", { sessionId, tmuxSession });
       const session = {
         sessionId,
         worktreePath,
-        tmuxPaneId: paneId,
+        tmuxSession,
+        branch,
         status: "active",
         startedAt: /* @__PURE__ */ new Date(),
         agentName,
         prompt
       };
-      logger7.debug("Saving session to state", { sessionId });
       const stateService = getStateService();
       await stateService.init();
       await stateService.saveSession(session);
-      logger7.info("Session launched successfully", {
+      logger6.info("Session launched successfully", {
         sessionId,
-        tmuxPaneId: paneId
+        tmuxSession
       });
       return {
         sessionId,
-        tmuxPaneId: paneId,
+        tmuxSession,
         status: "launched"
       };
     } catch (error) {
-      logger7.error("Failed to launch session", error);
+      logger6.error("Failed to launch session", error);
       return {
         sessionId,
-        tmuxPaneId: "",
+        tmuxSession: "",
         status: "failed",
         error: error.message
       };
@@ -26786,33 +26539,35 @@ var SessionService = class {
    * Get session status by ID
    */
   static async getSessionStatus(sessionId) {
-    logger7.debug(`Getting session status: ${sessionId}`);
+    logger6.debug(`Getting session status: ${sessionId}`);
     const stateService = getStateService();
     await stateService.init();
     const session = await stateService.getSession(sessionId);
     if (!session) {
-      logger7.debug(`Session not found: ${sessionId}`);
+      logger6.debug(`Session not found: ${sessionId}`);
       return null;
     }
-    logger7.debug(`Session found:`, {
+    logger6.debug(`Session found:`, {
       sessionId: session.sessionId,
       status: session.status,
-      tmuxPaneId: session.tmuxPaneId
+      tmuxSession: session.tmuxSession
     });
-    logger7.debug(`Checking if pane ${session.tmuxPaneId} exists`);
-    const tmuxService = getTmuxService();
-    const paneExists = await tmuxService.paneExists(session.tmuxPaneId);
-    logger7.debug(`Pane exists: ${paneExists}`);
-    if (!paneExists && session.status === "active") {
-      logger7.debug(`Pane no longer exists, updating session status to terminated`);
-      await stateService.updateSessionStatus(sessionId, "terminated");
-      session.status = "terminated";
-      session.completedAt = /* @__PURE__ */ new Date();
+    logger6.debug(`Checking if tmux session ${session.tmuxSession} exists`);
+    try {
+      await execa("tmux", ["has-session", "-t", session.tmuxSession]);
+      logger6.debug(`Tmux session exists`);
+    } catch {
+      logger6.debug(`Tmux session no longer exists, updating session status to terminated`);
+      if (session.status === "active") {
+        await stateService.updateSessionStatus(sessionId, "terminated");
+        session.status = "terminated";
+        session.completedAt = /* @__PURE__ */ new Date();
+      }
     }
     return session;
   }
   /**
-   * Get recent output from a session
+   * Get recent output from a session (last 100 lines)
    */
   static async getSessionOutput(sessionId) {
     const session = await this.getSessionStatus(sessionId);
@@ -26820,11 +26575,19 @@ var SessionService = class {
       return null;
     }
     try {
-      const tmuxService = getTmuxService();
-      const output = await tmuxService.capture(session.tmuxPaneId);
-      return output;
+      const result = await execa("tmux", [
+        "capture-pane",
+        "-t",
+        session.tmuxSession,
+        "-p",
+        // print to stdout
+        "-S",
+        "-100"
+        // last 100 lines
+      ]);
+      return result.stdout;
     } catch (error) {
-      logger7.error(`Failed to capture output for session ${sessionId}`, error);
+      logger6.error(`Failed to capture output for session ${sessionId}`, error);
       return null;
     }
   }
@@ -26843,13 +26606,13 @@ var SessionService = class {
     const stateService = getStateService();
     await stateService.init();
     await stateService.updateSessionStatus(sessionId, status);
-    logger7.info("Session marked as completed", { sessionId, status });
+    logger6.info("Session marked as completed", { sessionId, status });
   }
   /**
    * Terminate a running session
    */
   static async terminateSession(sessionId) {
-    logger7.debug(`Terminating session: ${sessionId}`);
+    logger6.debug(`Terminating session: ${sessionId}`);
     const session = await this.getSessionStatus(sessionId);
     if (!session) {
       throw new SessionError(
@@ -26858,19 +26621,18 @@ var SessionService = class {
       );
     }
     if (session.status !== "active") {
-      logger7.warn("Session is not active", { sessionId, status: session.status });
+      logger6.warn("Session is not active", { sessionId, status: session.status });
       return false;
     }
     try {
-      const tmuxService = getTmuxService();
-      await tmuxService.kill(session.tmuxPaneId);
+      await execa("tmux", ["kill-session", "-t", session.tmuxSession]);
       const stateService = getStateService();
       await stateService.init();
       await stateService.updateSessionStatus(sessionId, "terminated");
-      logger7.info("Session terminated", { sessionId });
+      logger6.info("Session terminated", { sessionId });
       return true;
     } catch (error) {
-      logger7.error("Failed to terminate session", error);
+      logger6.error("Failed to terminate session", error);
       return false;
     }
   }
@@ -26901,11 +26663,11 @@ var SessionService = class {
 };
 
 // src/tools/launch-session.ts
-var logger8 = getLogger();
+var logger7 = getLogger();
 async function launchSession(params) {
   const validated = LaunchSessionSchema.parse(params);
   const { worktreePath, prompt, contextFiles, agentName } = validated;
-  logger8.info("Launch session requested", { worktreePath, agentName });
+  logger7.info("Launch session requested", { worktreePath, agentName });
   const worktreeExists = await validateDirectory(worktreePath);
   if (!worktreeExists) {
     throw new Error(`Worktree not found: ${worktreePath}`);
@@ -26917,9 +26679,9 @@ async function launchSession(params) {
     agentName
   });
   if (result.status === "failed") {
-    logger8.error("Session launch failed", { error: result.error });
+    logger7.error("Session launch failed", { error: result.error });
   } else {
-    logger8.info("Session launched successfully", {
+    logger7.info("Session launched successfully", {
       sessionId: result.sessionId,
       tmuxPaneId: result.tmuxPaneId
     });
@@ -26956,34 +26718,48 @@ var launchSessionToolDefinition = {
 
 // src/tools/get-session-status.ts
 init_cjs_shims();
-var logger9 = getLogger();
+var logger8 = getLogger();
 async function getSessionStatus(params) {
   const validated = GetSessionStatusSchema.parse(
     params
   );
   const { sessionId } = validated;
-  logger9.debug("Get session status", { sessionId });
+  logger8.debug("Get session status", { sessionId });
   const session = await SessionService.getSessionStatus(sessionId);
   if (!session) {
     return {
       sessionId,
       status: "unknown",
       worktreePath: "",
+      branch: "",
       startedAt: "",
-      tmuxPaneId: "",
-      paneAlive: false
+      tmuxSession: "",
+      sessionAlive: false
     };
   }
-  const tmuxService = getTmuxService();
-  const paneAlive = await tmuxService.paneExists(session.tmuxPaneId);
+  let sessionAlive = false;
+  try {
+    await execa("tmux", ["has-session", "-t", session.tmuxSession]);
+    sessionAlive = true;
+  } catch {
+    sessionAlive = false;
+  }
   let recentOutput;
-  if (paneAlive) {
+  if (sessionAlive) {
     try {
-      const output = await tmuxService.capture(session.tmuxPaneId);
-      const lines = output.split("\n");
-      recentOutput = lines.slice(-50).join("\n");
+      const result = await execa("tmux", [
+        "capture-pane",
+        "-t",
+        session.tmuxSession,
+        "-p",
+        // print to stdout
+        "-S",
+        "-100"
+        // last 100 lines
+      ]);
+      recentOutput = result.stdout;
     } catch (error) {
-      logger9.warn("Failed to capture recent output", { sessionId, error });
+      logger8.warn("Failed to capture recent output", { sessionId, error });
       recentOutput = void 0;
     }
   }
@@ -26991,17 +26767,18 @@ async function getSessionStatus(params) {
     sessionId: session.sessionId,
     status: session.status,
     worktreePath: session.worktreePath,
+    branch: session.branch,
     startedAt: session.startedAt.toISOString(),
     completedAt: session.completedAt?.toISOString(),
-    tmuxPaneId: session.tmuxPaneId,
-    paneAlive,
+    tmuxSession: session.tmuxSession,
+    sessionAlive,
     lastActivity: session.lastActivity?.toISOString(),
     recentOutput
   };
 }
 var getSessionStatusToolDefinition = {
   name: "get_session_status",
-  description: "Check the status of a Claude Code session running in tmux, including whether the tmux pane is still alive, when it was last active, and recent output from the session.",
+  description: "Check the status of a Claude Code session running in tmux, including whether the tmux session is still alive, when it was last active, and recent output from the session (last 100 lines).",
   inputSchema: {
     type: "object",
     properties: {
@@ -27019,7 +26796,7 @@ init_cjs_shims();
 
 // src/services/terminal.service.ts
 init_cjs_shims();
-var logger10 = getLogger();
+var logger9 = getLogger();
 var DEFAULT_TERMINAL_CONFIG = {
   app: "warp",
   // Use Warp by default
@@ -27038,53 +26815,53 @@ var TerminalService = class {
    * Detect which terminal applications are available on the system
    */
   async detectAvailableTerminals() {
-    logger10.debug("Detecting available terminal applications");
+    logger9.debug("Detecting available terminal applications");
     const available = [];
-    logger10.debug("Checking for Warp");
+    logger9.debug("Checking for Warp");
     if (await this.isWarpInstalled()) {
-      logger10.debug("Warp is installed");
+      logger9.debug("Warp is installed");
       available.push("warp");
     }
-    logger10.debug("Checking for iTerm2");
+    logger9.debug("Checking for iTerm2");
     if (await this.isITerm2Installed()) {
-      logger10.debug("iTerm2 is installed");
+      logger9.debug("iTerm2 is installed");
       available.push("iterm2");
     }
     if (process.platform === "darwin") {
-      logger10.debug("Terminal.app is available (macOS)");
+      logger9.debug("Terminal.app is available (macOS)");
       available.push("terminal");
     }
-    logger10.debug("Detected terminal applications", { available });
+    logger9.debug("Detected terminal applications", { available });
     return available;
   }
   /**
    * Get the best available terminal based on config and availability
    */
   async getBestTerminal() {
-    logger10.debug("Determining best terminal to use", { configuredApp: this.config.app });
+    logger9.debug("Determining best terminal to use", { configuredApp: this.config.app });
     if (this.config.app === "custom" && this.config.customCommand) {
-      logger10.debug("Using custom terminal command");
+      logger9.debug("Using custom terminal command");
       return "custom";
     }
     if (this.config.app !== "custom") {
-      logger10.debug(`Checking if configured app ${this.config.app} is available`);
+      logger9.debug(`Checking if configured app ${this.config.app} is available`);
       const available2 = await this.detectAvailableTerminals();
       if (available2.includes(this.config.app)) {
-        logger10.debug(`Using configured terminal: ${this.config.app}`);
+        logger9.debug(`Using configured terminal: ${this.config.app}`);
         return this.config.app;
       }
-      logger10.debug(`Configured app ${this.config.app} not available, falling back to detection order`);
+      logger9.debug(`Configured app ${this.config.app} not available, falling back to detection order`);
     }
     const detectOrder = this.config.detectOrder || ["warp", "iterm2", "terminal"];
-    logger10.debug("Falling back to detection order", { detectOrder });
+    logger9.debug("Falling back to detection order", { detectOrder });
     const available = await this.detectAvailableTerminals();
     for (const app of detectOrder) {
       if (available.includes(app)) {
-        logger10.info(`Using terminal: ${app}`);
+        logger9.info(`Using terminal: ${app}`);
         return app;
       }
     }
-    logger10.error("No terminal application found");
+    logger9.error("No terminal application found");
     throw new TerminalError(
       "No terminal application found",
       "NO_TERMINAL_AVAILABLE"
@@ -27094,30 +26871,30 @@ var TerminalService = class {
    * Create a new terminal window/tab
    */
   async createTerminal(params) {
-    logger10.debug("Creating terminal with params", {
+    logger9.debug("Creating terminal with params", {
       cwd: params.cwd,
       title: params.title,
       hasCommand: !!params.command
     });
     const terminalApp = await this.getBestTerminal();
-    logger10.debug(`Selected terminal app: ${terminalApp}`);
+    logger9.debug(`Selected terminal app: ${terminalApp}`);
     try {
       let result;
       switch (terminalApp) {
         case "warp":
-          logger10.debug("Creating Warp terminal");
+          logger9.debug("Creating Warp terminal");
           result = await this.createWarpTerminal(params);
           break;
         case "iterm2":
-          logger10.debug("Creating iTerm2 terminal");
+          logger9.debug("Creating iTerm2 terminal");
           result = await this.createITerm2Terminal(params);
           break;
         case "terminal":
-          logger10.debug("Creating macOS Terminal");
+          logger9.debug("Creating macOS Terminal");
           result = await this.createMacTerminal(params);
           break;
         case "custom":
-          logger10.debug("Creating custom terminal");
+          logger9.debug("Creating custom terminal");
           result = await this.createCustomTerminal(params);
           break;
         default:
@@ -27126,13 +26903,13 @@ var TerminalService = class {
             "INVALID_CONFIGURATION"
           );
       }
-      logger10.info("Terminal created successfully", {
+      logger9.info("Terminal created successfully", {
         app: result.app,
         pid: result.pid
       });
       return result;
     } catch (error) {
-      logger10.error("Failed to create terminal", error);
+      logger9.error("Failed to create terminal", error);
       throw new TerminalError(
         `Failed to create terminal: ${error.message}`,
         "TERMINAL_NOT_FOUND",
@@ -27144,7 +26921,7 @@ var TerminalService = class {
    * Execute a command in an existing terminal (if possible)
    */
   async executeInTerminal(instance, command) {
-    logger10.info("Execute command in terminal", {
+    logger9.info("Execute command in terminal", {
       app: instance.app,
       pid: instance.pid,
       command
@@ -27156,12 +26933,12 @@ var TerminalService = class {
   async isWarpInstalled() {
     try {
       const warpPath = "/Applications/Warp.app";
-      logger10.debug(`Checking for Warp at: ${warpPath}`);
+      logger9.debug(`Checking for Warp at: ${warpPath}`);
       await fs5__default.default.access(warpPath);
-      logger10.debug("Warp is installed");
+      logger9.debug("Warp is installed");
       return true;
     } catch {
-      logger10.debug("Warp not found");
+      logger9.debug("Warp not found");
       return false;
     }
   }
@@ -27169,7 +26946,7 @@ var TerminalService = class {
     const { cwd, command } = params;
     if (command && cwd) {
       try {
-        logger10.debug("Creating temporary launch script for Warp");
+        logger9.debug("Creating temporary launch script for Warp");
         const claudeDir = path3__default.default.join(cwd, ".claude");
         await fs5__default.default.mkdir(claudeDir, { recursive: true });
         const timestamp = Date.now();
@@ -27178,7 +26955,7 @@ var TerminalService = class {
         let claudeCommand;
         if (typeof command === "object" && command.type === "prompt-file") {
           const promptPath = command.promptFile;
-          logger10.debug(`Using prompt file: ${promptPath}`);
+          logger9.debug(`Using prompt file: ${promptPath}`);
           claudeCommand = `cat "${promptPath}" | claude`;
         } else {
           claudeCommand = command;
@@ -27188,20 +26965,20 @@ cd "${cwd}"
 ${claudeCommand}
 rm "$0"
 `;
-        logger10.debug(`Writing launch script: ${scriptPath}`);
+        logger9.debug(`Writing launch script: ${scriptPath}`);
         await fs5__default.default.writeFile(scriptPath, scriptContent, { mode: 493 });
         const uri = `warp://action/new_tab?path=${encodeURIComponent(scriptPath)}&`;
-        logger10.debug(`Opening Warp with script URI: ${uri}`);
+        logger9.debug(`Opening Warp with script URI: ${uri}`);
         await execa("open", [uri]);
-        logger10.info("Warp terminal created with command execution via script");
+        logger9.info("Warp terminal created with command execution via script");
         return {
           pid: -1,
           app: "warp",
           success: true
         };
       } catch (error) {
-        logger10.error("Failed to create Warp launch script", error);
-        logger10.warn("Falling back to basic Warp tab without command execution");
+        logger9.error("Failed to create Warp launch script", error);
+        logger9.warn("Falling back to basic Warp tab without command execution");
         const uri = cwd ? `warp://action/new_tab?path=${encodeURIComponent(cwd)}` : "warp://action/new_tab";
         await execa("open", [uri]);
         return {
@@ -27212,7 +26989,7 @@ rm "$0"
       }
     } else {
       const uri = cwd ? `warp://action/new_tab?path=${encodeURIComponent(cwd)}` : "warp://action/new_tab";
-      logger10.debug(`Opening Warp with URI: ${uri}`);
+      logger9.debug(`Opening Warp with URI: ${uri}`);
       await execa("open", [uri]);
       return {
         pid: -1,
@@ -27227,12 +27004,12 @@ rm "$0"
   async isITerm2Installed() {
     try {
       const iterm2Path = "/Applications/iTerm.app";
-      logger10.debug(`Checking for iTerm2 at: ${iterm2Path}`);
+      logger9.debug(`Checking for iTerm2 at: ${iterm2Path}`);
       await fs5__default.default.access(iterm2Path);
-      logger10.debug("iTerm2 found");
+      logger9.debug("iTerm2 found");
       return true;
     } catch {
-      logger10.debug("iTerm2 not found");
+      logger9.debug("iTerm2 not found");
       return false;
     }
   }
@@ -27245,7 +27022,7 @@ rm "$0"
     if (command) {
       if (typeof command === "object" && command.type === "prompt-file") {
         const promptPath = command.promptFile;
-        logger10.debug(`Using prompt file for iTerm2: ${promptPath}`);
+        logger9.debug(`Using prompt file for iTerm2: ${promptPath}`);
         commands.push(`cat "${promptPath}" | claude`);
       } else {
         commands.push(command);
@@ -27256,7 +27033,7 @@ rm "$0"
     const escapedTitle = title ? title.replace(/"/g, '\\"') : "";
     const profile = this.config.iterm2Profile || "default profile";
     const escapedProfile = profile.replace(/"/g, '\\"');
-    logger10.debug(`Using iTerm2 profile: ${profile}`);
+    logger9.debug(`Using iTerm2 profile: ${profile}`);
     const script = `
       tell application "iTerm2"
         create window with ${profile === "default profile" ? "default profile" : `profile "${escapedProfile}"`}
@@ -27266,10 +27043,10 @@ rm "$0"
         end tell
       end tell
     `;
-    logger10.debug("Executing iTerm2 AppleScript");
-    logger10.debug("AppleScript command:", script);
+    logger9.debug("Executing iTerm2 AppleScript");
+    logger9.debug("AppleScript command:", script);
     await execa("osascript", ["-e", script]);
-    logger10.debug("iTerm2 terminal created (no PID available)");
+    logger9.debug("iTerm2 terminal created (no PID available)");
     return {
       pid: -1,
       // iTerm2 via AppleScript doesn't return PID easily
@@ -27289,7 +27066,7 @@ rm "$0"
     if (command) {
       if (typeof command === "object" && command.type === "prompt-file") {
         const promptPath = command.promptFile;
-        logger10.debug(`Using prompt file for Terminal.app: ${promptPath}`);
+        logger9.debug(`Using prompt file for Terminal.app: ${promptPath}`);
         commands.push(`cat "${promptPath}" | claude`);
       } else {
         commands.push(command);
@@ -27301,7 +27078,7 @@ rm "$0"
     let profileScript = "";
     if (profile) {
       const escapedProfile = profile.replace(/"/g, '\\"');
-      logger10.debug(`Using Terminal.app settings: ${profile}`);
+      logger9.debug(`Using Terminal.app settings: ${profile}`);
       profileScript = `set current settings of front window to settings set "${escapedProfile}"`;
     }
     const script = `
@@ -27312,10 +27089,10 @@ rm "$0"
         activate
       end tell
     `;
-    logger10.debug("Executing Terminal.app AppleScript");
-    logger10.debug("AppleScript command:", script);
+    logger9.debug("Executing Terminal.app AppleScript");
+    logger9.debug("AppleScript command:", script);
     await execa("osascript", ["-e", script]);
-    logger10.debug("Terminal.app terminal created (no PID available)");
+    logger9.debug("Terminal.app terminal created (no PID available)");
     return {
       pid: -1,
       // Terminal.app via AppleScript doesn't return PID easily
@@ -27337,10 +27114,10 @@ rm "$0"
       this.config.customCommand,
       params
     );
-    logger10.debug("Executing custom terminal command", { command });
+    logger9.debug("Executing custom terminal command", { command });
     const result = await execa("sh", ["-c", command]);
     const pid = result.pid ? parseInt(String(result.pid), 10) : -1;
-    logger10.debug(`Custom terminal created with pid: ${pid}`);
+    logger9.debug(`Custom terminal created with pid: ${pid}`);
     return {
       pid,
       app: "custom",
@@ -27391,11 +27168,11 @@ function loadTerminalConfigFromEnv() {
 }
 
 // src/tools/create-terminal.ts
-var logger11 = getLogger();
+var logger10 = getLogger();
 async function createTerminal(params) {
   const validated = CreateTerminalSchema.parse(params);
   const { shell, cwd, title, command } = validated;
-  logger11.info("Create terminal requested", { cwd, title, command });
+  logger10.info("Create terminal requested", { cwd, title, command });
   const config = loadTerminalConfigFromEnv();
   const terminalService = createTerminalService(config);
   const result = await terminalService.createTerminal({
@@ -27405,12 +27182,12 @@ async function createTerminal(params) {
     command
   });
   if (result.success) {
-    logger11.info("Terminal created successfully", {
+    logger10.info("Terminal created successfully", {
       app: result.app,
       pid: result.pid
     });
   } else {
-    logger11.error("Terminal creation failed", { error: result.error });
+    logger10.error("Terminal creation failed", { error: result.error });
   }
   return result;
 }
@@ -27444,12 +27221,12 @@ var createTerminalToolDefinition = {
 async function createServer() {
   const logLevel2 = process.env.LOG_LEVEL?.toLowerCase() || "info";
   createLogger2(logLevel2);
-  const logger13 = getLogger();
-  logger13.info("Initializing Flux Capacitor MCP Server");
+  const logger12 = getLogger();
+  logger12.info("Initializing Flux Capacitor MCP Server");
   const stateDir = process.env.STATE_DIR;
   const stateService = getStateService(stateDir);
   await stateService.init();
-  logger13.info("State service initialized", {
+  logger12.info("State service initialized", {
     stateDir: stateService["storageDir"]
     // Log the actual expanded path
   });
@@ -27465,7 +27242,7 @@ async function createServer() {
     }
   );
   server.setRequestHandler(ListToolsRequestSchema, async () => {
-    logger13.debug("Listing available tools");
+    logger12.debug("Listing available tools");
     return {
       tools: [
         createWorktreeToolDefinition,
@@ -27480,11 +27257,11 @@ async function createServer() {
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
     const startTime = Date.now();
-    logger13.info("Tool called", { name });
-    logger13.debug("Tool arguments", args);
+    logger12.info("Tool called", { name });
+    logger12.debug("Tool arguments", args);
     try {
       let result;
-      logger13.debug(`Executing tool: ${name}`);
+      logger12.debug(`Executing tool: ${name}`);
       switch (name) {
         case "create_worktree":
           result = await createWorktree(args);
@@ -27508,8 +27285,8 @@ async function createServer() {
           throw new Error(`Unknown tool: ${name}`);
       }
       const duration = Date.now() - startTime;
-      logger13.info("Tool executed successfully", { name, duration: `${duration}ms` });
-      logger13.debug("Tool result", result);
+      logger12.info("Tool executed successfully", { name, duration: `${duration}ms` });
+      logger12.debug("Tool result", result);
       return {
         content: [
           {
@@ -27520,10 +27297,10 @@ async function createServer() {
       };
     } catch (error) {
       const duration = Date.now() - startTime;
-      logger13.error("Tool execution failed", { name, duration: `${duration}ms`, error });
+      logger12.error("Tool execution failed", { name, duration: `${duration}ms`, error });
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       const errorStack = error instanceof Error ? error.stack : void 0;
-      logger13.debug("Error stack:", errorStack);
+      logger12.debug("Error stack:", errorStack);
       return {
         content: [
           {
@@ -27542,31 +27319,31 @@ async function createServer() {
       };
     }
   });
-  logger13.info("MCP Server configured successfully");
-  logger13.info("Available tools: create_worktree, list_worktrees, cleanup_worktree, launch_session, get_session_status, create_terminal");
+  logger12.info("MCP Server configured successfully");
+  logger12.info("Available tools: create_worktree, list_worktrees, cleanup_worktree, launch_session, get_session_status, create_terminal");
   return server;
 }
 async function runServer() {
-  const logger13 = getLogger();
+  const logger12 = getLogger();
   try {
     const server = await createServer();
     const transport = new StdioServerTransport();
-    logger13.info("Connecting server to stdio transport");
+    logger12.info("Connecting server to stdio transport");
     await server.connect(transport);
-    logger13.info("Flux Capacitor MCP Server running");
-    logger13.info("Waiting for requests from Claude Code...");
+    logger12.info("Flux Capacitor MCP Server running");
+    logger12.info("Waiting for requests from Claude Code...");
     process.on("SIGINT", async () => {
-      logger13.info("Received SIGINT, shutting down gracefully");
+      logger12.info("Received SIGINT, shutting down gracefully");
       await server.close();
       process.exit(0);
     });
     process.on("SIGTERM", async () => {
-      logger13.info("Received SIGTERM, shutting down gracefully");
+      logger12.info("Received SIGTERM, shutting down gracefully");
       await server.close();
       process.exit(0);
     });
   } catch (error) {
-    logger13.error("Failed to start MCP server", error);
+    logger12.error("Failed to start MCP server", error);
     process.exit(1);
   }
 }
@@ -27574,19 +27351,19 @@ async function runServer() {
 // src/index.ts
 var logLevel = process.env.LOG_LEVEL?.toLowerCase() || "info";
 createLogger2(logLevel);
-var logger12 = getLogger();
-logger12.info("=".repeat(80));
-logger12.info("Workspace Orchestrator MCP Server");
-logger12.info("Version: 1.0.0");
-logger12.info("=".repeat(80));
-logger12.debug("Configuration:", {
+var logger11 = getLogger();
+logger11.info("=".repeat(80));
+logger11.info("Workspace Orchestrator MCP Server");
+logger11.info("Version: 1.0.0");
+logger11.info("=".repeat(80));
+logger11.debug("Configuration:", {
   logLevel,
   stateDir: process.env.STATE_DIR || "~/.claude/flux-capacitor/state",
   terminalApp: process.env.TERMINAL_APP || "auto-detect",
   terminalDetectOrder: process.env.TERMINAL_DETECT_ORDER || "warp,iterm2,terminal"
 });
 runServer().catch((error) => {
-  logger12.error("Fatal error", error);
+  logger11.error("Fatal error", error);
   process.exit(1);
 });
 /*! Bundled license information:

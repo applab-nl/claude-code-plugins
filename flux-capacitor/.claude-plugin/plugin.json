@@ -1,6 +1,6 @@
 {
   "name": "flux-capacitor",
-  "version": "2.0.0",
+  "version": "1.3.0",
   "description": "Feature Development Lifecycle Orchestrator - Manages issue tracker integration, creates comprehensive implementation plans, and orchestrates isolated tmux-based worktree development with dedicated Claude Code sessions",
   "author": {
     "name": "AppLab",

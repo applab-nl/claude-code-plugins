@@ -93,8 +93,10 @@ export interface Session {
   sessionId: string;
   /** Path to the worktree this session is working in */
   worktreePath: string;
-  /** Tmux pane ID (e.g., "remote-cli-session:0.2") */
-  tmuxPaneId: string;
+  /** Tmux session name (e.g., "flux-sess_123_abc") */
+  tmuxSession: string;
+  /** Git branch name */
+  branch: string;
   /** Session status */
   status: SessionStatus;
   /** When the session was started */
@@ -123,8 +125,8 @@ export interface LaunchSessionParams {
 export interface LaunchSessionResult {
   /** Unique session identifier */
   sessionId: string;
-  /** Tmux pane ID */
-  tmuxPaneId: string;
+  /** Tmux session name */
+  tmuxSession: string;
   /** Launch status */
   status: 'launched' | 'failed';
   /** Error message if failed */
@@ -143,17 +145,19 @@ export interface GetSessionStatusResult {
   status: SessionStatus;
   /** Worktree path */
   worktreePath: string;
+  /** Git branch name */
+  branch: string;
   /** When session started */
   startedAt: string;
   /** When session completed (if applicable) */
   completedAt?: string;
-  /** Tmux pane ID */
-  tmuxPaneId: string;
-  /** Whether tmux pane is still alive */
-  paneAlive: boolean;
+  /** Tmux session name */
+  tmuxSession: string;
+  /** Whether tmux session is still alive */
+  sessionAlive: boolean;
   /** Last activity timestamp */
   lastActivity?: string;
-  /** Recent output from the pane (last 50 lines) */
+  /** Recent output from the session (last 100 lines) */
   recentOutput?: string;
 }
 

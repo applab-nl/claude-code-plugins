@@ -1,22 +1,27 @@
 /**
- * Session service for managing Claude Code sessions via tmux
- * Handles session creation, tracking, and lifecycle management using tmux-cli
+ * Session service for managing Claude Code sessions via atomic script launcher
+ * Handles session creation, tracking, and lifecycle management using native tmux
  */
 
 import fs from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
+import { execa } from 'execa';
 import type {
   Session,
   LaunchSessionParams,
   LaunchSessionResult,
 } from '../types/index.js';
 import { SessionError } from '../types/index.js';
-import { getTmuxService } from './tmux.service.js';
+import { createGitService } from './git.service.js';
 import { getStateService } from './state.service.js';
 import { getLogger } from '../utils/logger.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const logger = getLogger();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export class SessionService {
   /**
@@ -79,14 +84,14 @@ export class SessionService {
   }
 
   /**
-   * Launch a new Claude Code session in a tmux pane
+   * Launch a new Claude Code session using atomic script launcher
    */
   static async launchSession(
     params: LaunchSessionParams
   ): Promise<LaunchSessionResult> {
     const { worktreePath, prompt, contextFiles, agentName } = params;
 
-    logger.info('Launching Claude Code session via tmux', {
+    logger.info('Launching Claude Code session via atomic script', {
       worktreePath,
       agentName,
       contextFilesCount: contextFiles?.length || 0,
@@ -96,32 +101,8 @@ export class SessionService {
     const sessionId = this.generateSessionId(worktreePath);
     logger.debug(`Session ID: ${sessionId}`);
 
-    // Check if tmux-cli is available
-    const tmuxService = getTmuxService();
-    const isAvailable = await tmuxService.isAvailable();
-    if (!isAvailable) {
-      logger.error('tmux-cli is not available');
-      return {
-        sessionId,
-        tmuxPaneId: '',
-        status: 'failed',
-        error: 'tmux-cli is not available. Please install: uv tool install claude-code-tools',
-      };
-    }
-
     try {
-      // Step 1: Launch a shell in a new tmux pane
-      // ALWAYS launch shell first to prevent losing output on errors
-      logger.debug('Launching zsh in tmux pane');
-      const paneId = await tmuxService.launch('zsh');
-      logger.info(`Tmux pane created: ${paneId}`);
-
-      // Step 2: Change to worktree directory
-      logger.debug(`Changing directory to: ${worktreePath}`);
-      await tmuxService.send(paneId, `cd "${worktreePath}"`, { delayEnter: 0.5 });
-      await tmuxService.waitIdle(paneId, { idleTime: 2, timeout: 10 });
-
-      // Step 3: Create prompt file
+      // Step 1: Create prompt file
       logger.debug('Creating prompt file');
       const promptFile = await this.createPromptFile(
         worktreePath,
@@ -130,50 +111,84 @@ export class SessionService {
         contextFiles
       );
 
-      // Step 4: Start Claude Code
-      logger.debug('Starting Claude Code');
-      await tmuxService.send(paneId, 'claude', { delayEnter: 0.5 });
+      // Step 2: Determine repository and worktree info
+      // Try to get repo path from worktree (if it exists), otherwise use worktreePath as repo
+      let repoPath: string;
+      let branch: string;
 
-      // Wait for Claude to start (it shows a welcome message)
-      logger.debug('Waiting for Claude Code to start');
-      await tmuxService.waitIdle(paneId, { idleTime: 3, timeout: 30 });
+      try {
+        // Try to get git info from worktree
+        const { stdout } = await execa('git', ['rev-parse', '--show-toplevel'], {
+          cwd: worktreePath,
+        });
+        repoPath = stdout.trim();
 
-      // Step 5: Send the prompt
-      // Read the prompt file and send it line by line to avoid issues with long prompts
-      logger.debug(`Sending prompt from file: ${promptFile}`);
-      const promptContent = await fs.readFile(promptFile, 'utf-8');
+        // Get current branch
+        const gitService = createGitService(repoPath);
+        branch = await gitService.getCurrentBranch(worktreePath);
+      } catch {
+        // Worktree doesn't exist yet - try parent directory
+        const parentDir = path.dirname(worktreePath);
+        try {
+          const { stdout } = await execa('git', ['rev-parse', '--show-toplevel'], {
+            cwd: parentDir,
+          });
+          repoPath = stdout.trim();
+        } catch {
+          // No git repo found - throw error
+          throw new Error(`Could not find git repository for worktree: ${worktreePath}`);
+        }
 
-      // Send the prompt content
-      await tmuxService.send(paneId, promptContent, { delayEnter: 1 });
+        // Generate feature branch name
+        branch = `feature/${sessionId}`;
+      }
 
-      logger.info('Prompt sent to Claude Code');
+      const worktreeName = path.basename(worktreePath);
 
-      // Create session record
+      // Step 3: Build script parameters
+      const scriptPath = path.join(__dirname, '../../scripts/launch-claude-session.sh');
+      const scriptArgs = [
+        '--repo-path', repoPath,
+        '--branch', branch,
+        '--worktree-name', worktreeName,
+        '--prompt-file', promptFile,
+        '--session-id', sessionId,
+      ];
+
+      logger.debug('Executing launch script', { scriptPath, args: scriptArgs });
+
+      // Step 4: Execute script (fire-and-forget)
+      const result = await execa(scriptPath, scriptArgs, {
+        timeout: 30000, // 30s max for git operations
+      });
+
+      const tmuxSession = result.stdout.trim();
+      logger.info('Session launched', { sessionId, tmuxSession });
+
+      // Step 5: Save session to state
       const session: Session = {
         sessionId,
         worktreePath,
-        tmuxPaneId: paneId,
+        tmuxSession,
+        branch,
         status: 'active',
         startedAt: new Date(),
         agentName,
         prompt,
       };
 
-      logger.debug('Saving session to state', { sessionId });
-
-      // Save to state
       const stateService = getStateService();
       await stateService.init();
       await stateService.saveSession(session);
 
       logger.info('Session launched successfully', {
         sessionId,
-        tmuxPaneId: paneId,
+        tmuxSession,
       });
 
       return {
         sessionId,
-        tmuxPaneId: paneId,
+        tmuxSession,
         status: 'launched',
       };
     } catch (error) {
@@ -181,7 +196,7 @@ export class SessionService {
 
       return {
         sessionId,
-        tmuxPaneId: '',
+        tmuxSession: '',
         status: 'failed',
         error: (error as Error).message,
       };
@@ -205,28 +220,30 @@ export class SessionService {
     logger.debug(`Session found:`, {
       sessionId: session.sessionId,
       status: session.status,
-      tmuxPaneId: session.tmuxPaneId,
+      tmuxSession: session.tmuxSession,
     });
 
-    // Check if pane still exists
-    logger.debug(`Checking if pane ${session.tmuxPaneId} exists`);
-    const tmuxService = getTmuxService();
-    const paneExists = await tmuxService.paneExists(session.tmuxPaneId);
-    logger.debug(`Pane exists: ${paneExists}`);
-
-    // Update status if pane died
-    if (!paneExists && session.status === 'active') {
-      logger.debug(`Pane no longer exists, updating session status to terminated`);
-      await stateService.updateSessionStatus(sessionId, 'terminated');
-      session.status = 'terminated';
-      session.completedAt = new Date();
+    // Check if tmux session still exists (native tmux)
+    logger.debug(`Checking if tmux session ${session.tmuxSession} exists`);
+    try {
+      await execa('tmux', ['has-session', '-t', session.tmuxSession]);
+      logger.debug(`Tmux session exists`);
+      // Session exists
+    } catch {
+      logger.debug(`Tmux session no longer exists, updating session status to terminated`);
+      // Session died - update status if it was active
+      if (session.status === 'active') {
+        await stateService.updateSessionStatus(sessionId, 'terminated');
+        session.status = 'terminated';
+        session.completedAt = new Date();
+      }
     }
 
     return session;
   }
 
   /**
-   * Get recent output from a session
+   * Get recent output from a session (last 100 lines)
    */
   static async getSessionOutput(sessionId: string): Promise<string | null> {
     const session = await this.getSessionStatus(sessionId);
@@ -235,9 +252,14 @@ export class SessionService {
     }
 
     try {
-      const tmuxService = getTmuxService();
-      const output = await tmuxService.capture(session.tmuxPaneId);
-      return output;
+      // Capture last 100 lines from tmux session (native tmux)
+      const result = await execa('tmux', [
+        'capture-pane',
+        '-t', session.tmuxSession,
+        '-p',        // print to stdout
+        '-S', '-100' // last 100 lines
+      ]);
+      return result.stdout;
     } catch (error) {
       logger.error(`Failed to capture output for session ${sessionId}`, error);
       return null;
@@ -285,10 +307,9 @@ export class SessionService {
       return false;
     }
 
-    // Kill the tmux pane
+    // Kill the tmux session (native tmux)
     try {
-      const tmuxService = getTmuxService();
-      await tmuxService.kill(session.tmuxPaneId);
+      await execa('tmux', ['kill-session', '-t', session.tmuxSession]);
 
       // Update status
       const stateService = getStateService();
