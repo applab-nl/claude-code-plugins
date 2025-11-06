@@ -109,7 +109,7 @@ ${prompt}" > "$prompt_file"
     "claude \"Implement the plan in @$prompt_file\"; exec bash"
 
   # If we're in a tmux session, split window and show the new session
-  if [ -n "$TMUX" ]; then
+  if [ -n "${TMUX:-}" ]; then
     log_info "Splitting window to show new session..."
     tmux split-window -h "tmux attach -t $tmux_session"
   fi
@@ -139,13 +139,13 @@ EOF
   echo "Worktree: $worktree_path"
   echo ""
 
-  if [ -n "$TMUX" ]; then
+  if [ -n "${TMUX:-}" ]; then
     echo "The session is now visible in a split pane ➡️"
     echo ""
   fi
 
   echo "Commands:"
-  if [ -z "$TMUX" ]; then
+  if [ -z "${TMUX:-}" ]; then
     echo "  flux attach $session_id    # Attach to session"
   fi
   echo "  flux status $session_id    # Check status"
