@@ -212,7 +212,24 @@ Users must have **tmux** installed (built-in on macOS):
 
 ### Flux CLI Commands
 
-The `flux` script is located at `/Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux` and provides:
+**Locating the flux script:**
+
+The flux script must be located dynamically since the plugin could be in different locations. Use this command pattern to find and execute it:
+
+```bash
+FLUX="${CLAUDE_PLUGIN_ROOT:-~/.claude/plugins/flux-capacitor}/scripts/flux"
+[ -f "$FLUX" ] || FLUX="$(find ~/.claude -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
+[ -f "$FLUX" ] || FLUX="$(find ~ -maxdepth 5 -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
+[ -x "$FLUX" ] || { echo "ERROR: flux script not found"; exit 1; }
+"$FLUX" <command> <args>
+```
+
+This pattern:
+1. Tries `$CLAUDE_PLUGIN_ROOT/scripts/flux` if the variable is set
+2. Falls back to standard location: `~/.claude/plugins/flux-capacitor/scripts/flux`
+3. Searches `~/.claude` for the script
+4. Searches home directory (up to 5 levels deep) as final fallback
+5. Exits with error if script cannot be found
 
 **Available Commands**:
 - `flux launch <repo> <branch> <prompt> [agent]` - Create worktree and launch Claude session (atomic, < 3 seconds)
@@ -259,7 +276,13 @@ If working with an issue tracker:
 
 4. **Launch Session** using flux CLI:
    ```bash
-   /Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux launch . "feature/mem-123-oauth" "Implement OAuth authentication according to the plan below.
+   # Locate flux script
+   FLUX="${CLAUDE_PLUGIN_ROOT:-~/.claude/plugins/flux-capacitor}/scripts/flux"
+   [ -f "$FLUX" ] || FLUX="$(find ~/.claude -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
+   [ -f "$FLUX" ] || FLUX="$(find ~ -maxdepth 5 -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
+
+   # Launch session
+   "$FLUX" launch . "feature/mem-123-oauth" "Implement OAuth authentication according to the plan below.
 
    ## Implementation Plan
    {full implementation plan}
@@ -311,7 +334,10 @@ Users can check on their delegated sessions:
 User: "How's the authentication feature session doing?"
 
 Agent: Run flux status command:
-  /Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux status <session-id>
+  FLUX="${CLAUDE_PLUGIN_ROOT:-~/.claude/plugins/flux-capacitor}/scripts/flux"
+  [ -f "$FLUX" ] || FLUX="$(find ~/.claude -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
+  [ -f "$FLUX" ] || FLUX="$(find ~ -maxdepth 5 -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
+  "$FLUX" status <session-id>
 
 Shows: tmux session health, recent output (last 20 lines), branch info
 ```
@@ -332,7 +358,10 @@ User: "The authentication feature is done and merged. Clean up."
 Agent:
 1. Verify work is committed and pushed
 2. Run flux cleanup:
-   /Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux cleanup <session-id>
+   FLUX="${CLAUDE_PLUGIN_ROOT:-~/.claude/plugins/flux-capacitor}/scripts/flux"
+   [ -f "$FLUX" ] || FLUX="$(find ~/.claude -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
+   [ -f "$FLUX" ] || FLUX="$(find ~ -maxdepth 5 -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)"
+   "$FLUX" cleanup <session-id>
 
 3. Confirm cleanup (kills tmux session, removes worktree, keeps branch)
 4. Update issue status to "Done"

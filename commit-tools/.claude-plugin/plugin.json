@@ -18,5 +18,5 @@
     "productivity",
     "commit-messages"
   ],
-  "commands": "./commands/*.md"
+  "commands": "./commands/"
 }

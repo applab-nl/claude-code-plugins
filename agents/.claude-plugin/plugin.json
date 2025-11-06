@@ -34,5 +34,5 @@
     "monitoring",
     "sentry"
   ],
-  "agents": "./agents/*.md"
+  "agents": "./agents/"
 }
