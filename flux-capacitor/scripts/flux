@@ -108,6 +108,12 @@ ${prompt}" > "$prompt_file"
   tmux new-session -d -s "$tmux_session" -c "$worktree_path" \
     "claude \"Implement the plan in @$prompt_file\"; exec bash"
 
+  # If we're in a tmux session, split window and show the new session
+  if [ -n "$TMUX" ]; then
+    log_info "Splitting window to show new session..."
+    tmux split-window -h "tmux attach -t $tmux_session"
+  fi
+
   # Save session info
   local session_data=$(cat <<EOF
 {
@@ -132,8 +138,16 @@ EOF
   echo "Tmux session: $tmux_session"
   echo "Worktree: $worktree_path"
   echo ""
+
+  if [ -n "$TMUX" ]; then
+    echo "The session is now visible in a split pane ➡️"
+    echo ""
+  fi
+
   echo "Commands:"
-  echo "  flux attach $session_id    # Attach to session"
+  if [ -z "$TMUX" ]; then
+    echo "  flux attach $session_id    # Attach to session"
+  fi
   echo "  flux status $session_id    # Check status"
   echo "  flux list                  # List all sessions"
   echo "  flux cleanup $session_id   # Clean up when done"
