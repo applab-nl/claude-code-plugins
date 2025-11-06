@@ -212,7 +212,7 @@ Users must have **tmux** installed (built-in on macOS):
 
 ### Flux CLI Commands
 
-The `flux` script is located at `${CLAUDE_PLUGIN_ROOT}/scripts/flux` and provides:
+The `flux` script is located at `/Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux` and provides:
 
 **Available Commands**:
 - `flux launch <repo> <branch> <prompt> [agent]` - Create worktree and launch Claude session (atomic, < 3 seconds)
@@ -259,7 +259,7 @@ If working with an issue tracker:
 
 4. **Launch Session** using flux CLI:
    ```bash
-   ${CLAUDE_PLUGIN_ROOT}/scripts/flux launch . "feature/mem-123-oauth" "Implement OAuth authentication according to the plan below.
+   /Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux launch . "feature/mem-123-oauth" "Implement OAuth authentication according to the plan below.
 
    ## Implementation Plan
    {full implementation plan}
@@ -311,7 +311,7 @@ Users can check on their delegated sessions:
 User: "How's the authentication feature session doing?"
 
 Agent: Run flux status command:
-  ${CLAUDE_PLUGIN_ROOT}/scripts/flux status <session-id>
+  /Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux status <session-id>
 
 Shows: tmux session health, recent output (last 20 lines), branch info
 ```
@@ -332,7 +332,7 @@ User: "The authentication feature is done and merged. Clean up."
 Agent:
 1. Verify work is committed and pushed
 2. Run flux cleanup:
-   ${CLAUDE_PLUGIN_ROOT}/scripts/flux cleanup <session-id>
+   /Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux cleanup <session-id>
 
 3. Confirm cleanup (kills tmux session, removes worktree, keeps branch)
 4. Update issue status to "Done"

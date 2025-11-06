@@ -5,46 +5,44 @@ All notable changes to the Flux Capacitor plugin will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] - 2025-01-06
+## [1.4.0] - 2025-01-06
 
 ### Changed
-- **BREAKING**: Migrated to atomic script-based session launcher
-- **BREAKING**: Replaced tmux-cli with native tmux (more reliable)
-- **BREAKING**: Session state format changed (tmuxPaneId → tmuxSession, added branch field)
-- Removed tmux-cli dependency (uv tool install no longer needed)
+- **BREAKING**: Completely removed MCP server architecture
+- **BREAKING**: Replaced MCP tools with standalone `flux` CLI script
+- Agent now uses direct bash script execution instead of MCP tool calls
+- Session management via `${CLAUDE_PLUGIN_ROOT}/scripts/flux` commands
 
 ### Added
-- Atomic launch-claude-session.sh script for reliable session creation
-- Claude CLI @ file references for guaranteed prompt delivery
-- Fire-and-forget session launching (no blocking on startup)
-- Native tmux integration (simpler, faster, more reliable)
-- Helper scripts: attach-session.sh, kill-session.sh, list-sessions.sh, cleanup-all-sessions.sh
-- Branch tracking in session state
-
-### Fixed
-- Race conditions in session startup (no more waitIdle timeouts)
-- Prompt delivery failures with large prompts (now using @ file references)
-- Timeout issues with slow Claude Code startup
-- Orphaned tmux panes on launch errors
-- Blocked MCP server during long session launches
+- Standalone `flux` CLI script with comprehensive commands
+  - `flux launch <repo> <branch> <prompt> [agent]` - Atomic worktree + session creation
+  - `flux list` - List all active sessions
+  - `flux status <session-id>` - Check session status with output capture
+  - `flux attach <session-id>` - Attach to running tmux session
+  - `flux cleanup <session-id>` - Clean up worktree and session
+- Session state management via JSON file (~/.flux-capacitor/sessions.json)
+- Native tmux integration (no external dependencies)
+- Performance improvement: < 3 seconds for full launch vs 30+ seconds with MCP
 
 ### Removed
-- tmux-cli dependency and TmuxService (replaced with native tmux)
-- Multi-step interactive session launch (replaced with atomic script)
-- Hardcoded timeout values (no longer needed)
+- **BREAKING**: Entire MCP server (mcp-server/ directory)
+- `.mcp.json` configuration file
+- Node.js dependency for session management
+- TypeScript build step for session orchestration
 
 ### Migration Guide
 
 **For Users:**
 1. Ensure `tmux` is installed (built-in on macOS, `apt install tmux` on Linux)
-2. Update to flux-capacitor v1.3.0: `/plugin update flux-capacitor`
-3. Old sessions can be manually cleaned: `tmux ls | grep flux- | cut -d: -f1 | xargs -I {} tmux kill-session -t {}`
+2. Update to flux-capacitor v1.4.0: `/plugin update flux-capacitor`
+3. No MCP server configuration needed - flux CLI works immediately
+4. Old sessions (if any) can be cleaned: `${CLAUDE_PLUGIN_ROOT}/scripts/flux list`
 
 **For Developers:**
-- Session state now uses `tmuxSession` instead of `tmuxPaneId`
-- Added `branch` field to Session type
-- Use native tmux commands: `tmux has-session`, `tmux capture-pane`, `tmux kill-session`
-- Script can be tested independently: `./scripts/launch-claude-session.sh --help`
+- Use `${CLAUDE_PLUGIN_ROOT}/scripts/flux` for all session operations
+- No MCP tool calls - direct bash execution only
+- Session state at ~/.flux-capacitor/sessions.json
+- Scripts use jq for JSON manipulation
 
 ## [2.0.0] - 2025-01-02
 
