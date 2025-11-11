@@ -1,18 +1,50 @@
 ---
-allowed-tools: Bash(git checkout --branch:*), Bash(git add:*), Bash(git status:*), Bash(git push:*), Bash(git commit:*), Bash(gh pr create:*)
-description: Commit and push
+allowed-tools: Bash
+max-tool-calls: 1
+description: Commit and push (single-shot optimized)
 ---
 
-## Context
+## Context (Pre-computed - Use Directly)
 
-- Current git status: !`git status`
-- Current git diff (staged and unstaged changes): !`git diff HEAD`
-- Current branch: !`git branch --show-current`
+**Changed Files:**
+!`git diff --name-only HEAD`
 
-## Your task
+**File Stats:**
+!`git diff --stat HEAD`
 
-Based on the above changes:
-1. Review, commit and push all changes with a single elaborate message explaining the changes. Nice if you use some emoticons but don't overdo it. Refrain from mentioning Claude as an author.
-2. Push the branch to origin
-3. You have the capability to call multiple tools in a single response. You MUST do all of the above in a single message. Do not use any other tools or do anything else. Do not send any other text or messages besides these tool calls.
+**Recent Commit Style:**
+!`git log -5 --format="%s"`
+
+**Current Branch:**
+!`git branch --show-current`
+
+**Remote Status:**
+!`git status -sb`
+
+## Your Task (Execute Immediately - No Analysis)
+
+Generate a commit message following the style patterns from "Recent Commit Style" above, then execute this SINGLE atomic command:
+
+```bash
+git add -A && \
+  git commit -m "$(cat <<'EOF'
+<YOUR_GENERATED_MESSAGE_HERE>
+EOF
+)" && \
+  git push && \
+  echo "✓ Committed and pushed successfully"
+```
+
+**Message Format Rules:**
+- Line 1: Imperative verb + what changed (max 50 chars) + optional emoji
+- Line 2: Blank
+- Line 3+: Why this matters, context, details (wrap at 72 chars)
+
+**Critical Constraints:**
+- Execute ONLY ONE bash command (enforced by max-tool-calls: 1)
+- Use && chaining for atomic operation (stops on any failure)
+- Follow recent commit message style patterns
+- Use 0-2 tasteful emojis maximum
+- Never mention AI/Claude/automated tools
+- No additional tools, no explanations - just execute the command above
 
