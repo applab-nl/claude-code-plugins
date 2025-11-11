@@ -192,6 +192,75 @@ Delete branch 'feature/oauth'? yes
 Remaining worktrees: 1
 ```
 
+#### `/merge-push-cleanup-worktree`
+
+Complete workflow to merge a worktree branch, push changes, cleanup worktree and delete branch in one operation.
+
+**What it does:**
+1. Verifies working directory is clean
+2. Asks for source branch to merge and cleanup
+3. Detects target branch (main/master)
+4. Shows comprehensive plan of all operations
+5. Switches to target branch
+6. Merges source branch
+7. Pushes changes to origin
+8. Removes the worktree
+9. Deletes the source branch
+10. Reports final status
+
+**Usage:**
+```bash
+/merge-push-cleanup-worktree
+```
+
+**Safety features:**
+- Comprehensive pre-flight checks
+- Stops immediately if any step fails
+- Clear error reporting with recovery instructions
+- Handles common failure scenarios (conflicts, push failures, locked worktrees)
+- Never auto-resolves merge conflicts
+- Provides detailed status after each operation
+
+**Example:**
+```
+Plan Summary:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Source branch: feature/oauth-implementation
+Target branch: main
+Worktree path: /Users/alice/projects/my-app-feature-oauth
+Commits to merge: 5 commits
+
+Operations to perform:
+1. Switch to main
+2. Merge feature/oauth-implementation into main
+3. Push main to origin
+4. Remove worktree at /Users/alice/projects/my-app-feature-oauth
+5. Delete feature/oauth-implementation
+
+Proceed with merge, push, and cleanup? yes
+
+✓ Switched to main
+✓ Merged feature/oauth-implementation into main
+✓ Pushed main to origin
+✓ Removed worktree
+✓ Deleted branch feature/oauth-implementation
+
+✅ Merge, Push, and Cleanup Complete
+```
+
+**When to use:**
+- Feature is complete and ready to merge to main
+- You want to clean up the worktree in one operation
+- All changes are committed and tested
+- You're confident the merge will be clean
+
+**Benefits:**
+- Streamlines the complete feature workflow
+- Reduces manual steps from ~8 commands to 1
+- Ensures proper sequence of operations
+- Automatic cleanup after successful merge
+- Clear failure handling at each step
+
 ## Commit Message Quality
 
 Both commands generate high-quality commit messages that:
@@ -374,7 +443,7 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-**Current Version**: 1.1.0
+**Current Version**: 1.2.0
 
 ---
 

@@ -5,6 +5,28 @@ All notable changes to the Git Tools plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-01-11
+
+### Added
+
+#### Comprehensive Worktree Workflow
+- `/merge-push-cleanup-worktree` - Complete workflow to merge, push, and cleanup in one operation
+  - Merges worktree branch into main/base branch
+  - Pushes changes to origin
+  - Removes the worktree
+  - Deletes the feature branch
+  - Comprehensive safety checks at each step
+  - Detailed error handling with recovery instructions
+  - Single-shot operation for streamlined workflow
+  - Stops immediately if any step fails
+
+**Benefits:**
+- Reduces manual steps in feature completion workflow
+- Ensures consistency in merge, push, cleanup sequence
+- Provides clear status reporting throughout process
+- Handles common failure scenarios with actionable guidance
+- Perfect for completing features developed in worktrees
+
 ## [1.1.0] - 2025-01-06
 
 ### Added
