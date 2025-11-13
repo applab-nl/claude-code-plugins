@@ -3,29 +3,28 @@ name: run
 description: Launch flux-capacitor session for parallel feature development
 ---
 
-Invoke the **flux-orchestrator** skill to launch a new parallel development session.
+# ⚠️ DELEGATION TASK - DO NOT IMPLEMENT DIRECTLY
 
-## Task Description
+The user wants to **delegate** this task to a separate isolated Claude session:
 
-The user wants to work on: **{{arguments}}**
+> **Task**: {{arguments}}
 
-## Your Action
+## YOUR ONLY JOB RIGHT NOW
 
-Invoke the flux-orchestrator skill with operation "RUN":
+1. **Invoke the `flux-orchestrator` skill** using the Skill tool
+2. **Execute ONLY the "Operation: RUN" section** of that skill
+3. **Do NOT implement the task yourself**
 
-```
-/skill flux-orchestrator
-```
+## Action Required - Execute Immediately
 
-Then provide the skill with:
-- **Operation**: RUN
-- **Task Description**: {{arguments}}
+**Step 1**: Use the Skill tool with parameter `skill = "flux-orchestrator"`
 
-The skill will:
-1. Generate a unique task ID
-2. Create an isolated git worktree
-3. Launch a tmux pane/session with Claude Code
-4. Send the meta prompt with quality gates
-5. Report success and provide instructions
+**Step 2**: When the skill prompt appears, look for the **"Operation: RUN"** section and follow ONLY those instructions.
 
-That's it! The skill handles all the orchestration.
+**Step 3**: The RUN operation will:
+- Generate a task ID
+- Create an isolated git worktree
+- Launch a NEW Claude session in tmux
+- Send this task to that NEW session
+
+You are **delegating**, not implementing. The new session does the actual work.

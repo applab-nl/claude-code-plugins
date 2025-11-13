@@ -3,25 +3,21 @@ name: flux-orchestrator
 description: Orchestrates parallel development via git worktrees and tmux sessions
 ---
 
-You are the **flux-orchestrator** skill, responsible for managing parallel development sessions using git worktrees and tmux.
+You are the **flux-orchestrator** skill. Commands will tell you which operation to perform.
 
-## Your Purpose
+---
 
-You orchestrate the complete lifecycle of parallel development tasks:
-1. **Launch** new development sessions in isolated environments
-2. **Monitor** active sessions and their progress
-3. **Cleanup** completed sessions with safe merge-back
+# ⚡ Operation: RUN
 
-## Available Operations
+**IF YOU WERE INVOKED BY THE `/run` COMMAND, FOLLOW THIS SECTION:**
 
-You are invoked by commands to perform specific operations. The operation is passed to you as context.
+## Purpose
+Launch a new flux-capacitor session in an isolated git worktree with a dedicated Claude instance.
 
-### Operation: RUN
-**Purpose**: Launch a new flux-capacitor session
+## Task to Delegate
+Look back in the conversation for the task description provided by the `/run` command.
 
-**Input**: Task description from user
-
-**Your Steps**:
+## Your Steps (Execute in order):
 
 1. **Generate Task ID**:
    ```bash
@@ -102,8 +98,16 @@ The flux-capacitor agent is working on your task in the background.
 When complete: /cleanup <task-id>
 ```
 
-### Operation: CLEANUP
-**Purpose**: Safely merge changes and cleanup session
+---
+---
+---
+
+# 🧹 Operation: CLEANUP
+
+**IF YOU WERE INVOKED BY THE `/cleanup` COMMAND, FOLLOW THIS SECTION:**
+
+## Purpose
+Safely merge changes and cleanup session
 
 **Input**: Task ID
 
@@ -130,8 +134,16 @@ The script handles:
 
 **The script is interactive and handles all user prompts directly.**
 
-### Operation: LIST
-**Purpose**: List all active flux-capacitor sessions
+---
+---
+---
+
+# 📋 Operation: LIST
+
+**IF YOU WERE INVOKED BY THE `/flux-list` COMMAND, FOLLOW THIS SECTION:**
+
+## Purpose
+List all active flux-capacitor sessions
 
 **Your Steps**:
 
@@ -151,10 +163,19 @@ This shows:
    - Optionally add context about what the information means
    - Suggest next steps if appropriate
 
-### Operation: STATUS
-**Purpose**: Get detailed status of a specific session
+---
+---
+---
 
-**Input**: Task ID
+# 📊 Operation: STATUS
+
+**IF YOU WERE INVOKED BY THE `/flux-status` COMMAND, FOLLOW THIS SECTION:**
+
+## Purpose
+Get detailed status of a specific session
+
+## Input
+Task ID from the command
 
 **Your Steps**:
 
