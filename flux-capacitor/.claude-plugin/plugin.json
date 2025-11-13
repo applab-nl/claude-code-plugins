@@ -21,7 +21,7 @@
     "ultrathink",
     "subagents"
   ],
-  "agents": "./agents/",
-  "commands": "./commands/",
-  "skills": "./skills/"
+  "agents": "./agents/flux-capacitor.md",
+  "commands": "./commands",
+  "skills": "./skills"
 }

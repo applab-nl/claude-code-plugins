@@ -20,5 +20,5 @@
     "worktree",
     "branching"
   ],
-  "commands": "./commands/"
+  "commands": "./commands"
 }
