@@ -34,5 +34,19 @@
     "monitoring",
     "sentry"
   ],
-  "agents": "./agents"
+  "agents": [
+    "./agents/android-debug-fixer.md",
+    "./agents/architecture-advisor.md",
+    "./agents/ci-cd-specialist.md",
+    "./agents/code-reviewer.md",
+    "./agents/dependency-auditor.md",
+    "./agents/frontend-specialist.md",
+    "./agents/git-workflow-manager.md",
+    "./agents/ios-debug-fixer.md",
+    "./agents/kotlin-backend-specialist.md",
+    "./agents/monitoring-integration-specialist.md",
+    "./agents/refactoring-specialist.md",
+    "./agents/supabase-integration-expert.md",
+    "./agents/test-engineer.md"
+  ]
 }
