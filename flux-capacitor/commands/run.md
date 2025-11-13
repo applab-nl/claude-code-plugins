@@ -1,184 +1,183 @@
 ---
-allowed-tools: Bash(git *), Bash(basename:*), Bash(dirname:*), Bash(pwd:*), Bash(find:*), Bash(test:*), Bash(echo:*)
-description: Launch feature development in isolated worktree with flux-capacitor agent
+name: run
+description: Launch flux-capacitor session for parallel feature development
 ---
 
-## Context
+You are executing the **flux-capacitor /run** command to launch a new parallel development session.
 
-- Current directory: !`pwd`
-- Git repository root: !`git rev-parse --show-toplevel 2>/dev/null || echo ""`
-- Current branch: !`git branch --show-current 2>/dev/null || echo ""`
-- Arguments: `$ARGUMENTS`
+## User Input
+
+The user provided a task description: **{{arguments}}**
 
 ## Your Task
 
-**Launch feature development in isolated worktree with tmux session.** Execute commands with minimal shots.
+Orchestrate the flux-capacitor workflow to:
+1. Generate a unique task ID
+2. Create an isolated git worktree
+3. Launch a tmux session/pane with Claude Code
+4. Send the meta prompt to the new session
+5. Report success and provide instructions to the user
 
-### Step 1: Parse Arguments and Generate Branch Name
+## Workflow Steps
 
-Parse `$ARGUMENTS` to detect pattern:
+### Step 1: Parse and Validate
 
-**Pattern 1: Issue Key** (e.g., `MEM-123`, `PROJ-456`)
-- Regex: `^[A-Z]{2,10}-\d+`
-- Branch: `feature/{key-lowercase}` (e.g., `feature/mem-123`)
-- Mode: `issue-key`
+Extract the task description from the command arguments. The task description should be everything after `/run`.
 
-**Pattern 2: Description** (anything else)
-- Sanitize: lowercase, replace spaces/special chars with `-`, limit to 50 chars
-- Branch: `feature/{sanitized-description}`
-- Mode: `description`
+Example inputs:
+- `/run Add OAuth authentication with Google and GitHub`
+- `/run Implement real-time notifications using Supabase`
+- `/run Refactor authentication system for better security`
 
-**Pattern 3: Empty**
-- Show usage and stop
+### Step 2: Generate Task ID
 
-### Step 2: Create Worktree and Launch Session (Single Command)
+Create a unique task ID by combining:
+- Task slug (from description)
+- Unique identifier
 
-**CRITICAL: The tmux session MUST launch with working directory set to the worktree.**
-
-Execute in a single bash command block:
-
+Execute the following to generate:
 ```bash
-# Verify we're in a git repository
-REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
-if [ -z "$REPO_ROOT" ]; then
-  echo "Error: Not in a git repository"
-  echo "Please run this command from within a git repository"
-  exit 1
-fi
-
-# Parse arguments and generate branch name
-ARGS="$ARGUMENTS"
-if [ -z "$ARGS" ]; then
-  echo "Error: No arguments provided"
-  echo ""
-  echo "Usage: /run <ISSUE-KEY|description>"
-  echo ""
-  echo "Examples:"
-  echo "  /run MEM-123"
-  echo "  /run Add OAuth authentication with Google"
-  exit 1
-fi
-
-MODE=""
-BRANCH=""
-
-# Detect issue key pattern
-if echo "$ARGS" | grep -qiE '^[A-Z]{2,10}-[0-9]+'; then
-  MODE="issue-key"
-  ISSUE_KEY=$(echo "$ARGS" | grep -oiE '^[A-Z]{2,10}-[0-9]+')
-  BRANCH="feature/$(echo "$ISSUE_KEY" | tr '[:upper:]' '[:lower:]')"
-else
-  MODE="description"
-  SANITIZED=$(echo "$ARGS" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | sed 's/^-//;s/-$//' | cut -c1-50)
-  BRANCH="feature/$SANITIZED"
-fi
-
-# Find flux script - try multiple locations
-FLUX=""
-
-# Try CLAUDE_PLUGIN_ROOT if set
-if [ -n "$CLAUDE_PLUGIN_ROOT" ] && [ -x "$CLAUDE_PLUGIN_ROOT/scripts/flux" ]; then
-  FLUX="$CLAUDE_PLUGIN_ROOT/scripts/flux"
-fi
-
-# Try standard plugin location
-if [ -z "$FLUX" ] && [ -x "$HOME/.claude/plugins/flux-capacitor/scripts/flux" ]; then
-  FLUX="$HOME/.claude/plugins/flux-capacitor/scripts/flux"
-fi
-
-# Try local development location (common for marketplace development)
-if [ -z "$FLUX" ] && [ -x "/Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux" ]; then
-  FLUX="/Users/dylan/projects/claude-swarm/claude-code-plugins/flux-capacitor/scripts/flux"
-fi
-
-# Search in ~/.claude as fallback
-if [ -z "$FLUX" ]; then
-  FLUX=$(find "$HOME/.claude" -type f -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)
-fi
-
-# Search home directory as last resort (limited depth for performance)
-if [ -z "$FLUX" ]; then
-  FLUX=$(find "$HOME/projects" -maxdepth 5 -type f -name flux -path '*/flux-capacitor/scripts/flux' 2>/dev/null | head -1)
-fi
-
-if [ -z "$FLUX" ] || [ ! -x "$FLUX" ]; then
-  echo "Error: flux script not found"
-  echo ""
-  echo "Searched locations:"
-  echo "  - \$CLAUDE_PLUGIN_ROOT/scripts/flux"
-  echo "  - ~/.claude/plugins/flux-capacitor/scripts/flux"
-  echo "  - ~/projects/*/flux-capacitor/scripts/flux"
-  echo ""
-  echo "Please ensure flux-capacitor plugin is installed correctly"
-  exit 1
-fi
-
-echo "Using flux script: $FLUX"
-
-# Create augmented prompt
-PROMPT="You are in an isolated worktree for feature development.
-
-**Input**: $ARGS
-**Mode**: $MODE
-**Branch**: $BRANCH
-
-Invoke the flux-capacitor agent to handle:
-- Issue tracker integration (if mode is 'issue-key')
-- Comprehensive planning with ultrathink mode
-- Subagent delegation strategy
-- Implementation guidance
-
-The flux-capacitor agent will guide you through the complete feature implementation."
-
-# Launch worktree + tmux session + Claude (atomic operation)
-echo "Launching feature development session..."
-echo "  Mode: $MODE"
-echo "  Branch: $BRANCH"
-echo ""
-"$FLUX" launch "$REPO_ROOT" "$BRANCH" "$PROMPT" "flux-capacitor"
+${CLAUDE_PLUGIN_ROOT}/scripts/lib/common.sh
 ```
 
-### Step 3: Report Success
+Use the `generate_task_id` and `slugify` functions to create:
+- Slug from task description (e.g., "oauth-authentication")
+- Unique ID (e.g., "a1b2c3")
+- Combined task ID (e.g., "oauth-authentication-a1b2c3" or just "a1b2c3-oauth")
 
-After flux script completes, report:
-- Session ID (from flux output)
-- Worktree path (from flux output)
-- Branch name
-- Commands to check status/attach
+Keep it short and readable (max 50 chars).
 
-**Example Output:**
-```
-âœ“ Worktree created: /Users/alice/projects/my-app-feature-mem-123
-âœ“ Branch: feature/mem-123
-âœ“ Session launched: sess_my-app-feature-mem-123_1730890123_abc123
+### Step 3: Create Worktree
 
-Claude Code is now running in the isolated worktree.
-The flux-capacitor agent will handle planning and implementation.
-
-Commands:
-  flux attach sess_my-app-feature-mem-123_1730890123_abc123
-  flux status sess_my-app-feature-mem-123_1730890123_abc123
+Execute the create-worktree script:
+```bash
+${CLAUDE_PLUGIN_ROOT}/scripts/create-worktree.sh <task-id> <project-name>
 ```
 
-## Critical Safety Requirements
+This will:
+- Create branch: `feature/<task-id>`
+- Create worktree: `../<project>-<task-id>`
+- Run initialization scripts (if any)
+- Return absolute path to worktree
 
-1. **Working Directory Isolation**: The flux script's `-c "$worktree_path"` flag ensures tmux launches in the worktree
-2. **Prompt File Location**: Created at `$worktree_path/.claude/prompt.md` (inside worktree)
-3. **No Spillover**: Everything happens in the new worktree - zero risk of cross-contamination
+Capture the output worktree path for next steps.
+
+### Step 4: Launch Session
+
+Execute the launch-session script:
+```bash
+${CLAUDE_PLUGIN_ROOT}/scripts/launch-session.sh <worktree-path> <task-id> <project-name>
+```
+
+This will:
+- Detect if in tmux
+- Create tmux pane (if in tmux) OR new session (if not)
+- Launch Claude Code with `--dangerously-skip-permissions`
+- Return either `PANE:<pane-id>` or `SESSION:<session-name>`
+
+Parse the output to determine what was created.
+
+### Step 5: Send Meta Prompt
+
+Execute the send-prompt script:
+```bash
+${CLAUDE_PLUGIN_ROOT}/scripts/send-prompt.sh <target> <task-description> <worktree-path> <branch-name> <project-name>
+```
+
+Where:
+- `target` is the pane ID or session name from step 4
+- `task-description` is the original user input
+- `worktree-path` is from step 3
+- `branch-name` is `feature/<task-id>`
+- `project-name` is current project name
+
+This sends the meta prompt template to the new Claude session.
+
+### Step 6: Report Success
+
+Based on whether a pane or session was created, provide appropriate output:
+
+**If PANE was created (user was in tmux):**
+```
+<¯ Flux Capacitor Session Created!
+
+  Task ID: <task-id>
+  Tmux Pane: <pane-id>
+  Worktree: <worktree-path>
+  Branch: feature/<task-id>
+
+=Í Switch to pane:
+   Ctrl+b, q ’ <pane-number>
+
+The flux-capacitor agent is working on your task in parallel.
+
+When complete: /cleanup <task-id>
+```
+
+**If SESSION was created (user not in tmux):**
+```
+<¯ Flux Capacitor Session Created!
+
+  Task ID: <task-id>
+  Session: <session-name>
+  Worktree: <worktree-path>
+  Branch: feature/<task-id>
+
+=Í Attach to session:
+   tmux attach -t <session-name>
+
+   Or use shorthand:
+   tmux a -t <session-name>
+
+The flux-capacitor agent is working on your task in the background.
+
+=¡ Tip: You can detach anytime with Ctrl+b, d
+      The session will keep running.
+
+When complete: /cleanup <task-id>
+```
 
 ## Error Handling
 
-- **No arguments**: Show usage and stop
-- **Not a git repo**: Error and stop
-- **Flux script not found**: Error with installation instructions
-- **Flux script fails**: Show error output from flux
+If any step fails:
+1. Log the error clearly
+2. Provide diagnostic information
+3. Clean up any partial state (worktree, session)
+4. Suggest solutions
 
-## Usage Examples
+Common errors:
+- **Not in git repo**: Tell user to navigate to a git repository
+- **Worktree creation failed**: Check if branch already exists, disk space
+- **Tmux not installed**: Inform user tmux is required, provide install instructions
+- **Session already exists**: Provide session name and how to attach
+
+## Script Locations
+
+All scripts are located at: `${CLAUDE_PLUGIN_ROOT}/scripts/`
+
+Where `CLAUDE_PLUGIN_ROOT` points to the flux-capacitor plugin directory.
+
+## Example Execution
 
 ```bash
-# Issue key
-/run MEM-123
+# User runs:
+/run Add OAuth authentication with Google and GitHub
 
-# Description
-/run Add OAuth authentication with Google
+# You execute:
+1. task_id="a1b2c3-oauth"
+2. worktree_path=$(${CLAUDE_PLUGIN_ROOT}/scripts/create-worktree.sh a1b2c3-oauth myapp)
+   # Returns: /Users/alice/projects/myapp-a1b2c3-oauth
+3. target=$(${CLAUDE_PLUGIN_ROOT}/scripts/launch-session.sh "$worktree_path" a1b2c3-oauth myapp)
+   # Returns: SESSION:flux-myapp-a1b2c3-oauth
+4. ${CLAUDE_PLUGIN_ROOT}/scripts/send-prompt.sh flux-myapp-a1b2c3-oauth "Add OAuth..." "$worktree_path" feature/a1b2c3-oauth myapp
+5. Report success with session info
 ```
+
+## Important Notes
+
+- **Be concise**: The user wants to get the session launched quickly
+- **Provide clear instructions**: Make it easy to attach/switch to the session
+- **Save the task ID**: User will need it for cleanup later
+- **Confirm success**: Let user know the agent is working in parallel
+
+Start the workflow now!

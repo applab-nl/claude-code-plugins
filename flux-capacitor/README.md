@@ -1,73 +1,55 @@
 # Flux Capacitor Plugin
 
-**Feature Development Lifecycle Orchestrator** - A comprehensive Claude Code plugin that transforms feature requests into detailed implementation plans with issue tracker integration, isolated worktree environments, and dedicated session orchestration.
+**Parallel Feature Development Orchestrator** - A Claude Code plugin that enables true parallel development by delegating complex tasks to isolated Claude agents running in git worktrees with tmux sessions.
 
 ## Overview
 
-The Flux Capacitor plugin streamlines your feature development workflow by:
-- Integrating with issue trackers (Linear, GitHub Issues, Jira)
-- Generating comprehensive implementation plans using ultrathink mode
-- Creating isolated git worktrees for parallel development
-- Launching dedicated Claude Code sessions in **tmux panes** for fast, robust operation
-- Providing clear subagent delegation strategies
-- Managing the complete feature lifecycle from planning to completion and cleanup
+The Flux Capacitor plugin solves a fundamental problem: **how to work on multiple features simultaneously without conflicts**. It creates isolated environments for each task, launches dedicated Claude Code sessions, and provides built-in quality gates to ensure production-ready code.
+
+### Core Concept
+
+```
+Main Project (you keep working)
+    │
+    ├─→ Flux Session 1: OAuth implementation
+    │   └─ Isolated worktree + tmux session
+    │
+    ├─→ Flux Session 2: Notifications feature
+    │   └─ Isolated worktree + tmux session
+    │
+    └─→ Flux Session 3: Payment integration
+        └─ Isolated worktree + tmux session
+
+All three develop in parallel without conflicts!
+```
 
 ## Features
 
-### 🎯 Multiple Workflow Modes
+### 🚀 True Parallel Development
+- Multiple features developing simultaneously
+- Complete isolation via git worktrees
+- No context switching or git stashing
+- Safe merge-back when complete
 
-**Mode 1: Issue Key**
-```bash
-/run MEM-123
-```
-Fetches issue details from your tracker, generates a plan, updates issue status, and provides clear next steps.
+### 🎯 Intelligent Orchestration
+- Tmux panes (if in tmux) or new sessions (if not)
+- Automatic worktree creation and management
+- Meta prompt with comprehensive task instructions
+- Built-in quality gates and subagent delegation
 
-**Mode 2: Description with Issue Tracker**
-```bash
-/run Add OAuth authentication with Google and GitHub
-```
-Searches for similar issues, optionally creates a new one, then follows Mode 1 workflow.
+### ✅ Quality Assurance
+Every task automatically includes:
+- Ultrathink comprehensive planning
+- Intelligent subagent delegation
+- Comprehensive test coverage
+- Code review before completion
+- Security review for all changes
 
-**Mode 3: Plain Description (No Tracker)**
-```bash
-/run Implement user profile management
-```
-Generates comprehensive plan without issue tracker integration.
-
-### 🔗 Issue Tracker Integration
-
-- **Linear**: Full integration with status updates, assignments, and comments
-- **GitHub Issues**: Coming soon
-- **Jira**: Coming soon
-
-### 🛠️ Workspace Orchestration (via Tmux)
-
-- **Git Worktrees**: Create isolated development environments automatically
-- **Tmux Sessions**: Launch Claude Code sessions in tmux panes (4-6x faster than terminal windows!)
-- **Output Capture**: Monitor session progress and capture output in real-time
-- **Parallel Development**: Work on multiple features simultaneously without context switching
-- **Auto-initialization**: Run setup scripts on worktree creation
-- **Lifecycle Management**: Track sessions, check status, capture output, and clean up when done
-
-### 🧠 Ultrathink Planning
-
-Every feature gets a comprehensive implementation plan including:
-- Technical approach and strategy
-- 5-15 detailed implementation steps
-- Subagent delegation recommendations
-- Success criteria and testing plan
-- Effort estimation
-
-### 🤖 Subagent Delegation
-
-Intelligent recommendations for specialized agents:
-- `architecture-advisor` for design decisions
-- `flutter-specialist` for mobile development
-- `kotlin-backend-specialist` for backend APIs
-- `frontend-specialist` for React/Next.js/Svelte
-- `supabase-integration-expert` for database/auth
-- `test-engineer` for comprehensive testing
-- `code-reviewer` for quality assurance
+### 🔧 Simple & Robust
+- Pure shell scripts (no complex dependencies)
+- Automatic session management
+- Safe cleanup with merge verification
+- Status monitoring and progress tracking
 
 ## Installation
 
@@ -86,343 +68,522 @@ Intelligent recommendations for specialized agents:
 
 ## Requirements
 
-- Claude Code CLI
-- **tmux-cli** (required for session management):
+- **Claude Code CLI** (latest version)
+- **tmux** - Session/pane management:
   ```bash
-  uv tool install claude-code-tools
+  # macOS
+  brew install tmux
+
+  # Linux
+  sudo apt-get install tmux  # Debian/Ubuntu
+  sudo yum install tmux      # CentOS/RHEL
   ```
-- Node.js 18+ (for bundled MCP server)
-- Git 2.30+ (for worktree support)
-- Optional: Linear MCP server for issue tracking integration
+- **Git 2.30+** - Worktree support
+- **Bash 4.0+** - Script execution
 
-**Note**: The flux-capacitor MCP server is now bundled with the plugin and starts automatically when enabled. No separate installation required!
+## Commands
 
-## Usage
+### `/run <task-description>`
+Launch a new flux-capacitor session for parallel development.
 
-### Basic Usage
-
-1. **With Issue Key** (requires Linear MCP):
-   ```bash
-   /run MEM-123
-   ```
-
-2. **With Description**:
-   ```bash
-   /run Add real-time notifications with Supabase
-   ```
-
-3. **Approve the Plan**:
-   Review the generated implementation plan and approve when ready
-
-4. **Start Development**:
-   Follow the provided next steps and use recommended subagents
-
-### Advanced Usage
-
-**Add context to issue key**:
+**Examples:**
 ```bash
-/run MEM-123 Focus on mobile-first approach
+/run Add OAuth authentication with Google and GitHub
+/run Implement real-time notifications using Supabase
+/run Refactor authentication system for better security
 ```
 
-**Create detailed feature request**:
+**What it does:**
+1. Generates unique task ID
+2. Creates isolated git worktree
+3. Launches tmux pane/session with Claude Code
+4. Sends meta prompt with quality gates
+5. Provides instructions to attach/monitor
+
+### `/cleanup <task-id>`
+Safely merge changes and cleanup session.
+
+**Examples:**
 ```bash
-/run Implement authentication system with OAuth (Google, GitHub), email/password, and magic links. Include MFA support.
+/cleanup oauth-a1b2c3
 ```
+
+**What it does:**
+1. Checks for uncommitted changes (prompts to commit/discard/abort)
+2. Merges feature branch to current branch
+3. Handles merge conflicts gracefully
+4. Removes worktree
+5. Deletes feature branch
+6. Kills tmux session
+
+**Safety features:**
+- Never loses uncommitted work
+- Always merges before cleanup
+- Preserves state on conflicts
+- Can retry after fixes
+
+### `/flux-list`
+List all active flux-capacitor sessions.
+
+**Example output:**
+```
+Active Flux Capacitor Sessions:
+
+1. flux-myapp-oauth-a1b2c3
+   Task ID: oauth-a1b2c3
+   Worktree: /Users/alice/projects/myapp-oauth-a1b2c3
+   Branch: feature/oauth-a1b2c3
+   Uptime: 2h 34m
+
+2. flux-myapp-notifications-def456
+   Task ID: notifications-def456
+   Worktree: /Users/alice/projects/myapp-notifications-def456
+   Branch: feature/notifications-def456
+   Uptime: 45m
+
+Total: 2 active session(s)
+```
+
+### `/flux-status <task-id>`
+Get detailed status of a specific session.
+
+**Examples:**
+```bash
+/flux-status oauth-a1b2c3
+```
+
+**Shows:**
+- Session health (running/stopped)
+- Worktree status (uncommitted changes, commits ahead)
+- Recent activity (last 15 lines from tmux pane)
+- Next steps
+
+## Usage Workflow
+
+### 1. Start a New Task
+
+```bash
+# In your main Claude Code session
+/run Add OAuth authentication with Google and GitHub
+```
+
+**Output:**
+```
+🎯 Flux Capacitor Session Created!
+
+  Task ID: oauth-a1b2c3
+  Session: flux-myapp-oauth-a1b2c3
+  Worktree: ../myapp-oauth-a1b2c3
+  Branch: feature/oauth-a1b2c3
+
+📍 Attach to session:
+   tmux attach -t flux-myapp-oauth-a1b2c3
+
+The flux-capacitor agent is working on your task in the background.
+
+When complete: /cleanup oauth-a1b2c3
+```
+
+### 2. Monitor Progress
+
+**Option A: Check status without attaching**
+```bash
+/flux-status oauth-a1b2c3
+```
+
+**Option B: Attach to the session**
+```bash
+tmux attach -t flux-myapp-oauth-a1b2c3
+```
+
+Detach anytime with: `Ctrl+b, d`
+
+### 3. Work on Multiple Tasks
+
+```bash
+# Start second task (first one still running)
+/run Implement real-time notifications
+
+# Start third task (both previous still running)
+/run Add payment integration with Stripe
+
+# List all active sessions
+/flux-list
+```
+
+All three tasks develop in parallel!
+
+### 4. Merge Completed Work
+
+When a task is complete (check with `/flux-status`):
+
+```bash
+/cleanup oauth-a1b2c3
+```
+
+This merges the changes to your current branch and cleans up the isolated environment.
 
 ## How It Works
 
-1. **Input Detection**: Parses your input to determine workflow mode (issue key vs description)
+### Architecture
 
-2. **Issue Tracker Integration**:
-   - Detects available MCP servers (Linear, GitHub, Jira)
-   - Fetches or creates issues as needed
-   - Searches for similar existing issues
+```
+┌─────────────────────────────────────────┐
+│  /run "Add OAuth authentication"        │
+└────────────────┬────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────┐
+│  Shell Scripts Orchestration            │
+│  1. create-worktree.sh                  │
+│  2. launch-session.sh                   │
+│  3. send-prompt.sh                      │
+└────────────────┬────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────┐
+│  Git Worktree Created                   │
+│  ../myapp-oauth-a1b2c3/                 │
+│  (isolated, parallel development)       │
+└────────────────┬────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────┐
+│  Tmux Pane/Session Created              │
+│  Claude Code launched                   │
+│  --dangerously-skip-permissions         │
+└────────────────┬────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────┐
+│  Meta Prompt Sent                       │
+│  • Task description                     │
+│  • Quality gate requirements            │
+│  • Subagent delegation strategy         │
+└────────────────┬────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────┐
+│  Flux-Capacitor Agent Executes          │
+│  1. Ultrathink comprehensive plan       │
+│  2. Delegate to specialist subagents    │
+│  3. Implement with tests                │
+│  4. Code review                         │
+│  5. Security review                     │
+│  6. Complete & summarize                │
+└─────────────────────────────────────────┘
+```
 
-3. **Ultrathink Planning**:
-   - Analyzes requirements and codebase
-   - Generates comprehensive 5-15 step plan
-   - Identifies appropriate subagents for each step
-   - Defines success criteria and testing approach
+### Quality Gates
 
-4. **User Approval**:
-   - Presents complete plan for review
-   - Waits for explicit approval before proceeding
+Every flux-capacitor session enforces:
 
-5. **Issue Updates** (if applicable):
-   - Updates issue status to "In Progress"
-   - Assigns issue to current user
-   - Adds implementation plan as comment
+✅ **Ultrathink Planning** - Comprehensive 5-15 step plan before coding
+✅ **Subagent Delegation** - Use specialists, don't do everything yourself
+✅ **Comprehensive Tests** - Unit, component, integration, E2E
+✅ **Code Review** - Quality assurance via `/agent code-reviewer`
+✅ **Security Review** - OWASP top 10, auth, input validation
+✅ **Clear Commits** - Frequent commits with descriptive messages
+✅ **Documentation** - Updated docs for all changes
 
-6. **Worktree Creation** (if flux-capacitor-mcp available):
-   - Creates feature branch if needed
-   - Creates isolated git worktree as sibling directory
-   - Executes initialization scripts (`.worktree-init/`)
+### Subagent Delegation
 
-7. **Session Launch** (if flux-capacitor-mcp available):
-   - Creates new tmux pane (4-6x faster than terminal windows)
-   - Changes to worktree directory
-   - Launches Claude Code in the tmux pane
-   - Passes full implementation plan to the session
-   - Assigns appropriate specialized agent
+The flux-capacitor agent intelligently delegates to specialists:
 
-8. **Parallel Development**:
-   - Original session remains active for other work
-   - New session works independently in isolated worktree
-   - No context switching or git stashing needed
+**Architecture & Design:**
+- `architecture-advisor` - Design patterns, system architecture
 
-9. **Lifecycle Management**:
-   - Check session status anytime
-   - Clean up worktrees when feature is complete
-   - Update issue tracker through completion
+**Frontend:**
+- `frontend-specialist` - React, Next.js, Svelte
+
+**Backend:**
+- `kotlin-backend-specialist` - Spring Boot, Kotlin, APIs
+- `supabase-integration-expert` - Database, auth, Supabase
+
+**Mobile:**
+- `flutter-specialist` - Flutter/Dart applications
+- `android-debug-fixer` - Android debugging
+- `ios-debug-fixer` - iOS debugging
+
+**Quality:**
+- `test-engineer` - Comprehensive test coverage
+- `code-reviewer` - Quality & security review
+- `refactoring-specialist` - Safe code improvements
+
+**DevOps:**
+- `ci-cd-specialist` - GitHub Actions, deployments
+- `monitoring-integration-specialist` - Sentry, observability
 
 ## Configuration
 
-### Workspace Orchestrator MCP (Bundled) ✨
+### Worktree Initialization Scripts
 
-The flux-capacitor-mcp MCP server is **now bundled with the plugin** and starts automatically when you enable the plugin. No manual configuration required!
+Create `.worktree-init/` directory in your project root with executable scripts:
 
-**Features Enabled Automatically:**
-- ✅ Isolated git worktree creation
-- ✅ Dedicated Claude Code session launching
-- ✅ Parallel feature development
-- ✅ Session lifecycle management
-- ✅ Automated worktree initialization scripts
-
-**Advanced Configuration (Optional):**
-
-If you want to customize the MCP server behavior, you can override settings by adding to `~/.claude/mcp_config.json`:
-```json
-{
-  "mcpServers": {
-    "flux-capacitor-mcp": {
-      "env": {
-        "LOG_LEVEL": "debug"
-      }
-    }
-  }
-}
-```
-
-Available environment variables:
-- `LOG_LEVEL`: `debug`, `info`, `warn`, `error` (default: `info`)
-
-### Linear Integration
-
-Install and configure the Linear MCP server:
-
-```json
-{
-  "mcpServers": {
-    "linear": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-linear"]
-    }
-  }
-}
-```
-
-Set your Linear API key:
 ```bash
-export LINEAR_API_KEY=your_api_key
+mkdir -p .worktree-init
+```
+
+**Example: Install dependencies on worktree creation**
+
+`.worktree-init/01-install-deps.sh`:
+```bash
+#!/usr/bin/env bash
+npm install
+```
+
+```bash
+chmod +x .worktree-init/01-install-deps.sh
+```
+
+These scripts run automatically when a worktree is created.
+
+### Environment Variables
+
+Optional configuration via environment variables:
+
+```bash
+# Logging level for scripts
+export FLUX_LOG_LEVEL=debug  # debug, info, warn, error (default: info)
 ```
 
 ## Examples
 
-### Example 1: Full Workflow (Default Experience)
+### Example 1: Single Feature Development
 
-```
-User: /run MEM-123
+```bash
+# Start OAuth feature
+$ /run Add OAuth authentication with Google and GitHub
 
-✓ Detected issue key: MEM-123
-✓ Linear MCP server found
-✓ flux-capacitor-mcp server active (bundled)
-✓ Fetching issue details...
+🎯 Session created: flux-myapp-oauth-a1b2c3
 
-📋 Issue: Add OAuth authentication with Google and GitHub
-   Status: Todo
-   Team: Product
+# Check status later
+$ /flux-status oauth-a1b2c3
 
-⏳ Entering ultrathink mode to generate plan...
+📊 Session Status: oauth-a1b2c3
+  Status: ✓ Running
+  Commits ahead: 8
+  Last commit: 5 minutes ago - Add OAuth tests
 
-📋 Implementation Plan: Add OAuth Authentication
-[... comprehensive 10-step plan ...]
+# When complete
+$ /cleanup oauth-a1b2c3
 
-❓ Do you approve this plan?
-
-User: yes
-
-✓ Plan approved
-✓ Updating Linear issue → In Progress
-✓ Assigning issue to you
-✓ Adding comment with plan summary
-
-🔧 Creating isolated worktree...
-✓ Branch created: feature/mem-123-add-oauth
-✓ Worktree created: /Users/alice/projects/my-app-mem-123
-✓ Initialization scripts executed: 3
-
-🚀 Launching dedicated Claude Code session...
-
-✓ Session launched successfully!
-  Session ID: sess_my-app-mem-123_1729012345_abc123
-  Tmux Pane: remote-cli-session:0.2
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎯 Feature Development Started!
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-A new tmux pane has been created with Claude Code running in the worktree.
-
-The session will implement OAuth authentication using:
-- supabase-integration-expert for auth configuration
-- frontend-specialist for UI components
-- test-engineer for comprehensive testing
-- code-reviewer for security review
-
-You can:
-✓ Attach to the tmux pane to monitor progress (tmux-cli attach)
-✓ Continue working in this session on other tasks
-✓ Check status anytime to capture recent output
-
-When complete, clean up with: /flux-capacitor-cleanup mem-123
+✅ Cleanup complete!
+  • Changes merged to: main
+  • All tests passing
 ```
 
-### Example 2: Description-Based Workflow
+### Example 2: Parallel Feature Development
 
-```
-User: /run Add real-time notifications
+```bash
+# Main session - you're working on UI refactoring
+[main] $ /run Add OAuth authentication with Google
 
-✓ Detected feature description
-✓ Linear MCP server found
-✓ flux-capacitor-mcp server active (bundled)
-✓ Searching for similar issues...
+✓ Created session: flux-myapp-oauth-a1b2c3
 
-Found 1 similar issue:
-1. MEM-145: Real-time messaging (85% match)
+# Continue working while OAuth develops in parallel
+[main] $ /run Implement real-time notifications
 
-Use existing issue or create new? [1/new]: new
+✓ Created session: flux-myapp-notifications-def456
 
-✓ Creating new issue...
-✓ Created MEM-156: Add real-time notifications
+# Start third parallel task
+[main] $ /run Add payment integration with Stripe
 
-⏳ Entering ultrathink mode to generate plan...
+✓ Created session: flux-myapp-payments-ghi789
 
-📋 Implementation Plan: Real-time Notifications
-[... comprehensive plan ...]
+# List all parallel work
+[main] $ /flux-list
 
-❓ Do you approve this plan?
+Active Flux Capacitor Sessions:
+  1. oauth-a1b2c3 (running 45m)
+  2. notifications-def456 (running 12m)
+  3. payments-ghi789 (running 2m)
 
-User: yes
+# First one completes
+[main] $ /cleanup oauth-a1b2c3
 
-✓ Plan approved
-✓ Updating Linear issue → In Progress
-✓ Assigning issue to you
-✓ Adding comment with plan summary
+✅ OAuth merged! Notifications and payments still developing.
 
-🔧 Creating isolated worktree...
-✓ Branch created: feature/mem-156-add-real-time-notifications
-✓ Worktree created: /Users/alice/projects/my-app-mem-156
-✓ Initialization scripts executed: 2
-
-🚀 Launching dedicated Claude Code session...
-
-✓ Session launched successfully!
-  Session ID: sess_my-app-mem-156_1729034567_xyz789
-  Tmux Pane: remote-cli-session:0.3
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎯 Feature Development Started!
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-The session will implement real-time notifications using:
-- supabase-integration-expert for real-time subscriptions
-- frontend-specialist for notification UI
-- test-engineer for testing
+# Now you have OAuth in main while others continue in parallel
 ```
 
-### Example 3: Parallel Feature Development
+### Example 3: Conflict Resolution
 
-```
-User: I need to work on authentication and payment features simultaneously
+```bash
+$ /cleanup oauth-a1b2c3
 
-Claude: I'll set up parallel worktrees for both features.
+❌ Merge conflicts detected!
 
-[Creates first worktree for MEM-123: authentication]
-✓ Worktree 1: /Users/alice/projects/my-app-mem-123
-✓ Session launched in tmux pane: remote-cli-session:0.2
+CONFLICT (content): Merge conflict in src/auth/index.ts
 
-[Creates second worktree for MEM-124: payment]
-✓ Worktree 2: /Users/alice/projects/my-app-mem-124
-✓ Session launched in tmux pane: remote-cli-session:0.3
+Please resolve conflicts manually, then run:
+  git merge --continue
+  /cleanup oauth-a1b2c3  # Run cleanup again
 
-Both features are now running in isolated environments:
-- Pane 0.2: OAuth authentication (supabase-integration-expert)
-- Pane 0.3: Payment integration (kotlin-backend-specialist)
+# Resolve conflicts manually
+$ vim src/auth/index.ts
+$ git add src/auth/index.ts
+$ git merge --continue
 
-You can attach to either tmux pane to monitor both features.
-No git stashing or context switching needed!
+# Retry cleanup
+$ /cleanup oauth-a1b2c3
+
+✅ Cleanup complete!
 ```
 
 ## Troubleshooting
 
-### Issue Tracker Not Detected
+### Tmux Not Installed
 
-If Linear or other trackers aren't detected:
 ```bash
-claude mcp list
+❌ tmux not found
+
+Install tmux:
+  macOS: brew install tmux
+  Linux: sudo apt-get install tmux
 ```
-Verify your MCP server is configured and running.
 
-### Plan Generation Fails
+### Not in Git Repository
 
-The plugin will fall back to Mode 3 (plain mode) if issue tracker integration fails. You'll still get a comprehensive plan, just without issue tracking features.
+```bash
+❌ Not in a git repository
 
-## Contributing
+Navigate to your project directory:
+  cd /path/to/your/project
+```
 
-Contributions are welcome! Please submit issues and pull requests to the main repository.
+### Session Already Exists
+
+```bash
+❌ Session already exists: flux-myapp-oauth-a1b2c3
+
+This session is already running.
+
+Attach: tmux attach -t flux-myapp-oauth-a1b2c3
+Or cleanup: /cleanup oauth-a1b2c3
+```
+
+### Worktree Creation Failed
+
+```bash
+❌ Failed to create worktree
+
+Common causes:
+  1. Disk space full
+  2. Permission issues
+  3. Branch already exists
+
+Check: git worktree list
+```
+
+## Technical Details
+
+### Directory Structure
+
+```
+flux-capacitor/
+├── .claude-plugin/
+│   └── plugin.json              # Plugin manifest
+├── agents/
+│   └── flux-capacitor.md        # Agent for flux sessions
+├── commands/
+│   ├── run.md                   # /run command
+│   ├── cleanup.md               # /cleanup command
+│   ├── list.md                  # /flux-list command
+│   └── status.md                # /flux-status command
+├── scripts/
+│   ├── lib/                     # Shared utilities
+│   │   ├── common.sh            # Logging, ID generation
+│   │   ├── tmux-utils.sh        # Tmux operations
+│   │   └── worktree-utils.sh    # Git worktree operations
+│   ├── create-worktree.sh       # Create isolated worktree
+│   ├── launch-session.sh        # Launch tmux + Claude
+│   ├── send-prompt.sh           # Send meta prompt
+│   ├── cleanup-session.sh       # Merge & cleanup
+│   ├── list-sessions.sh         # List active sessions
+│   └── session-status.sh        # Get session status
+├── templates/
+│   └── meta-prompt.md           # Meta prompt template
+├── README.md
+├── CHANGELOG.md
+└── LICENSE
+```
+
+### Script-Based Architecture
+
+Flux Capacitor uses **pure shell scripts** for orchestration:
+- No complex dependencies
+- Easy to debug and customize
+- Transparent operations
+- Portable across systems
+
+### Session Naming Convention
+
+Format: `flux-<project>-<task-id>`
+
+Examples:
+- `flux-myapp-oauth-a1b2c3`
+- `flux-dashboard-notifications-def456`
+- `flux-api-refactor-ghi789`
+
+## Best Practices
+
+### Task Descriptions
+
+**Good:**
+- "Add OAuth authentication with Google and GitHub providers"
+- "Implement real-time notifications using Supabase subscriptions"
+- "Refactor authentication system for improved security and maintainability"
+
+**Avoid:**
+- "Fix stuff" (too vague)
+- "Do the thing" (not descriptive)
+- Just a ticket number without context
+
+### When to Use Flux Capacitor
+
+**Perfect for:**
+- ✅ Complex features requiring multiple components
+- ✅ Long-running development tasks
+- ✅ Experimental features you might not merge
+- ✅ Parallel development of multiple features
+- ✅ Work requiring specialist subagent delegation
+
+**Not needed for:**
+- ❌ Quick bug fixes (just fix directly)
+- ❌ Single file edits
+- ❌ Documentation updates
+- ❌ Simple refactoring
+
+### Cleanup Regularly
+
+Don't let sessions accumulate:
+```bash
+# Check what's running
+/flux-list
+
+# Clean up completed sessions
+/cleanup <task-id>
+```
+
+## Version
+
+Current version: 2.0.0
 
 ## License
 
 MIT License - See LICENSE file for details
-
-## Technical Details
-
-### MCP Server Bundling
-
-The flux-capacitor-mcp server is distributed as a **self-contained CommonJS bundle** (~920KB) that includes all dependencies. This ensures zero-configuration installation without requiring `npm install` in the plugin directory.
-
-**Build System:**
-- **Bundler**: [tsup](https://tsup.egoist.dev/) (esbuild-based)
-- **Format**: CommonJS (for compatibility with Node.js dynamic requires)
-- **Bundle Size**: ~920KB (bundled) vs ~100MB+ (with node_modules)
-- **Dependencies Included**: All runtime dependencies bundled into single file
-
-**Why CommonJS Instead of ESM?**
-- Some dependencies (e.g., `simple-git` via `@kwsites/file-exists`) use dynamic `require()` calls
-- ESM doesn't support dynamic require, causing "Dynamic require not supported" errors
-- CommonJS provides better compatibility with existing Node.js ecosystem packages
-
-**Building from Source:**
-```bash
-cd mcp-server/
-npm install
-npm run build
-# Output: dist/index.cjs (bundled executable)
-```
-
-**Bundle Configuration:**
-The bundling is configured in `mcp-server/tsup.config.ts`:
-- `noExternal: [/.*/]` - Bundles all dependencies
-- `format: ['cjs']` - CommonJS output
-- `platform: 'node'` - Node.js runtime optimizations
-- `treeshake: true` - Removes unused code
-
-## Version
-
-Current version: 1.2.1
 
 ## Support
 
 For issues, feature requests, or questions:
 - GitHub Issues: https://github.com/applab-nl/claude-code-plugins/issues
 - Documentation: https://docs.claude.com/en/docs/claude-code/plugins-reference
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for version history and updates.
+
+---
+
+**Built for parallel development with quality assurance** 🚀

@@ -1,6 +1,7 @@
 ---
 allowed-tools: Bash(git worktree:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(basename:*), Bash(dirname:*)
 description: Create a new git worktree for isolated feature development
+argument-hint: [branch-name]
 ---
 
 ## Context

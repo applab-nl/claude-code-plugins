@@ -174,6 +174,36 @@ Curated collection of specialized agents covering the entire development lifecyc
 /plugin disable flux-capacitor
 ```
 
+## Developer Workflow
+
+### Tmux Session Management
+
+For managing multiple Claude Code sessions across different projects, you can use this handy alias that creates a tmux session named after your current directory:
+
+```bash
+alias claude-here='SESSION="claude-$(basename "$PWD")"; if [ -n "$TMUX" ]; then tmux has-session -t "$SESSION" 2>/dev/null || tmux new-session -d -s "$SESSION" claude; tmux switch-client -t "$SESSION"; else tmux new-session -A -s "$SESSION" claude; fi'
+```
+
+**Add to your shell configuration:**
+
+```bash
+# ~/.zshrc or ~/.bashrc
+echo 'alias claude-here='"'"'SESSION="claude-$(basename "$PWD")"; if [ -n "$TMUX" ]; then tmux has-session -t "$SESSION" 2>/dev/null || tmux new-session -d -s "$SESSION" claude; tmux switch-client -t "$SESSION"; else tmux new-session -A -s "$SESSION" claude; fi'"'"'' >> ~/.zshrc
+```
+
+**Usage:**
+
+```bash
+cd ~/projects/my-app
+claude-here  # Creates/attaches to session named "claude-my-app"
+```
+
+**Features:**
+- Works both inside and outside tmux
+- Automatically attaches to existing sessions
+- Session names match directory names for easy identification
+- Switches your current client when inside tmux
+
 ## Plugin Categories
 
 ### 📋 Workflow & Planning

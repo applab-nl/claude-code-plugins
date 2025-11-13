@@ -1,7 +1,7 @@
 {
   "name": "flux-capacitor",
   "version": "2.0.0",
-  "description": "Feature Development Lifecycle Orchestrator - Fast worktree-based parallel development with comprehensive planning, issue tracker integration, and intelligent subagent delegation",
+  "description": "Parallel feature development orchestrator using git worktrees and tmux sessions for isolated, concurrent task execution",
   "author": {
     "name": "AppLab",
     "url": "https://github.com/applab-nl"
@@ -11,19 +11,16 @@
   "license": "MIT",
   "keywords": [
     "workflow",
-    "planning",
-    "issue-tracking",
-    "linear",
-    "github-issues",
-    "jira",
-    "feature-development",
-    "orchestration",
-    "subagents",
-    "ultrathink",
-    "worktree",
     "parallel-development",
-    "session-management"
+    "git-worktree",
+    "tmux",
+    "orchestration",
+    "feature-development",
+    "isolation",
+    "quality-gates",
+    "ultrathink",
+    "subagents"
   ],
-  "agents": "./agents/flux-capacitor.md",
-  "commands": "./commands/run.md"
+  "agents": "./agents/",
+  "commands": "./commands/"
 }
