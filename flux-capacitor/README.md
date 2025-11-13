@@ -230,11 +230,21 @@ This merges the changes to your current branch and cleans up the isolated enviro
 ```
 ┌─────────────────────────────────────────┐
 │  /run "Add OAuth authentication"        │
+│  (Command - thin wrapper)               │
 └────────────────┬────────────────────────┘
                  │
                  ▼
 ┌─────────────────────────────────────────┐
-│  Shell Scripts Orchestration            │
+│  flux-orchestrator Skill                │
+│  (Orchestration logic)                  │
+│  - Invokes scripts                      │
+│  - Manages workflow                     │
+│  - Reports results                      │
+└────────────────┬────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────┐
+│  Shell Scripts Execute                  │
 │  1. create-worktree.sh                  │
 │  2. launch-session.sh                   │
 │  3. send-prompt.sh                      │
@@ -483,39 +493,47 @@ Check: git worktree list
 ```
 flux-capacitor/
 ├── .claude-plugin/
-│   └── plugin.json              # Plugin manifest
+│   └── plugin.json                  # Plugin manifest
 ├── agents/
-│   └── flux-capacitor.md        # Agent for flux sessions
+│   └── flux-capacitor.md            # Agent for flux sessions
 ├── commands/
-│   ├── run.md                   # /run command
-│   ├── cleanup.md               # /cleanup command
-│   ├── list.md                  # /flux-list command
-│   └── status.md                # /flux-status command
-├── scripts/
-│   ├── lib/                     # Shared utilities
-│   │   ├── common.sh            # Logging, ID generation
-│   │   ├── tmux-utils.sh        # Tmux operations
-│   │   └── worktree-utils.sh    # Git worktree operations
-│   ├── create-worktree.sh       # Create isolated worktree
-│   ├── launch-session.sh        # Launch tmux + Claude
-│   ├── send-prompt.sh           # Send meta prompt
-│   ├── cleanup-session.sh       # Merge & cleanup
-│   ├── list-sessions.sh         # List active sessions
-│   └── session-status.sh        # Get session status
-├── templates/
-│   └── meta-prompt.md           # Meta prompt template
+│   ├── run.md                       # /run - invokes flux-orchestrator
+│   ├── cleanup.md                   # /cleanup - invokes flux-orchestrator
+│   ├── list.md                      # /flux-list - invokes flux-orchestrator
+│   └── status.md                    # /flux-status - invokes flux-orchestrator
+├── skills/
+│   └── flux-orchestrator/           # Orchestration skill
+│       ├── SKILL.md                 # Skill logic and operations
+│       ├── scripts/                 # Shell scripts used by skill
+│       │   ├── lib/                 # Shared utilities
+│       │   │   ├── common.sh        # Logging, ID generation
+│       │   │   ├── tmux-utils.sh    # Tmux operations
+│       │   │   └── worktree-utils.sh # Git worktree operations
+│       │   ├── create-worktree.sh   # Create isolated worktree
+│       │   ├── launch-session.sh    # Launch tmux + Claude
+│       │   ├── send-prompt.sh       # Send meta prompt
+│       │   ├── cleanup-session.sh   # Merge & cleanup
+│       │   ├── list-sessions.sh     # List active sessions
+│       │   └── session-status.sh    # Get session status
+│       └── templates/
+│           └── meta-prompt.md       # Meta prompt template
 ├── README.md
 ├── CHANGELOG.md
 └── LICENSE
 ```
 
-### Script-Based Architecture
+### Skill-Based Architecture
 
-Flux Capacitor uses **pure shell scripts** for orchestration:
-- No complex dependencies
+Flux Capacitor uses a **skill-based architecture**:
+- **Commands** are thin wrappers that invoke skills
+- **Skills** contain orchestration logic and know how to execute scripts
+- **Scripts** handle low-level operations (git, tmux, etc.)
+- No complex dependencies - pure shell scripts
 - Easy to debug and customize
 - Transparent operations
 - Portable across systems
+
+The `flux-orchestrator` skill is the heart of the plugin, managing the complete lifecycle of parallel development sessions.
 
 ### Session Naming Convention
 

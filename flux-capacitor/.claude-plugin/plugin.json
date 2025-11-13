@@ -22,5 +22,6 @@
     "subagents"
   ],
   "agents": "./agents/",
-  "commands": "./commands/"
+  "commands": "./commands/",
+  "skills": "./skills/"
 }
