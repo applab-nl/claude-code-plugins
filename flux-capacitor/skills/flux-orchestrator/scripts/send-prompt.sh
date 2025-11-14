@@ -18,14 +18,23 @@ if [ $# -lt 5 ]; then
   exit 1
 fi
 
-target="$1"
+target_param="$1"
 task_description="$2"
 worktree_path="$3"
 branch_name="$4"
 project_name="$5"
 
+# Parse target parameter (could be "SESSION:name" or "PANE:id" or just "name")
+if [[ "$target_param" == SESSION:* ]]; then
+  target="${target_param#SESSION:}"
+elif [[ "$target_param" == PANE:* ]]; then
+  target="${target_param#PANE:}"
+else
+  target="$target_param"
+fi
+
 # Load meta prompt template
-template_path="$SCRIPT_DIR/../templates/meta-prompt.md"
+template_path="$(cd "$SCRIPT_DIR/.." && pwd)/templates/meta-prompt.md"
 
 if [ ! -f "$template_path" ]; then
   log_error "Meta prompt template not found: $template_path"
@@ -48,14 +57,19 @@ sleep 3
 # Send the meta prompt
 log_debug "Sending meta prompt to target: $target"
 
-# Escape the prompt for tmux
-# We'll send it line by line to avoid issues with special characters
-while IFS= read -r line; do
-  # Skip empty lines and send non-empty lines
-  if [ -n "$line" ]; then
-    tmux send-keys -t "$target" -l "$line"
-    tmux send-keys -t "$target" C-m
-  fi
-done <<< "$meta_prompt"
+# Send the prompt using literal mode to avoid interpretation issues
+# Write to a temporary file first to avoid command-line escaping issues
+tmp_file=$(mktemp)
+trap "rm -f '$tmp_file'" EXIT
+
+echo "$meta_prompt" > "$tmp_file"
+
+# Send the prompt line by line
+while IFS= read -r line || [ -n "$line" ]; do
+  # Send line literally (disable key name lookup)
+  # Use -- to prevent lines starting with - from being interpreted as flags
+  tmux send-keys -t "$target" -l -- "$line"
+  tmux send-keys -t "$target" C-m
+done < "$tmp_file"
 
 log_info "Meta prompt sent successfully"

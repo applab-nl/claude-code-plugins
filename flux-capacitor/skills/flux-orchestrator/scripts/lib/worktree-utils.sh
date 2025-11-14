@@ -45,7 +45,8 @@ create_worktree() {
   fi
 
   # Run initialization scripts if they exist
-  local init_dir="$(get_git_root)/.worktree-init"
+  local git_root="$(get_git_root)"
+  local init_dir="$git_root/.worktree-init"
   if [ -d "$init_dir" ]; then
     log_info "Running worktree initialization scripts..."
     (
@@ -53,7 +54,7 @@ create_worktree() {
       for script in "$init_dir"/*; do
         if [ -x "$script" ]; then
           log_debug "Running: $(basename "$script")"
-          "$script" || log_warn "Init script failed: $(basename "$script")"
+          "$script" "$git_root" || log_warn "Init script failed: $(basename "$script")"
         fi
       done
     )

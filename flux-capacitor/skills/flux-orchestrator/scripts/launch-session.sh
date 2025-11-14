@@ -51,7 +51,28 @@ if is_in_tmux; then
 
   # Launch Claude in the new pane
   log_debug "Launching Claude Code in pane: $pane_id"
+
+  # Wait for shell to initialize and dotenv prompt to appear
+  sleep 1.5
+
+  # Answer dotenv prompt with 'a' (always)
+  tmux send-keys -t "$pane_id" "a"
+  sleep 0.3
+
+  # Now launch Claude
   send_keys_to_target "$pane_id" "claude --dangerously-skip-permissions"
+
+  # Layer 5: Health check - verify Claude started
+  log_debug "Verifying Claude Code started successfully..."
+  sleep 2
+  pane_output=$(capture_pane_output "$pane_id" 10)
+
+  if echo "$pane_output" | grep -q "Claude Code"; then
+    log_info "✓ Claude Code started successfully"
+  else
+    log_warn "Could not verify Claude Code startup. Check pane manually."
+    log_debug "Recent output: $pane_output"
+  fi
 
   # Output pane ID
   echo "PANE:$pane_id"
@@ -78,7 +99,28 @@ else
 
   # Launch Claude in the new session
   log_debug "Launching Claude Code in session: $session_name"
+
+  # Wait for shell to initialize and dotenv prompt to appear
+  sleep 1.5
+
+  # Answer dotenv prompt with 'a' (always)
+  tmux send-keys -t "$session_name" "a"
+  sleep 0.3
+
+  # Now launch Claude
   send_keys_to_target "$session_name" "claude --dangerously-skip-permissions"
+
+  # Layer 5: Health check - verify Claude started
+  log_debug "Verifying Claude Code started successfully..."
+  sleep 2
+  session_output=$(capture_pane_output "$session_name" 10)
+
+  if echo "$session_output" | grep -q "Claude Code"; then
+    log_info "✓ Claude Code started successfully"
+  else
+    log_warn "Could not verify Claude Code startup. Check session manually."
+    log_debug "Recent output: $session_output"
+  fi
 
   # Output session name
   echo "SESSION:$session_name"
