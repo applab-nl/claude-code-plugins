@@ -72,4 +72,7 @@ while IFS= read -r line || [ -n "$line" ]; do
   tmux send-keys -t "$target" C-m
 done < "$tmp_file"
 
+# Send final Enter to submit the prompt
+tmux send-keys -t "$target" Enter
+
 log_info "Meta prompt sent successfully"
