@@ -19,9 +19,16 @@ Look back in the conversation for the task description provided by the `/run` co
 
 ## Your Steps (Execute in order):
 
-1. **Generate Task ID**:
+1. **Generate Task Identifier**:
    ```bash
-   task_id=$(${CLAUDE_SKILL_ROOT}/scripts/lib/common.sh && generate_task_id)
+   # Generate unique timestamp-based ID
+   task_id=$(source ${CLAUDE_SKILL_ROOT}/scripts/lib/common.sh && generate_task_id)
+
+   # Generate human-readable slug from task description
+   task_slug=$(source ${CLAUDE_SKILL_ROOT}/scripts/lib/common.sh && slugify "$task_description")
+
+   # Combine for descriptive name: slug-id (e.g., fix-performance-bug-1244503a3d73)
+   task_name="${task_slug}-${task_id}"
    ```
 
 2. **Get Project Info**:
@@ -31,17 +38,17 @@ Look back in the conversation for the task description provided by the `/run` co
 
 3. **Create Worktree**:
    ```bash
-   worktree_path=$(${CLAUDE_SKILL_ROOT}/scripts/create-worktree.sh "$task_id" "$project_name")
+   worktree_path=$(${CLAUDE_SKILL_ROOT}/scripts/create-worktree.sh "$task_name" "$project_name")
    ```
 
    This creates:
-   - Branch: `feature/$task_id`
-   - Worktree: `../$project_name-$task_id`
+   - Branch: `feature/$task_name` (e.g., `feature/fix-performance-bug-1244503a3d73`)
+   - Worktree: `../$project_name-$task_name` (e.g., `../myapp-fix-performance-bug-1244503a3d73`)
    - Returns absolute path
 
 4. **Launch Session**:
    ```bash
-   target=$(${CLAUDE_SKILL_ROOT}/scripts/launch-session.sh "$worktree_path" "$task_id" "$project_name")
+   target=$(${CLAUDE_SKILL_ROOT}/scripts/launch-session.sh "$worktree_path" "$task_name" "$project_name")
    ```
 
    This creates:
@@ -51,7 +58,7 @@ Look back in the conversation for the task description provided by the `/run` co
 
 5. **Send Meta Prompt**:
    ```bash
-   ${CLAUDE_SKILL_ROOT}/scripts/send-prompt.sh "$target" "$task_description" "$worktree_path" "feature/$task_id" "$project_name"
+   ${CLAUDE_SKILL_ROOT}/scripts/send-prompt.sh "$target" "$task_description" "$worktree_path" "feature/$task_name" "$project_name"
    ```
 
    This sends the comprehensive meta prompt with task instructions and quality gates.
@@ -65,27 +72,27 @@ Look back in the conversation for the task description provided by the `/run` co
 ```
 🎯 Flux Capacitor Session Created!
 
-  Task ID: <task-id>
+  Task: <task-name>
   Tmux Pane: <pane-id>
   Worktree: <worktree-path>
-  Branch: feature/<task-id>
+  Branch: feature/<task-name>
 
 📍 Switch to pane:
    Ctrl+b, q → <pane-number>
 
 The flux-capacitor agent is working on your task in parallel.
 
-When complete: /cleanup <task-id>
+When complete: /cleanup <task-name>
 ```
 
 **Output Format (SESSION created)**:
 ```
 🎯 Flux Capacitor Session Created!
 
-  Task ID: <task-id>
+  Task: <task-name>
   Session: <session-name>
   Worktree: <worktree-path>
-  Branch: feature/<task-id>
+  Branch: feature/<task-name>
 
 📍 Attach to session:
    tmux attach -t <session-name>
@@ -95,7 +102,7 @@ The flux-capacitor agent is working on your task in the background.
 💡 Tip: You can detach anytime with Ctrl+b, d
       The session will keep running.
 
-When complete: /cleanup <task-id>
+When complete: /cleanup <task-name>
 ```
 
 ---
@@ -228,34 +235,36 @@ Common errors:
 ```bash
 # User invokes: /run Add OAuth authentication
 
-# 1. Generate task ID
-task_id="oauth-a1b2c3"  # From common.sh function
+# 1. Generate task identifier
+task_id="1244503a3d73"  # Unique ID from common.sh function
+task_slug="add-oauth-authentication"  # Human-readable slug from task description
+task_name="${task_slug}-${task_id}"  # Combined: add-oauth-authentication-1244503a3d73
 
 # 2. Get project
 project_name="myapp"
 
 # 3. Create worktree
-worktree_path=$(${CLAUDE_SKILL_ROOT}/scripts/create-worktree.sh oauth-a1b2c3 myapp)
-# Returns: /Users/alice/projects/myapp-oauth-a1b2c3
+worktree_path=$(${CLAUDE_SKILL_ROOT}/scripts/create-worktree.sh add-oauth-authentication-1244503a3d73 myapp)
+# Returns: /Users/alice/projects/myapp-add-oauth-authentication-1244503a3d73
 
 # 4. Launch session
-target=$(${CLAUDE_SKILL_ROOT}/scripts/launch-session.sh "$worktree_path" oauth-a1b2c3 myapp)
-# Returns: SESSION:flux-myapp-oauth-a1b2c3
+target=$(${CLAUDE_SKILL_ROOT}/scripts/launch-session.sh "$worktree_path" add-oauth-authentication-1244503a3d73 myapp)
+# Returns: SESSION:flux-myapp-add-oauth-authentication-1244503a3d73
 
 # 5. Send prompt
-${CLAUDE_SKILL_ROOT}/scripts/send-prompt.sh flux-myapp-oauth-a1b2c3 "Add OAuth authentication" "$worktree_path" feature/oauth-a1b2c3 myapp
+${CLAUDE_SKILL_ROOT}/scripts/send-prompt.sh flux-myapp-add-oauth-authentication-1244503a3d73 "Add OAuth authentication" "$worktree_path" feature/add-oauth-authentication-1244503a3d73 myapp
 
 # 6. Report
 "🎯 Flux Capacitor Session Created!
-  Task ID: oauth-a1b2c3
-  Session: flux-myapp-oauth-a1b2c3
-  Worktree: /Users/alice/projects/myapp-oauth-a1b2c3
-  Branch: feature/oauth-a1b2c3
+  Task: add-oauth-authentication-1244503a3d73
+  Session: flux-myapp-add-oauth-authentication-1244503a3d73
+  Worktree: /Users/alice/projects/myapp-add-oauth-authentication-1244503a3d73
+  Branch: feature/add-oauth-authentication-1244503a3d73
 
 📍 Attach to session:
-   tmux attach -t flux-myapp-oauth-a1b2c3
+   tmux attach -t flux-myapp-add-oauth-authentication-1244503a3d73
 
-When complete: /cleanup oauth-a1b2c3"
+When complete: /cleanup add-oauth-authentication-1244503a3d73"
 ```
 
 ## Philosophy

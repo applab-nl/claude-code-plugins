@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Launch Claude Code session in tmux (pane or new session)
 #
-# Usage: launch-session.sh <worktree-path> <task-id> <project-name>
-# Example: launch-session.sh /path/to/worktree oauth-a1b2c3 myapp
+# Usage: launch-session.sh <worktree-path> <task-name> <project-name>
+# Example: launch-session.sh /path/to/worktree fix-oauth-bug-a1b2c3 myapp
 #
 # Output: PANE:<pane-id> or SESSION:<session-name>
 
@@ -14,12 +14,12 @@ source "$SCRIPT_DIR/lib/tmux-utils.sh"
 
 # Validate arguments
 if [ $# -lt 3 ]; then
-  log_error "Usage: launch-session.sh <worktree-path> <task-id> <project-name>"
+  log_error "Usage: launch-session.sh <worktree-path> <task-name> <project-name>"
   exit 1
 fi
 
 worktree_path="$1"
-task_id="$2"
+task_name="$2"
 project_name="$3"
 
 # Validate worktree exists
@@ -28,7 +28,7 @@ if [ ! -d "$worktree_path" ]; then
   exit 1
 fi
 
-session_name="${FLUX_PREFIX}-${project_name}-${task_id}"
+session_name="${FLUX_PREFIX}-${project_name}-${task_name}"
 
 if is_in_tmux; then
   # Already in tmux: create new pane

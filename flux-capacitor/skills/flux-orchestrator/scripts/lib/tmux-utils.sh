@@ -3,9 +3,11 @@
 
 set -euo pipefail
 
-# Source common utilities
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/common.sh"
+# Source common utilities if not already loaded
+if ! declare -f log_info > /dev/null; then
+  _TMUX_UTILS_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  source "$_TMUX_UTILS_SCRIPT_DIR/common.sh"
+fi
 
 # Check if currently running inside tmux
 is_in_tmux() {

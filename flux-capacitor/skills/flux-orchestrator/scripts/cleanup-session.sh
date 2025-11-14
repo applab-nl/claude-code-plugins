@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Safely merge worktree changes back to source tree and cleanup
 #
-# Usage: cleanup-session.sh <task-id>
-# Example: cleanup-session.sh oauth-a1b2c3
+# Usage: cleanup-session.sh <task-name>
+# Example: cleanup-session.sh fix-oauth-bug-a1b2c3
 #
 # This script:
 # 1. Checks for uncommitted changes in worktree
@@ -20,22 +20,22 @@ source "$SCRIPT_DIR/lib/worktree-utils.sh"
 
 # Validate arguments
 if [ $# -lt 1 ]; then
-  log_error "Usage: cleanup-session.sh <task-id>"
+  log_error "Usage: cleanup-session.sh <task-name>"
   exit 1
 fi
 
-task_id="$1"
+task_name="$1"
 project_name=$(get_project_name)
-session_name="${FLUX_PREFIX}-${project_name}-${task_id}"
-worktree_path=$(get_worktree_path_from_task_id "$task_id")
-branch_name="feature/${task_id}"
+session_name="${FLUX_PREFIX}-${project_name}-${task_name}"
+worktree_path=$(get_worktree_path_from_task_id "$task_name")
+branch_name="feature/${task_name}"
 
-log_section "🔍 Cleanup: $task_id"
+log_section "🔍 Cleanup: $task_name"
 
 # Step 1: Verify worktree exists
 if [ -z "$worktree_path" ] || [ ! -d "$worktree_path" ]; then
-  log_error "Worktree not found for task ID: $task_id"
-  log_error "Expected path: ../${project_name}-${task_id}"
+  log_error "Worktree not found for task: $task_name"
+  log_error "Expected path: ../${project_name}-${task_name}"
   exit 1
 fi
 
@@ -89,7 +89,7 @@ else
   echo ""
   echo "Please resolve conflicts manually, then run:"
   echo "  git merge --continue"
-  echo "  /cleanup $task_id  # Run cleanup again"
+  echo "  /cleanup $task_name  # Run cleanup again"
   echo ""
   log_warn "Cleanup aborted. Worktree preserved for conflict resolution."
   exit 1
