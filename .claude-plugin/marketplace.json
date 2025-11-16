@@ -105,7 +105,7 @@
     {
       "name": "flux-agent",
       "source": "./flux-agent",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "description": "Agent-based feature implementation orchestrator with comprehensive planning, quality gates, and intelligent subagent delegation",
       "author": {
         "name": "AppLab",
