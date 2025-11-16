@@ -89,6 +89,30 @@
       },
       "keywords": ["git", "commit", "automation", "version-control", "workflow", "productivity", "commit-messages", "worktree", "branching"],
       "license": "MIT"
+    },
+    {
+      "name": "flux-skill",
+      "source": "./flux-skill",
+      "version": "1.0.0",
+      "description": "Skill-based feature implementation orchestrator with comprehensive planning, quality gates, and intelligent subagent delegation",
+      "author": {
+        "name": "AppLab",
+        "url": "https://github.com/applab-nl"
+      },
+      "keywords": ["skill", "feature-development", "orchestration", "quality-gates", "ultrathink", "subagents", "testing", "code-review", "security"],
+      "license": "MIT"
+    },
+    {
+      "name": "flux-agent",
+      "source": "./flux-agent",
+      "version": "1.0.0",
+      "description": "Agent-based feature implementation orchestrator with comprehensive planning, quality gates, and intelligent subagent delegation",
+      "author": {
+        "name": "AppLab",
+        "url": "https://github.com/applab-nl"
+      },
+      "keywords": ["agent", "feature-development", "orchestration", "quality-gates", "ultrathink", "subagents", "testing", "code-review", "security"],
+      "license": "MIT"
     }
   ]
 }
