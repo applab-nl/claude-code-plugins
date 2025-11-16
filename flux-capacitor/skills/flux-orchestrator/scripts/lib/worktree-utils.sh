@@ -20,11 +20,17 @@ create_worktree() {
   fi
 
   local branch_name="feature/${task_id}"
-  local worktree_name="${project_name}-${task_id}"
-  local worktree_path="../${worktree_name}"
+  local git_root="$(get_git_root)"
+  local worktrees_dir="${git_root}/.worktrees"
+  local worktree_path="${worktrees_dir}/${task_id}"
 
-  # Get absolute path
-  worktree_path=$(cd "$(dirname "$worktree_path")" && pwd)/$(basename "$worktree_path")
+  # Create .worktrees directory if it doesn't exist
+  if [ ! -d "$worktrees_dir" ]; then
+    mkdir -p "$worktrees_dir" || {
+      log_error "Failed to create .worktrees directory"
+      return 1
+    }
+  fi
 
   log_debug "Creating branch: $branch_name"
 
@@ -40,26 +46,25 @@ create_worktree() {
 
   log_debug "Creating worktree: $worktree_path"
 
-  # Create worktree
-  if ! git worktree add "$worktree_path" "$branch_name" 2>/dev/null; then
+  # Create worktree (redirect output to stderr to keep stdout clean)
+  if ! git worktree add "$worktree_path" "$branch_name" >&2 2>&1; then
     log_error "Failed to create worktree at: $worktree_path"
     return 1
   fi
 
   # Run initialization scripts if they exist
-  local git_root="$(get_git_root)"
   local init_dir="$git_root/.worktree-init"
   if [ -d "$init_dir" ]; then
-    log_info "Running worktree initialization scripts..."
+    log_info "Running worktree initialization scripts..." >&2
     (
       cd "$worktree_path"
       for script in "$init_dir"/*; do
         if [ -x "$script" ]; then
-          log_debug "Running: $(basename "$script")"
-          "$script" "$git_root" || log_warn "Init script failed: $(basename "$script")"
+          log_debug "Running: $(basename "$script")" >&2
+          "$script" "$git_root" >&2 || log_warn "Init script failed: $(basename "$script")" >&2
         fi
       done
-    )
+    ) || true  # Don't fail if init scripts have issues
   fi
 
   echo "$worktree_path"
@@ -80,9 +85,15 @@ remove_worktree() {
 
 # List all flux-capacitor worktrees
 list_flux_worktrees() {
-  local project_name=$(get_project_name)
+  local git_root="$(get_git_root)"
+  local worktrees_dir="${git_root}/.worktrees"
+
+  if [ ! -d "$worktrees_dir" ]; then
+    return 0
+  fi
+
   git worktree list --porcelain | \
-    grep -E "^worktree .+${project_name}-[a-zA-Z0-9]+" | \
+    grep -E "^worktree ${worktrees_dir}/" | \
     sed 's/^worktree //' || true
 }
 
@@ -141,15 +152,12 @@ get_branch_from_task_id() {
 # Get worktree path from task ID
 get_worktree_path_from_task_id() {
   local task_id="$1"
-  local project_name=$(get_project_name)
-  local worktree_name="${project_name}-${task_id}"
+  local git_root="$(get_git_root)"
+  local worktree_path="${git_root}/.worktrees/${task_id}"
 
-  # Get absolute path
-  local worktree_path="../${worktree_name}"
   if [ -d "$worktree_path" ]; then
-    cd "$(dirname "$worktree_path")" && pwd
-    echo "/$(basename "$worktree_path")"
-  fi | tr -d '\n'
+    echo "$worktree_path"
+  fi
 }
 
 # Check if worktree exists for task ID

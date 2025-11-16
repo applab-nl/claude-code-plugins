@@ -35,7 +35,7 @@ log_section "🔍 Cleanup: $task_name"
 # Step 1: Verify worktree exists
 if [ -z "$worktree_path" ] || [ ! -d "$worktree_path" ]; then
   log_error "Worktree not found for task: $task_name"
-  log_error "Expected path: ../${project_name}-${task_name}"
+  log_error "Expected path: .worktrees/${task_name}"
   exit 1
 fi
 

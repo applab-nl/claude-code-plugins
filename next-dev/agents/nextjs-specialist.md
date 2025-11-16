@@ -785,6 +785,300 @@ module.exports = {
 };
 ```
 
+## 14. Client/Server Component State Synchronization
+
+### CRITICAL: Understanding the Server/Client Boundary
+
+**The Problem**: Client components that receive props from server components cannot be updated by `router.refresh()` alone.
+
+When a server component passes data as props to a client component:
+```typescript
+// Server Component (e.g., layout.tsx)
+export default async function Layout() {
+  const user = await fetchUser(); // Server-side fetch
+  return <ClientHeader user={user} />; // Pass as prop
+}
+
+// Client Component (e.g., Header.tsx)
+'use client';
+export function ClientHeader({ user }: Props) {
+  // This 'user' prop is STATIC after initial render
+  // router.refresh() won't update it!
+  return <div>{user.name}</div>;
+}
+```
+
+**Why `router.refresh()` Fails**:
+- `router.refresh()` re-renders **server components** and re-fetches their data
+- It does NOT update props already passed to **client components**
+- Client components receive a **snapshot** of the data at mount time
+
+### Solution Patterns
+
+#### Pattern 1: Event-Based Communication (Recommended for Simple Cases)
+
+**Use when**:
+- Multiple client components need to show the same data
+- Data can be modified in one location (e.g., profile page)
+- No complex state management needed
+
+```typescript
+// Component that receives updates (e.g., Header.tsx)
+'use client';
+import { useState, useEffect } from 'react';
+
+export function Header({ user: initialUser }: Props) {
+  // 1. Convert prop to state so it can be updated
+  const [user, setUser] = useState(initialUser);
+
+  // 2. Listen for custom events
+  useEffect(() => {
+    const handleUpdate = async () => {
+      // Fetch fresh data when notified
+      const response = await fetch('/api/auth/me', {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      if (response.ok) {
+        const updated = await response.json();
+        setUser(updated); // Update local state
+      }
+    };
+
+    window.addEventListener('userUpdated', handleUpdate);
+    return () => window.removeEventListener('userUpdated', handleUpdate);
+  }, []);
+
+  return <div>{user.name}</div>;
+}
+
+// Component that triggers updates (e.g., ProfilePage.tsx)
+'use client';
+export function ProfilePage() {
+  const handleSave = async () => {
+    await updateUserAPI();
+
+    // Update local state
+    setLocalUser(newData);
+
+    // Notify other components
+    window.dispatchEvent(new Event('userUpdated'));
+  };
+}
+```
+
+#### Pattern 2: React Context (Recommended for Global State)
+
+**Use when**:
+- Many components need the same data
+- Data updates frequently
+- Need centralized state management
+
+```typescript
+// context/UserContext.tsx
+'use client';
+import { createContext, useContext, useState, useEffect } from 'react';
+
+const UserContext = createContext<UserContextType | null>(null);
+
+export function UserProvider({ children, initialUser }) {
+  const [user, setUser] = useState(initialUser);
+
+  const refreshUser = async () => {
+    const response = await fetch('/api/auth/me');
+    const updated = await response.json();
+    setUser(updated);
+  };
+
+  return (
+    <UserContext.Provider value={{ user, setUser, refreshUser }}>
+      {children}
+    </UserContext.Provider>
+  );
+}
+
+export const useUser = () => useContext(UserContext);
+
+// Use in any component
+function Header() {
+  const { user, refreshUser } = useUser();
+  return <div>{user.name}</div>;
+}
+
+function ProfilePage() {
+  const { refreshUser } = useUser();
+
+  const handleSave = async () => {
+    await updateUserAPI();
+    await refreshUser(); // All components update automatically
+  };
+}
+```
+
+#### Pattern 3: SWR/React Query (Recommended for Complex Apps)
+
+**Use when**:
+- Need automatic cache invalidation
+- Want optimistic updates
+- Have many API endpoints to manage
+
+```typescript
+'use client';
+import useSWR, { mutate } from 'swr';
+
+const fetcher = (url: string) => fetch(url).then(r => r.json());
+
+// Component 1: Header
+function Header() {
+  const { data: user } = useSWR('/api/auth/me', fetcher);
+  return <div>{user?.name}</div>;
+}
+
+// Component 2: Profile Page
+function ProfilePage() {
+  const { data: user } = useSWR('/api/auth/me', fetcher);
+
+  const handleSave = async () => {
+    await updateUserAPI();
+
+    // Revalidate everywhere automatically
+    mutate('/api/auth/me');
+  };
+}
+```
+
+### Complete Cache Invalidation Checklist
+
+When implementing features that modify shared data:
+
+**1. Server-Side Cache**:
+```typescript
+// In your API route
+import { userCache, cacheKeys } from '@/lib/cache';
+
+export async function PATCH(request: NextRequest) {
+  // Don't use getCurrentUser() - it caches old data!
+  // Authenticate directly to avoid cache pollution
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // Update database
+  await prisma.user.update({ ... });
+
+  // Clear cache AFTER update
+  const cacheKey = cacheKeys.user(user.id);
+  userCache.delete(cacheKey);
+}
+```
+
+**2. Next.js Cache**:
+```typescript
+import { revalidatePath } from 'next/cache';
+
+export async function PATCH(request: NextRequest) {
+  // ... update database ...
+
+  // Force Next.js to revalidate server components
+  revalidatePath('/', 'layout');
+}
+```
+
+**3. Client Components**:
+```typescript
+// Dispatch event
+window.dispatchEvent(new Event('dataUpdated'));
+
+// OR use Context
+const { refreshData } = useDataContext();
+await refreshData();
+
+// OR use SWR
+mutate('/api/data');
+```
+
+**4. HTTP Cache Prevention**:
+```typescript
+// In API route
+const response = NextResponse.json(data);
+response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+response.headers.set('Pragma', 'no-cache');
+response.headers.set('Expires', '0');
+return response;
+
+// In fetch calls
+fetch('/api/data', {
+  cache: 'no-store',
+  headers: { 'Cache-Control': 'no-cache' }
+});
+```
+
+### Anti-Patterns to Avoid
+
+❌ **DON'T**: Rely on `router.refresh()` alone for client component updates
+```typescript
+// This won't work!
+const handleSave = async () => {
+  await updateAPI();
+  router.refresh(); // Client component props won't update!
+};
+```
+
+❌ **DON'T**: Use `getCurrentUser()` in update API routes
+```typescript
+// This caches old data before you update!
+export async function PATCH(request: NextRequest) {
+  const user = await getCurrentUser(); // Caches old name
+  // ... update database ...
+  userCache.delete(key); // Too late, already cached!
+}
+```
+
+❌ **DON'T**: Use `window.location.reload()` for updates
+```typescript
+// Terrible UX - full page refresh, loses state
+window.location.reload();
+```
+
+✅ **DO**: Test ALL locations where data appears
+```typescript
+// After implementing update feature, verify:
+// 1. Component being edited shows new data
+// 2. Header/nav shows new data
+// 3. Other pages showing same data update
+// 4. No manual refresh needed
+```
+
+### Testing Checklist
+
+When implementing features that modify shared data:
+
+1. ✅ **Test the editing component** - Does it show new data immediately?
+2. ✅ **Test other components** - Does the header/nav update?
+3. ✅ **Test without refresh** - Verify no manual refresh needed
+4. ✅ **Test cache invalidation** - Use DEBUG_CACHE=true to verify
+5. ✅ **Test across tabs** - Consider using BroadcastChannel for multi-tab sync
+6. ✅ **Test on slow connections** - Ensure updates don't race
+7. ✅ **Test error cases** - What happens if update fails?
+
+### When to Use Each Pattern
+
+| Scenario | Recommended Solution |
+|----------|---------------------|
+| Simple profile update, 1-2 components | Event-based communication |
+| User data needed everywhere | React Context |
+| Complex app with many API endpoints | SWR or React Query |
+| Real-time updates needed | WebSockets + Context |
+| Multi-tab synchronization | BroadcastChannel API |
+
+### Key Takeaway
+
+**Always think about the data flow and component ownership**:
+- Server components: Use `revalidatePath()` and `router.refresh()`
+- Client components with server props: Use events, Context, or SWR
+- Mixed (server + client): Combine both approaches
+
+**Test in the browser, not just by reading code**. The client/server boundary in Next.js App Router requires careful state management planning.
+
 ## Workflow Best Practices
 
 1. **Always check runtime first**: Use `nextjs_runtime` before making changes to understand current state
@@ -794,6 +1088,9 @@ module.exports = {
 5. **Follow Next.js conventions**: Server Components by default, Client Components only when needed
 6. **Optimize for performance**: Use streaming, Suspense, and proper caching strategies
 7. **Test thoroughly**: Verify all routes work after major changes using browser_eval
+8. **Plan state synchronization early**: Decide if components own data or receive it as props
+9. **Test all data locations**: Don't just test the editing component - verify ALL places showing the data update
+10. **Understand the client/server boundary**: Know when to use server-side vs client-side state management
 
 ## Output Format
 
