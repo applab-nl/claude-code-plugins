@@ -1,0 +1,26 @@
+{
+  "name": "prompt-logger",
+  "version": "1.0.0",
+  "description": "Logs user prompts to a JSON file for analysis and review",
+  "author": {
+    "name": "AppLab",
+    "email": "plugins@applab.nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/prompt-logger",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["logging", "prompts", "analytics", "hooks", "audit"],
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/hooks/log_prompt.py"
+          }
+        ]
+      }
+    ]
+  }
+}
