@@ -1,6 +1,6 @@
 {
   "name": "prompt-logger",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Logs user prompts to a JSON file for analysis and review",
   "author": {
     "name": "AppLab",
