@@ -19,6 +19,17 @@ from datetime import datetime
 from pathlib import Path
 
 
+def find_project_root():
+    """Find the project root directory by looking for .git"""
+    current = Path.cwd()
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    # If no .git found, fallback to current working directory
+    return Path.cwd()
+
+
 def main():
     try:
         # Read JSON input from stdin
@@ -39,8 +50,9 @@ def main():
         if len(prompt.strip()) <= 20:
             sys.exit(0)
 
-        # Ensure log directory exists
-        log_dir = Path.cwd() / "logs"
+        # Find project root and ensure log directory exists there
+        project_root = find_project_root()
+        log_dir = project_root / ".claude" / "logs"
         log_dir.mkdir(parents=True, exist_ok=True)
         log_path = log_dir / "prompts.json"
 
@@ -60,7 +72,9 @@ def main():
             "prompt": prompt,
             "length": len(prompt),
             "session_id": input_data.get("session_id", ""),
-            "cwd": str(Path.cwd())
+            "cwd": str(Path.cwd()),
+            "project_root": str(project_root),
+            "relative_path": str(Path.cwd().relative_to(project_root)) if Path.cwd().is_relative_to(project_root) else str(Path.cwd())
         }
 
         # Append new entry
