@@ -111,6 +111,19 @@
       "category": "productivity",
       "keywords": ["git", "commit", "automation", "version-control", "workflow", "productivity", "commit-messages", "worktree", "branching"],
       "license": "MIT"
+    },
+    {
+      "name": "agents-md",
+      "source": "./agents-md",
+      "version": "1.0.0",
+      "description": "Convert CLAUDE.md to multi-platform AI instruction files following the AGENTS.md standard - supports GitHub Copilot, Gemini CLI, and OpenCode",
+      "author": {
+        "name": "AppLab",
+        "email": "plugins@applab.nl"
+      },
+      "category": "productivity",
+      "keywords": ["agents-md", "claude-md", "copilot", "gemini", "opencode", "ai-instructions", "conversion", "sync", "multi-platform"],
+      "license": "MIT"
     }
   ]
 }
