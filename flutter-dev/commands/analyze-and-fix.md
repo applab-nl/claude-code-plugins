@@ -1,3 +1,7 @@
+---
+description: Run flutter analyze and automatically fix all reported issues
+---
+
 Run `flutter analyze` on the current project and automatically fix all reported issues.
 
 ## Workflow

@@ -24,7 +24,7 @@
     "code-analysis",
     "pub-dev"
   ],
-  "agents": "./agents/flutter-specialist.md",
-  "commands": "./commands/analyze-and-fix.md",
+  "agents": "./agents",
+  "commands": "./commands",
   "mcpServers": "./.mcp.json"
 }

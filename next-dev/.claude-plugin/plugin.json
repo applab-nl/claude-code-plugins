@@ -23,6 +23,6 @@
     "playwright",
     "diagnostics"
   ],
-  "agents": "./agents/nextjs-specialist.md",
+  "agents": "./agents",
   "mcpServers": "./.mcp.json"
 }
