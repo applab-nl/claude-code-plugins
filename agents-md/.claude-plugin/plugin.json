@@ -9,7 +9,7 @@
   "repository": "https://github.com/applab-nl/claude-code-plugins",
   "license": "MIT",
   "keywords": ["agents-md", "claude-md", "copilot", "gemini", "ai-instructions", "conversion"],
-  "agents": "./agents",
+  "agents": ["./agents/instruction-analyzer.md"],
   "commands": "./commands",
   "skills": "./skills"
 }

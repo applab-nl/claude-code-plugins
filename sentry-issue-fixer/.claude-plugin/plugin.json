@@ -19,7 +19,7 @@
     "crash-analysis",
     "bug-fixing"
   ],
-  "agents": "./agents",
+  "agents": ["./agents/sentry-issue-fixer.md"],
   "commands": "./commands",
   "mcpServers": "./.mcp.json"
 }

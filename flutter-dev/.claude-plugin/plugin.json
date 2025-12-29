@@ -24,7 +24,10 @@
     "code-analysis",
     "pub-dev"
   ],
-  "agents": "./agents",
+  "agents": [
+    "./agents/flutter-specialist.md",
+    "./agents/flutter-dependency-updater.md"
+  ],
   "commands": "./commands",
   "mcpServers": "./.mcp.json"
 }

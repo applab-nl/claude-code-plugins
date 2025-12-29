@@ -22,6 +22,6 @@
     "web-development",
     "code-analysis"
   ],
-  "agents": "./agents",
+  "agents": ["./agents/svelte-specialist.md"],
   "mcpServers": "./.mcp.json"
 }
