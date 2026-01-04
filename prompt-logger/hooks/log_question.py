@@ -4,16 +4,13 @@
 # ///
 
 """
-Prompt Logger Hook
+AskUserQuestion Logger Hook
 
-Captures user prompts submitted to Claude Code and logs them to a JSON file.
-Filters out:
-- Commands (prompts starting with '/')
-- Short prompts (20 characters or less)
+Captures AskUserQuestion tool interactions (questions asked by Claude
+and answers provided by the user) and logs them to a JSON file.
 """
 
 import json
-import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -35,19 +32,20 @@ def main():
         # Read JSON input from stdin
         input_data = json.load(sys.stdin)
 
-        # Extract the prompt text
-        prompt = input_data.get("prompt", "")
-
-        # Skip if prompt is empty
-        if not prompt:
+        # Verify this is an AskUserQuestion tool event
+        tool_name = input_data.get("tool_name", "")
+        if tool_name != "AskUserQuestion":
             sys.exit(0)
 
-        # Skip commands (starting with '/')
-        if prompt.strip().startswith("/"):
-            sys.exit(0)
+        # Extract questions and answers
+        tool_input = input_data.get("tool_input", {})
+        tool_response = input_data.get("tool_response", {})
 
-        # Skip short prompts (20 characters or less)
-        if len(prompt.strip()) <= 20:
+        questions = tool_input.get("questions", [])
+        answers = tool_response.get("answers", {})
+
+        # Skip if no questions or answers
+        if not questions or not answers:
             sys.exit(0)
 
         # Find project root and ensure log directory exists there
@@ -68,11 +66,12 @@ def main():
 
         # Create log entry with timestamp and metadata
         log_entry = {
-            "type": "prompt",
+            "type": "question_answer",
             "timestamp": datetime.now().isoformat(),
-            "prompt": prompt,
-            "length": len(prompt),
+            "questions": questions,
+            "answers": answers,
             "session_id": input_data.get("session_id", ""),
+            "tool_use_id": input_data.get("tool_use_id", ""),
             "cwd": str(Path.cwd()),
             "project_root": str(project_root),
             "relative_path": str(Path.cwd().relative_to(project_root)) if Path.cwd().is_relative_to(project_root) else str(Path.cwd())
