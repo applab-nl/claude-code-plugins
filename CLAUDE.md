@@ -1,27 +1,46 @@
+<!-- OPENSPEC:START -->
+# OpenSpec Instructions
+
+These instructions are for AI assistants working in this project.
+
+Always open `@/openspec/AGENTS.md` when the request:
+- Mentions planning or proposals (words like proposal, spec, change, plan)
+- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
+- Sounds ambiguous and you need the authoritative spec before coding
+
+Use `@/openspec/AGENTS.md` to learn:
+- How to create and apply change proposals
+- Spec format and conventions
+- Project structure and guidelines
+
+Keep this managed block so 'openspec update' can refresh the instructions.
+
+<!-- OPENSPEC:END -->
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Repository Overview
 
-This is a **Claude Code Plugins Marketplace** - a curated collection of production-ready plugins that extend Claude Code's capabilities. Each plugin provides specialized functionality through agents, slash commands, hooks, and MCP (Model Context Protocol) servers.
+This is **AppLab's Claude Code Plugins Marketplace** — a curated collection of production-ready plugins that extend Claude Code's capabilities. Each plugin provides specialized functionality through agents, slash commands, hooks, skills, and/or MCP servers.
 
 ### Core Architecture
 
-The repository follows a **monorepo structure** where each plugin is a self-contained directory:
+Monorepo where each plugin is a self-contained directory:
 
 ```
 claude-code-plugins/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace manifest (all plugins)
+│   └── marketplace.json          # Marketplace manifest (all 9 plugins)
 ├── {plugin-name}/
 │   ├── .claude-plugin/
 │   │   └── plugin.json          # Individual plugin manifest
 │   ├── agents/                  # Subagent definitions (.md files)
 │   ├── commands/                # Slash commands (.md files)
-│   ├── skills/                  # Skill definitions (.md files)
-│   ├── hooks/                   # Hook scripts (Python/shell)
-│   ├── .mcp.json               # MCP server configuration
+│   ├── skills/                  # Skill definitions (optional)
+│   ├── hooks/                   # Hook scripts (optional, Python/uv)
+│   ├── .mcp.json               # MCP server config (optional)
 │   ├── README.md
 │   ├── CHANGELOG.md
 │   └── LICENSE
@@ -29,117 +48,98 @@ claude-code-plugins/
 
 ### Available Plugins
 
-#### Development Specialists (MCP-powered)
+**Productivity:**
+1. **hooks-notifier** (v2.0.0) — Audio/visual notifications when input needed or tasks complete (Python hooks)
+2. **prompt-logger** (v1.3.0) — Logs user prompts and AskUserQuestion interactions to JSON (Python hooks)
+3. **git-tools** (v1.3.0) — Git automation: commit messages, worktree management, branching workflows (commands + skills)
+4. **agents-md** (v1.0.0) — Convert CLAUDE.md to multi-platform AI instruction files: GitHub Copilot, Gemini, OpenCode (agent + commands + skills)
 
-1. **next-dev** (v1.0.0) - Next.js Development Specialist
-   - Runtime diagnostics via next-devtools MCP integration
-   - Automated upgrades, page testing
-   - Server/Client Components expertise
+**Development Specialists:**
+5. **next-dev** (v1.0.0) — Next.js specialist with `next-devtools-mcp` for runtime diagnostics
+6. **svelte-dev** (v1.0.0) — Svelte 5 specialist with `@sveltejs/mcp` for docs and code analysis
+7. **flutter-dev** (v1.2.0) — Flutter/Dart specialist with Dart MCP server for code analysis and testing
+8. **sentry-issue-fixer** (v1.0.0) — Sentry error investigation with `@modelcontextprotocol/server-sentry`
 
-2. **svelte-dev** (v1.0.0) - Svelte 5 Development Specialist
-   - Documentation access, static code analysis
-   - Svelte 5 runes expertise ($state, $derived, $effect, $props)
+**Agent Collections:**
+9. **agents** (v1.0.0) — 13 specialized agents: architecture, code review, testing, debugging, frontend, backend (Kotlin), mobile (iOS/Android), CI/CD, monitoring, refactoring, dependencies, Supabase
 
-3. **flutter-dev** (v1.2.0) - Flutter/Dart Development Specialist
-   - Code analysis, package management
-   - Runtime introspection, testing
-   - Cross-platform mobile development
+## Plugin Patterns
 
-4. **sentry-issue-fixer** (v1.0.0) - Automated Sentry Error Investigation
-   - Fetches errors from Sentry
-   - Analyzes iOS/Android device logs
-   - Proposes comprehensive fixes
+Plugins use one or more of these patterns:
 
-#### Productivity Tools
+### Pattern 1: Hooks (Python/uv)
+Used by: `hooks-notifier`, `prompt-logger`
 
-5. **git-tools** (v1.3.0) - Git Automation Tools
-   - Intelligent commit message generation
-   - Git worktree management for isolated development
-   - Streamlined Git workflows
+Hooks are defined inline in `plugin.json` and run Python scripts via `uv run`:
+```json
+{
+  "hooks": {
+    "Notification": [{
+      "matcher": "",
+      "hooks": [{ "type": "command", "command": "uv run ${CLAUDE_PLUGIN_ROOT}/hooks/notification.py" }]
+    }]
+  }
+}
+```
 
-6. **hooks-notifier** (v2.0.0) - Audio & Visual Notifications
-   - Alerts when input is required
-   - Notifications when tasks complete
-   - macOS native integration
+### Pattern 2: Agents + Commands + Skills (Markdown)
+Used by: `git-tools`, `agents-md`, `agents`, `sentry-issue-fixer`, `flutter-dev`
 
-7. **prompt-logger** (v1.3.0) - Prompt Logging & Analytics
-   - Logs user prompts to JSON files
-   - Tracks AskUserQuestion interactions
-   - Useful for analysis and review
+Plugin manifest points to directories/files:
+```json
+{
+  "agents": ["./agents/my-agent.md"],
+  "commands": "./commands",
+  "skills": "./skills"
+}
+```
 
-8. **agents-md** (v1.0.0) - AI Instruction Converter
-   - Convert CLAUDE.md to multi-platform formats
-   - Supports GitHub Copilot, Gemini CLI, OpenCode
-   - AGENTS.md standard compliance
+### Pattern 3: External MCP Server
+Used by: `next-dev`, `svelte-dev`, `flutter-dev`, `sentry-issue-fixer`
 
-#### Security
-
-9. **repo-audit** (v1.0.0) - Repository Security Scanner
-   - 7-phase security audit (metadata, prompt injection, install scripts, deps, code, CI/CD, binaries)
-   - AI prompt injection detection for agent config files
-   - Structured risk reports (CLEAN/LOW/MEDIUM/HIGH/CRITICAL)
-
-#### Agent Collections
-
-10. **agents** (v1.0.0) - 13 Specialized Development Agents
-   - Architecture, frontend, backend specialists
-   - Mobile debugging (iOS/Android)
-   - Testing, CI/CD, refactoring
-   - Code review, dependency auditing
-
-## Plugin Development
-
-### MCP Server Configuration
-
-Pattern for `.mcp.json` using external packages:
-
+All MCP servers use external packages (no bundled servers):
 ```json
 {
   "mcpServers": {
     "mcp": {
       "command": "npx",
-      "args": ["-y", "package-name@latest"]
+      "args": ["-y", "next-devtools-mcp@latest"]
     }
   }
 }
 ```
 
+**Naming convention:** MCP servers should be named `mcp` in `.mcp.json` for consistency. Exception: `sentry-issue-fixer` uses `sentry` as the server name (requires env vars `SENTRY_AUTH_TOKEN`, `SENTRY_ORG_SLUG`).
+
 ### Plugin Manifest Structure
 
-**`.claude-plugin/plugin.json`** - Individual plugin manifest
-- Defines name, version, description
-- Points to agents, commands, hooks, mcpServers
+**`.claude-plugin/plugin.json`** — Individual plugin manifest
+- Defines name, version, description, author, keywords
+- Points to agents, commands, skills, hooks, mcpServers
 - Must match entry in marketplace.json
 
-**`.claude-plugin/marketplace.json`** - Root marketplace manifest
+**`.claude-plugin/marketplace.json`** — Root marketplace manifest
 - Lists all plugins with metadata
 - Used by `/plugin marketplace add` command
 - Keep in sync when adding/updating plugins
-
-### Naming Convention
-
-All MCP servers should be named **`mcp`** in their respective `.mcp.json` files for consistency and brevity. This is standardized across all plugins.
 
 ## Development Workflow
 
 ### Adding a New Plugin
 
-1. Create plugin directory structure
-2. Write plugin.json manifest
-3. Create agents/commands/hooks as needed
-4. Add MCP server if required
-5. Update marketplace.json
-6. Test locally
-7. Update README.md
-8. Add CHANGELOG.md entry
+1. Create plugin directory with `.claude-plugin/plugin.json`
+2. Add agents/commands/skills/hooks as needed
+3. Add `.mcp.json` if MCP server required
+4. Add entry to `.claude-plugin/marketplace.json`
+5. Add README.md and CHANGELOG.md
+6. Test locally with `/plugin marketplace add`
 
 ### Modifying Existing Plugins
 
-1. Update version in plugin.json and marketplace.json (follow semver)
-2. Make changes to agents/commands/hooks/MCP server
+1. Update version in plugin.json AND marketplace.json (semver)
+2. Make changes to agents/commands/skills/hooks/MCP config
 3. Update CHANGELOG.md
 4. Test the plugin end-to-end
-5. Commit with descriptive message
 
 ### Testing Plugins Locally
 
@@ -148,62 +148,17 @@ All MCP servers should be named **`mcp`** in their respective `.mcp.json` files 
 /plugin marketplace add /path/to/claude-code-plugins
 
 # Install specific plugin
-/plugin install git-tools@applab-plugins
+/plugin install hooks-notifier@applab-plugins
 
 # Test slash commands
 /sentry-fix https://sentry.io/...  # sentry-issue-fixer
-/sync-instructions                  # agents-md
 ```
-
-## Key Technical Details
-
-### Agent Files (.md)
-
-Agents are markdown files containing:
-- Extended system prompt/instructions
-- Agent-specific tools/capabilities
-- Usage guidelines and examples
-- Proactive behavior instructions
-
-Example path: `sentry-issue-fixer/agents/sentry-issue-fixer.md`
-
-### Command Files (.md)
-
-Slash commands are markdown files that:
-- Expand to full prompts when invoked
-- Can accept arguments
-- Are listed via `/help` when plugin enabled
-
-Example: `/sentry-fix` → `sentry-issue-fixer/commands/sentry-fix.md`
-
-### Hook Scripts
-
-Hooks are event-driven scripts that run on specific triggers:
-- `UserPromptSubmit` - When user submits a prompt
-- `Notification` - When Claude requests user attention
-- `Stop` / `SubagentStop` - When processing completes
-
-Example: `hooks-notifier/hooks/notification.py`
-
-### Distribution Strategy
-
-- Plugins are distributed via GitHub
-- Users install via `/plugin` commands
-- No separate npm install required for end users
-- Hooks use `uv run` for Python dependency management
-
-## Git Workflow
-
-- Main branch: `main`
-- Commit messages should be descriptive (no Claude attribution)
-- Test changes locally before pushing
-- Use branches for significant features
-- Keep commits atomic and focused
 
 ## Important Constraints
 
-1. **No package.json at root** - Each plugin manages its own dependencies
-2. **Semver for versioning** - Both plugin.json and marketplace.json
-3. **MIT License** - Standard across all plugins
-4. **Comprehensive documentation** - README.md required per plugin
-5. **Hook scripts use uv** - For consistent Python dependency management
+1. **No package.json at root** — This is a markdown/config-only monorepo
+2. **No bundled MCP servers** — All plugins use external packages via npx/dart
+3. **Hook scripts use Python/uv** — Not Node.js
+4. **Semver for versioning** — Both plugin.json and marketplace.json
+5. **MIT License** — Standard across all plugins
+6. **README.md required** — Per plugin documentation
