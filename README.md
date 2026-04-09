@@ -170,6 +170,27 @@ Convert CLAUDE.md files to multi-platform AI instruction formats following the A
 - OpenCode integration
 - Keep instructions in sync across platforms
 
+### Security
+
+#### 🔒 Repo Audit
+
+**Repository Security Scanner**
+
+Comprehensive security audit for cloned repositories. Scans for backdoors, supply chain attacks, prompt injection, and malicious code patterns.
+
+- **Version**: 1.0.0
+- **Category**: Security
+- **Phases**: 7-phase audit workflow
+
+[View Documentation](./repo-audit/README.md)
+
+**Key Features:**
+- AI prompt injection detection (CLAUDE.md, .cursorrules, MCP configs)
+- Supply chain analysis (typosquatting, suspicious deps, lockfile integrity)
+- Dangerous code pattern scanning (eval, reverse shells, crypto mining)
+- CI/CD security checks (GitHub Actions injection, secret exfiltration)
+- Structured risk reports (CLEAN/LOW/MEDIUM/HIGH/CRITICAL)
+
 ### Agent Collections
 
 #### 🤖 Agents Collection
@@ -276,6 +297,9 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 - **Hooks Notifier**: Audio/visual notifications
 - **Prompt Logger**: Prompt analytics and logging
 - **Agents MD**: Multi-platform AI instruction sync
+
+### 🔒 Security
+- **Repo Audit**: Repository security scanner with 7-phase audit
 
 ### 🤖 Development Tools & Agents
 - **Agents Collection**: 13 specialized agents for architecture, backend, testing, quality, DevOps, and monitoring
@@ -392,6 +416,7 @@ We welcome contributions! Please:
 - ✅ Hooks Notifier v2.0.0 (Audio/visual notifications)
 - ✅ Prompt Logger v1.3.0 (Prompt analytics)
 - ✅ Agents MD v1.0.0 (Multi-platform AI instructions)
+- ✅ Repo Audit v1.0.0 (Repository security scanning)
 
 ### Future
 - ⏳ Additional framework-specific specialists
@@ -416,5 +441,5 @@ Special thanks to:
 
 **Marketplace Version**: 1.1.0
 **Last Updated**: 2026-01-31
-**Total Plugins**: 9
+**Total Plugins**: 10
 **Maintainer**: AppLab

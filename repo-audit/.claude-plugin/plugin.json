@@ -1,0 +1,14 @@
+{
+  "name": "repo-audit",
+  "version": "1.0.0",
+  "description": "Security audit for cloned repositories - scans for backdoors, supply chain attacks, prompt injection, and malicious code patterns",
+  "author": {
+    "name": "AppLab",
+    "email": "plugins@applab.nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/repo-audit",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["security", "audit", "backdoor", "supply-chain", "prompt-injection", "malware", "scanning"],
+  "skills": "./skills"
+}

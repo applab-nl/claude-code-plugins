@@ -72,9 +72,16 @@ claude-code-plugins/
    - Supports GitHub Copilot, Gemini CLI, OpenCode
    - AGENTS.md standard compliance
 
+#### Security
+
+9. **repo-audit** (v1.0.0) - Repository Security Scanner
+   - 7-phase security audit (metadata, prompt injection, install scripts, deps, code, CI/CD, binaries)
+   - AI prompt injection detection for agent config files
+   - Structured risk reports (CLEAN/LOW/MEDIUM/HIGH/CRITICAL)
+
 #### Agent Collections
 
-9. **agents** (v1.0.0) - 13 Specialized Development Agents
+10. **agents** (v1.0.0) - 13 Specialized Development Agents
    - Architecture, frontend, backend specialists
    - Mobile debugging (iOS/Android)
    - Testing, CI/CD, refactoring

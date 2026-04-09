@@ -124,6 +124,19 @@
       "category": "productivity",
       "keywords": ["agents-md", "claude-md", "copilot", "gemini", "opencode", "ai-instructions", "conversion", "sync", "multi-platform"],
       "license": "MIT"
+    },
+    {
+      "name": "repo-audit",
+      "source": "./repo-audit",
+      "version": "1.0.0",
+      "description": "Security audit for cloned repositories - scans for backdoors, supply chain attacks, prompt injection, MCP tool poisoning, and malicious code patterns",
+      "author": {
+        "name": "AppLab",
+        "email": "plugins@applab.nl"
+      },
+      "category": "security",
+      "keywords": ["security", "audit", "backdoor", "supply-chain", "prompt-injection", "malware", "scanning", "code-review"],
+      "license": "MIT"
     }
   ]
 }
