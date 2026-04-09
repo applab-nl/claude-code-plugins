@@ -121,9 +121,7 @@ def main():
         # Read JSON input from stdin (required by hook interface)
         input_data = json.loads(sys.stdin.read())
 
-        # Skip the generic "Claude is waiting for your input" message
-        if input_data.get('message') != 'Claude is waiting for your input':
-            announce_notification()
+        announce_notification()
 
         sys.exit(0)
 

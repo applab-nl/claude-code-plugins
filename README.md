@@ -8,33 +8,67 @@ This marketplace provides production-ready Claude Code plugins that extend and c
 
 ## Available Plugins
 
-### 🚀 Flux Capacitor
+### Development Specialists
 
-**Feature Development Lifecycle Orchestrator**
+#### ⚛️ Next.js Development Specialist
 
-Transform feature requests into comprehensive implementation plans with issue tracker integration and intelligent subagent delegation.
+**Next.js Expert with Integrated Devtools**
 
-- **Version**: 1.2.1
-- **Category**: Workflow, Planning, Issue Tracking
-- **Integrations**: Linear, GitHub Issues (planned), Jira (planned)
+Expert Next.js developer for App Router applications with integrated runtime diagnostics, automated upgrades, and comprehensive testing.
 
-[View Documentation](./flux-capacitor/README.md)
+- **Version**: 1.0.0
+- **Category**: Frontend, Web Development
+- **Integrations**: Next.js MCP (next-devtools-mcp), Playwright
+
+[View Documentation](./next-dev/README.md)
 
 **Key Features:**
-- Multi-mode workflow (Issue Key, Description, Plain Text)
-- Linear integration with automatic status updates
-- Ultrathink planning for comprehensive feature breakdown
-- Intelligent subagent delegation recommendations
-- Success criteria and testing plan generation
-- Git worktree management and session orchestration
+- Runtime diagnostics via Next.js MCP integration
+- Automated Next.js upgrades with official codemods
+- Browser automation for page verification
+- Server/Client Components expertise
+- Comprehensive Next.js documentation access
 
-**Quick Start:**
-```bash
-/run MEM-123
-/run Add OAuth authentication
-```
+#### ⚡ Svelte 5 Development Specialist
 
-### 🐛 Sentry Issue Fixer
+**Svelte 5 Expert with Runes Expertise**
+
+Expert Svelte 5 developer with integrated MCP server for documentation access, static code analysis, and comprehensive runes expertise.
+
+- **Version**: 1.0.0
+- **Category**: Frontend, Web Development
+- **Integrations**: Svelte MCP (svelte-devtools-mcp)
+
+[View Documentation](./svelte-dev/README.md)
+
+**Key Features:**
+- Svelte 5 runes expertise ($state, $derived, $effect, $props)
+- Static code analysis and documentation access
+- SvelteKit routing and SSR
+- TypeScript integration
+- Reactive state management
+
+#### 📱 Flutter Development Specialist
+
+**Flutter & Dart Expert with MCP Integration**
+
+Expert Flutter and Dart developer with integrated MCP server for code analysis, package management, testing, and runtime introspection.
+
+- **Version**: 1.2.0
+- **Category**: Mobile Development
+- **Integrations**: Flutter MCP (dart-tooling-daemon)
+
+[View Documentation](./flutter-dev/README.md)
+
+**Key Features:**
+- Code analysis and package management
+- Dart fix and format automation
+- Runtime error detection and hot reload
+- Widget tree inspection
+- pub.dev package search
+- Cross-platform mobile development (Android & iOS)
+
+#### 🐛 Sentry Issue Fixer
 
 **Automated Sentry Error Investigation & Resolution**
 
@@ -61,66 +95,84 @@ Transform Sentry errors into comprehensive solutions with automated device log a
 /sentry-fix App crashes when opening camera
 ```
 
-### ⚛️ Next.js Development Specialist
+### Productivity Tools
 
-**Next.js Expert with Integrated Devtools**
+#### 🔧 Git Tools
 
-Expert Next.js developer for App Router applications with integrated runtime diagnostics, automated upgrades, and comprehensive testing.
+**Comprehensive Git Automation**
 
-- **Version**: 1.0.0
-- **Category**: Frontend, Web Development
-- **Integrations**: Next.js MCP (next-devtools-mcp), Playwright
+Intelligent commit message generation, git worktree management for isolated development, and streamlined Git workflows.
 
-[View Documentation](./next-dev/README.md)
+- **Version**: 1.3.0
+- **Category**: Productivity, Version Control
+- **Features**: Commit automation, worktree management
 
-**Key Features:**
-- Runtime diagnostics via Next.js MCP integration
-- Automated Next.js 16 upgrades with official codemods
-- Browser automation for page verification
-- Cache Components setup and error detection
-- Server/Client Components expertise
-- Comprehensive Next.js documentation access
-
-### ⚡ Svelte 5 Development Specialist
-
-**Svelte 5 Expert with Runes Expertise**
-
-Expert Svelte 5 developer with integrated MCP server for documentation access, static code analysis, and comprehensive runes expertise.
-
-- **Version**: 1.0.0
-- **Category**: Frontend, Web Development
-- **Integrations**: Svelte MCP (svelte-devtools-mcp)
-
-[View Documentation](./svelte-dev/README.md)
+[View Documentation](./git-tools/README.md)
 
 **Key Features:**
-- Svelte 5 runes expertise ($state, $derived, $effect, $props)
-- Static code analysis and documentation access
-- SvelteKit routing and SSR
-- TypeScript integration
-- Reactive state management
+- Intelligent commit message generation following conventions
+- Git worktree management for isolated feature development
+- Streamlined branching workflows
+- Conventional commit support
 
-### 📱 Flutter Development Specialist
+#### 🔔 Hooks Notifier
 
-**Flutter & Dart Expert with MCP Integration**
+**Audio & Visual Notifications for Claude Code**
 
-Expert Flutter and Dart developer with integrated MCP server for code analysis, package management, testing, and runtime introspection.
+Get notified when Claude Code needs your attention or completes tasks.
 
-- **Version**: 1.0.0
-- **Category**: Mobile Development
-- **Integrations**: Flutter MCP (dart-tooling-daemon)
+- **Version**: 2.0.0
+- **Category**: Productivity, Notifications
+- **Platform**: macOS
 
-[View Documentation](./flutter-dev/README.md)
+[View Documentation](./hooks-notifier/README.md)
 
 **Key Features:**
-- Code analysis and package management
-- Dart fix and format automation
-- Runtime error detection and hot reload
-- Widget tree inspection
-- pub.dev package search
-- Cross-platform mobile development (Android & iOS)
+- Audio alerts when input is required
+- Visual notifications when tasks complete
+- Subagent completion notifications
+- macOS native integration
 
-### 🤖 Agents Collection
+#### 📝 Prompt Logger
+
+**Prompt Logging & Analytics**
+
+Logs user prompts and AskUserQuestion interactions to JSON files for analysis and review.
+
+- **Version**: 1.3.0
+- **Category**: Productivity, Analytics
+- **Output**: JSON logs at `.claude/logs/prompts.json`
+
+[View Documentation](./prompt-logger/README.md)
+
+**Key Features:**
+- Automatic prompt logging on submission
+- AskUserQuestion interaction tracking
+- JSON format for easy analysis
+- Project-level log storage
+
+#### 🔄 Agents MD
+
+**Multi-Platform AI Instruction Converter**
+
+Convert CLAUDE.md files to multi-platform AI instruction formats following the AGENTS.md standard.
+
+- **Version**: 1.0.0
+- **Category**: Productivity, Tooling
+- **Supports**: GitHub Copilot, Gemini CLI, OpenCode
+
+[View Documentation](./agents-md/README.md)
+
+**Key Features:**
+- Convert CLAUDE.md to AGENTS.md format
+- GitHub Copilot instructions support
+- Gemini CLI compatibility
+- OpenCode integration
+- Keep instructions in sync across platforms
+
+### Agent Collections
+
+#### 🤖 Agents Collection
 
 **13 Specialized Development Agents**
 
@@ -158,7 +210,7 @@ Curated collection of specialized agents covering the entire development lifecyc
 ### Install a Plugin
 
 ```bash
-/plugin install flux-capacitor@applab-plugins
+/plugin install git-tools@applab-plugins
 ```
 
 ### List Available Plugins
@@ -170,8 +222,8 @@ Curated collection of specialized agents covering the entire development lifecyc
 ### Enable/Disable Plugins
 
 ```bash
-/plugin enable flux-capacitor
-/plugin disable flux-capacitor
+/plugin enable git-tools
+/plugin disable git-tools
 ```
 
 ## Developer Workflow
@@ -206,14 +258,6 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 
 ## Plugin Categories
 
-### 📋 Workflow & Planning
-- **Flux Capacitor**: Feature development lifecycle orchestration with Linear integration
-
-### 🐛 Debugging & Monitoring
-- **Sentry Issue Fixer**: Automated error investigation and resolution
-- **Android Debug Fixer** (via Agents): Android device debugging
-- **iOS Debug Fixer** (via Agents): iOS device debugging
-
 ### 🎨 Frontend Development
 - **Next.js Development Specialist**: Next.js App Router expert with runtime diagnostics
 - **Svelte 5 Development Specialist**: Svelte 5 with runes expertise
@@ -221,6 +265,17 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 
 ### 📱 Mobile Development
 - **Flutter Development Specialist**: Flutter/Dart with MCP integration
+
+### 🐛 Debugging & Monitoring
+- **Sentry Issue Fixer**: Automated error investigation and resolution
+- **Android Debug Fixer** (via Agents): Android device debugging
+- **iOS Debug Fixer** (via Agents): iOS device debugging
+
+### 🔧 Productivity & Automation
+- **Git Tools**: Git workflow automation and commit generation
+- **Hooks Notifier**: Audio/visual notifications
+- **Prompt Logger**: Prompt analytics and logging
+- **Agents MD**: Multi-platform AI instruction sync
 
 ### 🤖 Development Tools & Agents
 - **Agents Collection**: 13 specialized agents for architecture, backend, testing, quality, DevOps, and monitoring
@@ -230,13 +285,13 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 - Claude Code CLI (latest version)
 - Git for project management
 - Node.js 18+ (for MCP servers)
+- Python 3.8+ with `uv` (for hook scripts)
 - Optional: MCP servers for specific integrations
-  - Linear MCP for issue tracking (Flux Capacitor)
   - Sentry MCP for error tracking (Sentry Issue Fixer)
   - Supabase MCP (via Agents: supabase-integration-expert)
   - GitHub MCP for repository management
 - Optional: Development tools
-  - Next.js 16+ (for Next.js Development Specialist runtime features)
+  - Next.js (for Next.js Development Specialist runtime features)
   - Flutter SDK (for Flutter Development Specialist)
   - iOS: Xcode, libimobiledevice for device debugging
   - Android: Android SDK with ADB
@@ -255,8 +310,10 @@ your-plugin/
 │   └── your-agent.md
 ├── commands/                 # Slash commands
 │   └── your-command.md
-├── hooks/                    # Event hooks (optional)
-│   └── hooks.json
+├── skills/                   # Skills (advanced commands)
+│   └── your-skill.md
+├── hooks/                    # Event hooks
+│   └── your-hook.py
 ├── .mcp.json                # MCP servers (optional)
 ├── README.md                # Documentation
 ├── LICENSE                  # License
@@ -275,11 +332,15 @@ Example marketplace entry:
 ```json
 {
   "name": "your-plugin",
-  "path": "./your-plugin",
+  "source": "./your-plugin",
   "version": "1.0.0",
   "description": "Brief description",
-  "author": "Your Name",
-  "keywords": ["category", "feature"],
+  "author": {
+    "name": "Your Name",
+    "email": "you@example.com"
+  },
+  "category": "category",
+  "keywords": ["keyword1", "keyword2"],
   "license": "MIT"
 }
 ```
@@ -322,19 +383,18 @@ We welcome contributions! Please:
 ## Roadmap
 
 ### Completed ✅
-- ✅ Flux Capacitor v1.2.1 (Feature planning, issue tracking & worktree orchestration)
 - ✅ Sentry Issue Fixer v1.0.0 (Error investigation & debugging)
 - ✅ Next.js Development Specialist v1.0.0 (Runtime diagnostics & upgrades)
 - ✅ Svelte 5 Development Specialist v1.0.0 (Runes expertise)
-- ✅ Flutter Development Specialist v1.0.0 (Mobile development with MCP)
+- ✅ Flutter Development Specialist v1.2.0 (Mobile development with MCP)
 - ✅ Agents Collection v1.0.0 (13 specialized development agents)
-
-### Q4 2025
-- ⏳ GitHub Issues integration (Flux Capacitor)
-- ⏳ Jira integration (Flux Capacitor)
-- ⏳ Additional framework-specific specialists
+- ✅ Git Tools v1.3.0 (Commit automation & worktrees)
+- ✅ Hooks Notifier v2.0.0 (Audio/visual notifications)
+- ✅ Prompt Logger v1.3.0 (Prompt analytics)
+- ✅ Agents MD v1.0.0 (Multi-platform AI instructions)
 
 ### Future
+- ⏳ Additional framework-specific specialists
 - ⏳ API documentation generator
 - ⏳ Database migration helper
 - ⏳ Performance profiling tools
@@ -355,6 +415,6 @@ Special thanks to:
 ---
 
 **Marketplace Version**: 1.1.0
-**Last Updated**: 2025-10-23
-**Total Plugins**: 6
+**Last Updated**: 2026-01-31
+**Total Plugins**: 9
 **Maintainer**: AppLab

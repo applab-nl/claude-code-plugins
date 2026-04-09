@@ -11,7 +11,7 @@
     {
       "name": "hooks-notifier",
       "source": "./hooks-notifier",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "description": "Audio and visual notifications for Claude Code - alerts when input is required and when tasks complete",
       "author": {
         "name": "AppLab",

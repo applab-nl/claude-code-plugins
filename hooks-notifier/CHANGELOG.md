@@ -5,6 +5,15 @@ All notable changes to hooks-notifier will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-02-01
+
+### Fixed
+- Moved hooks configuration from inline plugin.json to separate hooks/hooks.json file
+- This fixes Claude Code not discovering/executing the hooks
+
+### Changed
+- Removed `matcher` field from hook configs (now using Claude Code's default "match all" behavior)
+
 ## [2.0.0] - 2024-12-06
 
 ### Changed
