@@ -1,0 +1,26 @@
+{
+  "name": "ship-it",
+  "version": "1.0.0",
+  "description": "End-of-session shipping workflow — commit, push, open a PR, monitor CI and review findings, fix critical/high blockers, then merge and clean up branches and worktree. Also advances the linked Linear ticket through In Review (on PR open) and Done (on merge) when a .linear-ticket.json sentinel is present.",
+  "author": {
+    "name": "AppLab",
+    "url": "https://github.com/applab-nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/ship-it",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "ship",
+    "git",
+    "github",
+    "pr",
+    "pull-request",
+    "ci",
+    "merge",
+    "workflow",
+    "linear",
+    "automation",
+    "productivity"
+  ],
+  "skills": "./skills"
+}

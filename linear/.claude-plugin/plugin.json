@@ -1,0 +1,25 @@
+{
+  "name": "linear",
+  "version": "1.0.0",
+  "description": "Start (and shepherd) work on a Linear ticket end-to-end — fetch the issue via the Linear MCP, classify quick-fix vs spec-driven, create an isolated worktree using Linear's canonical branchName, move the ticket to In Progress, and chain into the right follow-up skill (OpenSpec or superpowers). Also advances tickets to In Review on PR open and Done on merge via a persisted worktree sentinel.",
+  "author": {
+    "name": "AppLab",
+    "url": "https://github.com/applab-nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/linear",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "linear",
+    "tickets",
+    "issues",
+    "workflow",
+    "worktree",
+    "openspec",
+    "superpowers",
+    "mcp",
+    "project-management",
+    "productivity"
+  ],
+  "skills": "./skills"
+}
