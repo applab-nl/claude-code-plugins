@@ -137,10 +137,18 @@ touches your default branch.
     "backlog": ["Backlog"], "todo": ["Todo"], "inProgress": ["In Progress"],
     "inReview": ["In Review"], "done": ["Done"], "dropped": ["Canceled"]
   },
-  "conventions": {
-    "planningSystem": "superpowers",
+  "planning": {
+    "kind": "superpowers",
+    "invoke": {
+      "type": "skill",
+      "steps": ["superpowers:brainstorming", "superpowers:writing-plans"]
+    },
     "specsDir": "docs/superpowers/specs",
     "plansDir": "docs/superpowers/plans",
+    "naming": "<YYYY-MM-DD>-<slug>-design.md",
+    "notes": null
+  },
+  "conventions": {
     "changelogFile": "src/lib/changelog/entries.ts",
     "sourceDirs": ["src"],
     "testCommand": "bun run test",
@@ -156,6 +164,28 @@ touches your default branch.
 
 No tokens ever go in this file — those belong to your MCP server config or the
 environment.
+
+### Works with any spec-driven kit
+
+When `/refine` decides a ticket is too big to implement from a description
+alone, it hands off to whatever planning kit your repo uses. It doesn't need to
+know the kit — `planning.invoke` says how to *start* it, and there are only
+three ways to start one (plus `none`):
+
+| `invoke.type` | `steps` holds | Example |
+|---|---|---|
+| `skill` | skill names, run in order | `["superpowers:brainstorming", "superpowers:writing-plans"]` |
+| `command` | slash commands, run in order | `["/specify", "/plan"]` |
+| `docs` | paths to the kit's own agent instructions | `["openspec/AGENTS.md"]` |
+| `none` | — | a refined ticket description is the deliverable |
+
+`/tracker` fingerprints the common kits (superpowers, OpenSpec, Spec Kit, Kiro,
+BMAD) and proposes a config, but a fingerprint is only ever a hypothesis to
+confirm. **When it doesn't recognise your kit, it asks you how the kit starts
+and records the answer** — so an unknown or homegrown kit is a supported path,
+not a gap. Kit-specific quirks (numbered feature folders, a required branch
+name, a `tasks.md` that must be generated separately) go in `planning.notes`,
+which is passed to the kit verbatim at handoff and to nightshift's implementer.
 
 ## Requirements
 

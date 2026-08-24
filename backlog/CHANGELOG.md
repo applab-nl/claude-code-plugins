@@ -5,6 +5,51 @@ All notable changes to the Backlog plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-08-24
+
+### Changed
+
+#### Planning kit is now an adapter, not a hardcoded list
+
+`conventions.planningSystem` was an enum of three (`superpowers`, `openspec`,
+`none`), so any other spec-driven kit — Spec Kit, Kiro, BMAD, or a homegrown
+flow — had no branch and silently degraded to writing designs inline. It is
+replaced by a top-level `planning` block that records **how the kit is started**
+rather than naming a kit the skills have to recognise:
+
+```json
+"planning": {
+  "kind": "spec-kit",
+  "invoke": { "type": "command", "steps": ["/specify", "/plan"] },
+  "specsDir": "specs",
+  "plansDir": "specs",
+  "naming": "specs/<NNN>-<slug>/",
+  "notes": "Creates a numbered directory per feature."
+}
+```
+
+`invoke.type` covers the only three entry-point shapes that exist — `skill`
+(invoke via the Skill tool), `command` (run slash commands), `docs` (read the
+kit's own agent instructions and follow them) — plus `none`. `refine` Step 3.5
+now dispatches on that instead of on a kit name, and verifies the files the kit
+claims to have written actually exist before writing a `**Spec:**` trailer.
+
+`tracker` fingerprints the common kits (superpowers, OpenSpec, Spec Kit, Kiro,
+BMAD) as a shortcut, but treats every fingerprint as a hypothesis to confirm,
+and **asks the user how their kit starts when it doesn't recognise one** —
+making unknown and homegrown kits a supported path rather than a gap. Defaulting
+to `none` because a kit wasn't recognised is now an explicit red flag.
+
+`planning.notes` carries kit-specific quirks (numbered feature folders, a
+required branch name, a `tasks.md` to generate separately) and is passed
+verbatim to the kit at handoff and to nightshift's implementer, so kit knowledge
+lives in config rather than in the skills.
+
+**Config migration:** `conventions.planningSystem` / `conventions.specsDir` /
+`conventions.plansDir` move to `planning.kind` / `planning.specsDir` /
+`planning.plansDir`, and `planning.invoke` is new. `tracker` re-runs detection
+on any config missing required keys, so an older config self-heals on next use.
+
 ## [1.0.0] - 2026-08-24
 
 ### Added

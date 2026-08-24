@@ -111,7 +111,10 @@ The dispatch brief must contain, in full — the agent cannot ask you anything:
 3. **The repo's commands**: `testCommand`, `typecheckCommand`, `buildCommand`.
 4. **The instruction to follow the `nightshift-implement` skill**, which owns
    the TDD loop, the commit convention, the push and the draft PR.
-5. **The spec/plan paths** from the ticket's `**Spec:**` trailer, if present.
+5. **The spec/plan paths** from the ticket's `**Spec:**` trailer, if present,
+   plus `planning.notes` verbatim if the config sets it — that is where the
+   repo's planning kit records quirks the implementer needs (a `tasks.md` to
+   work through, a required branch name, a numbered feature folder).
 6. **The stop conditions** (below).
 
 ### Stop conditions — how far "as far as it can go" goes
