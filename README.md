@@ -97,6 +97,26 @@ Transform Sentry errors into comprehensive solutions with automated device log a
 
 ### Productivity Tools
 
+#### 🌙 Backlog Ops
+
+**Groom your backlog with you, implement it without you**
+
+Provider-agnostic backlog automation. `/backlog-refine` runs a guided grooming session — parallel subagents find tickets whose work already shipped, then an interview turns thin tickets into implementable ones. `/nightshift` takes the ready ones overnight and leaves a testable preview branch, one draft PR per ticket, and an HTML test plan.
+
+- **Version**: 1.0.0
+- **Category**: Productivity, Project Management
+- **Trackers**: Linear, Jira, GitHub Issues (detected once into `.claude/backlog.json`)
+
+[View Documentation](./backlog-ops/README.md)
+
+**Key Features:**
+- Closes already-shipped tickets — but only on evidence of *shipped code*, never a matching spec filename
+- Refinement interview that continues until the ticket is genuinely implementable
+- Unattended overnight implementation, one worktree-isolated agent per ticket, in parallel
+- Individual branches and draft PRs preserved so changes ship one at a time
+- Self-contained HTML test plan with per-ticket click-through steps and progress checkboxes
+- Never merges, never force-pushes, never marks untested work done
+
 #### 🔧 Git Tools
 
 **Comprehensive Git Automation**
