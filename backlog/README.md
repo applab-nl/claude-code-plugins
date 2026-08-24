@@ -1,8 +1,8 @@
-# Backlog Ops
+# Backlog
 
 **Groom your backlog with you. Implement it without you.**
 
-Two halves of the same problem. `backlog-refine` sits down with you and turns a
+Two halves of the same problem. `refine` sits down with you and turns a
 messy backlog into tickets that are actually implementable. `nightshift` takes
 those tickets while you sleep and leaves a testable preview branch, one draft PR
 per ticket, and an HTML test plan on your desk in the morning.
@@ -16,13 +16,13 @@ recorded in a committed `.claude/backlog.json`.
 
 ```
 /plugin marketplace add applab-nl/claude-code-plugins
-/plugin install backlog-ops@applab-plugins
+/plugin install backlog@applab-plugins
 ```
 
 Then, once per repository:
 
 ```
-/backlog-config
+/tracker
 ```
 
 This detects your tracker, confirms the project key and column mapping with you,
@@ -31,11 +31,11 @@ picks up the repo's test/typecheck commands and planning conventions, and writes
 
 ---
 
-## `/backlog-refine` — the grooming session
+## `/refine` — the grooming session
 
 ```
-/backlog-refine            # full sweep
-/backlog-refine IRIS-38    # just this ticket
+/refine            # full sweep
+/refine IRIS-38    # just this ticket
 ```
 
 Four phases:
@@ -112,19 +112,19 @@ touches your default branch.
 
 | Component | Type | Purpose |
 |---|---|---|
-| `backlog-config` | skill | Detect the tracker once, persist `.claude/backlog.json` |
-| `backlog-refine` | skill | The grooming session (queue → cleanup → refine → land) |
+| `tracker` | skill | Detect the tracker once, persist `.claude/backlog.json` |
+| `refine` | skill | The grooming session (queue → cleanup → refine → land) |
 | `nightshift` | skill | The overnight orchestrator |
 | `nightshift-implement` | skill | How a single ticket gets built unattended |
-| `nightshift-testplan` | skill | Manifest schema + HTML rendering |
-| `nightshift-implementer` | agent | The per-ticket worker, one per worktree |
-| `/backlog-config`, `/backlog-refine`, `/nightshift` | commands | Entry points |
+| `testplan` | skill | Manifest schema + HTML rendering |
+| `implementer` | agent | The per-ticket worker, one per worktree |
+| `/tracker`, `/refine`, `/nightshift` | commands | Entry points |
 | `build_preview.sh` | script | Merge ticket branches into the preview, excluding conflicts |
 | `render_testplan.py` | script | Manifest → self-contained `testplan.html` (stdlib only) |
 
 ## Configuration
 
-`.claude/backlog.json`, written by `/backlog-config`:
+`.claude/backlog.json`, written by `/tracker`:
 
 ```json
 {

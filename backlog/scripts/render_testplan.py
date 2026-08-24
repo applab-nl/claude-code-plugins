@@ -6,7 +6,7 @@ Usage:
                        --out      nightshift/2026-08-25/testplan.html
 
 The manifest is written by the nightshift orchestrator from the structured
-results its implementation agents return. See the nightshift-testplan skill for
+results its implementation agents return. See the testplan skill for
 the schema. Stdlib only - no install step, runs anywhere python3 does.
 """
 

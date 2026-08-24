@@ -5,13 +5,13 @@ argument-hint: "[KEY-123 to refine one ticket]"
 
 ## Context
 
-- Backlog config: !`cat .claude/backlog.json 2>/dev/null || echo "MISSING — run /backlog-config first"`
+- Backlog config: !`cat .claude/backlog.json 2>/dev/null || echo "MISSING — run /tracker first"`
 - Repo rules: !`ls CLAUDE.md AGENTS.md 2>/dev/null || echo "none at root"`
 - Current branch: !`git branch --show-current`
 
 ## Task
 
-Use the **`backlog-refine`** skill and follow it exactly.
+Use the **`refine`** skill and follow it exactly.
 
 Argument: `$ARGUMENTS`
 

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Backlog Ops plugin will be documented in this file.
+All notable changes to the Backlog plugin will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Initial release — provider-agnostic backlog grooming and unattended overnight implementation
 
-**`backlog-config` skill** — detect-then-persist provider configuration.
+**`tracker` skill** — detect-then-persist provider configuration.
 Probes for a Linear MCP, an Atlassian/Jira MCP, or GitHub Issues via `gh`,
 corroborates with issue keys found in git history, confirms provider, project
 key, scope and column mapping with the user, detects the repo's planning system,
@@ -21,7 +21,7 @@ validates a committed `.claude/backlog.json`. Includes the provider verb mapping
 `link_relation`) that the other skills are written against, so no skill contains
 a tracker-specific tool name.
 
-**`backlog-refine` skill** — the collaborative grooming session, in four phases:
+**`refine` skill** — the collaborative grooming session, in four phases:
 queue (blended priority + recency score), cleanup (close what already shipped),
 refine (guided interview), land (specs to `main` in one docs-only PR).
 
@@ -58,12 +58,12 @@ verification, Conventional Commits, always end with a pushed branch (including
 `partial` and `blocked` outcomes), one draft PR, and a structured JSON result.
 Includes a rationalization table for the pressures specific to unattended work.
 
-**`nightshift-testplan` skill** — the manifest schema and the rules for writing
+**`testplan` skill** — the manifest schema and the rules for writing
 click-through steps a stranger could follow.
 
-**`nightshift-implementer` agent** — the per-ticket worker.
+**`implementer` agent** — the per-ticket worker.
 
-**Commands** — `/backlog-config`, `/backlog-refine`, `/nightshift`.
+**Commands** — `/tracker`, `/refine`, `/nightshift`.
 
 **Scripts**
 
@@ -75,4 +75,4 @@ click-through steps a stranger could follow.
   branches, and progress checkboxes persisted in local storage. Python stdlib
   only, no install step.
 
-[1.0.0]: https://github.com/applab-nl/claude-code-plugins/tree/main/backlog-ops
+[1.0.0]: https://github.com/applab-nl/claude-code-plugins/tree/main/backlog

@@ -1,9 +1,9 @@
 ---
-name: nightshift-testplan
+name: testplan
 description: Use when turning a completed nightshift run into the HTML test plan the user opens in the morning — building the manifest from the implementation agents' structured results and rendering `testplan.html` onto the preview branch. Also use when the user asks to regenerate, fix or re-render a test plan for a night that already ran.
 ---
 
-# nightshift-testplan — the artifact the user actually opens
+# testplan — the artifact the user actually opens
 
 Everything else nightshift produces is plumbing. This is the page someone reads
 with coffee, deciding what to trust. Two jobs: **build the manifest**, then

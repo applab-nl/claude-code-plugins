@@ -5,7 +5,7 @@ argument-hint: "[finalize <KEY-123> | report]"
 
 ## Context
 
-- Backlog config: !`cat .claude/backlog.json 2>/dev/null || echo "MISSING — run /backlog-config first"`
+- Backlog config: !`cat .claude/backlog.json 2>/dev/null || echo "MISSING — run /tracker first"`
 - Current branch: !`git branch --show-current`
 - Working tree: !`git status --porcelain | head -20`
 - Recent nightshift branches: !`git branch -a --list '*nightshift/*' | head -10`

@@ -1,12 +1,12 @@
 {
-  "name": "backlog-ops",
+  "name": "backlog",
   "version": "1.0.0",
   "description": "Provider-agnostic backlog automation — interactively groom a backlog (close what already shipped, refine the rest through a guided interview), and run an unattended overnight 'nightshift' that implements every ready ticket on its own branch, merges them into one testable preview branch, and leaves an HTML test plan for the morning. Works with Linear, Jira or GitHub Issues via a detected-once, committed .claude/backlog.json.",
   "author": {
     "name": "AppLab",
     "url": "https://github.com/applab-nl"
   },
-  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/backlog-ops",
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/backlog",
   "repository": "https://github.com/applab-nl/claude-code-plugins",
   "license": "MIT",
   "keywords": [
@@ -29,5 +29,5 @@
   ],
   "skills": "./skills",
   "commands": "./commands",
-  "agents": ["./agents/nightshift-implementer.md"]
+  "agents": ["./agents/implementer.md"]
 }

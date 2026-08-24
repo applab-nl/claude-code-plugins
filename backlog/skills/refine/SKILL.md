@@ -1,9 +1,9 @@
 ---
-name: backlog-refine
-description: Use when the user wants to work through a backlog rather than start a single ticket — "/backlog-refine", "refine the backlog", "groom the backlog", "clean up Linear/Jira/issues", "close what's already shipped", "which tickets are stale", "let's go through the backlog together" — or when they ask why tickets that shipped months ago are still open. Also use when one specific ticket is too thin to implement and needs fleshing out interactively before work starts. For starting work on one already-refined ticket, use the `linear` skill (or your tracker's equivalent) instead.
+name: refine
+description: Use when the user wants to work through a backlog rather than start a single ticket — "/refine", "refine the backlog", "groom the backlog", "clean up Linear/Jira/issues", "close what's already shipped", "which tickets are stale", "let's go through the backlog together" — or when they ask why tickets that shipped months ago are still open. Also use when one specific ticket is too thin to implement and needs fleshing out interactively before work starts. For starting work on one already-refined ticket, use the `linear` skill (or your tracker's equivalent) instead.
 ---
 
-# backlog-refine — sweep, clean up and refine a backlog
+# refine — sweep, clean up and refine a backlog
 
 Works against **any** tracker (Linear, Jira, GitHub Issues) and **any** repo. It
 runs in four phases, in order: **queue → cleanup → refine → land**. Cleanup
@@ -24,12 +24,12 @@ ticket to me" step).
 ## Step 0 — Load the config and the tools
 
 Read `.claude/backlog.json`. **If it is missing or invalid, run the
-`backlog-config` skill first** and come back — do not guess the project key or
+`tracker` skill first** and come back — do not guess the project key or
 the column names.
 
 From the config you now have: `provider`, `projectKey`, `scope`, `columns`,
 `conventions`, and `tools.prefix`. Everything below is written in the provider
-verbs (`list_issues`, `get_issue`, `update_issue`, `comment`); `backlog-config`
+verbs (`list_issues`, `get_issue`, `update_issue`, `comment`); `tracker`
 holds the mapping to real tool names. Load them in **one** `ToolSearch` call.
 
 ---
@@ -93,7 +93,7 @@ Dispatch prompt template — pass the reference file rather than restating the
 rules, so every batch judges by the same contract:
 
 ```
-Read `${CLAUDE_PLUGIN_ROOT}/skills/backlog-refine/references/cleanup-evidence.md`
+Read `${CLAUDE_PLUGIN_ROOT}/skills/refine/references/cleanup-evidence.md`
 and follow it exactly.
 
 Repo conventions (from .claude/backlog.json):
@@ -304,7 +304,7 @@ IRIS-38 refined · estimate 2 · labels Improvement · no spec needed
 Specs and plans written during a sweep must end up **on the main branch**, not
 stranded on a branch that gets deleted with the session.
 
-Work the whole sweep in ONE worktree (e.g. `backlog-refinement-YYYY-MM-DD`),
+Work the whole sweep in ONE worktree (e.g. `refinement-YYYY-MM-DD`),
 collect every spec/plan file from the session, and open a **single docs-only
 PR** — then merge it. Docs-only changes need no changelog entry and no test run.
 If the sweep somehow touched source, hand off to `ship-it` and let it run the

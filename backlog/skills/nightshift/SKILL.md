@@ -34,7 +34,7 @@ a preview branch the user can't trust. Check all of these **before touching a
 single ticket**, and abort the entire run on the first failure with a one-screen
 explanation:
 
-- [ ] `.claude/backlog.json` exists and validates → else run `backlog-config` (needs the user; **cannot** be done unattended, so stop and say so)
+- [ ] `.claude/backlog.json` exists and validates → else run `tracker` (needs the user; **cannot** be done unattended, so stop and say so)
 - [ ] Working tree is clean and on the default branch, synced with `origin`
 - [ ] `gh auth status` succeeds and the repo has a remote
 - [ ] `conventions.testCommand` runs green **on the current default branch** — a red baseline means you cannot tell your breakage from pre-existing breakage
@@ -57,7 +57,7 @@ this is what separates nightshift from a machine that generates noise.
 ### The readiness gate
 
 A ticket is admitted only if it answers all six (the same checklist
-`backlog-refine` Step 3.4 refines toward):
+`refine` Step 3.4 refines toward):
 
 - [ ] What the user sees, and where
 - [ ] The trigger, and the unhappy path
@@ -74,9 +74,9 @@ refinement", never guessed at.
 **Skipping a thin ticket is a success, not a failure.** Implementing a guess
 overnight produces a plausible feature for the wrong problem, and the user
 discovers it after testing it. The morning report's "not ready" list is the
-input to the next `backlog-refine` session.
+input to the next `refine` session.
 
-Order by the same blended score as `backlog-refine` (priority + recency), take
+Order by the same blended score as `refine` (priority + recency), take
 the top `nightshift.maxTickets` (default 5), and drop any ticket that is
 `blockedBy` another open ticket — including one earlier in tonight's own queue.
 Sequential dependencies do not parallelize; leave the blocked one for tomorrow.
@@ -93,7 +93,7 @@ the filesystem or on git's index.
 
 ```
 Agent({
-  subagent_type: "backlog-ops:nightshift-implementer",   // fall back to "general-purpose"
+  subagent_type: "backlog:implementer",   // fall back to "general-purpose"
   isolation: "worktree",
   name: "ns-IRIS-38",
   description: "Implement IRIS-38",
@@ -169,7 +169,7 @@ rewrites a ticket branch you already pushed.
 
 ## Phase 4 — Write the HTML test plan
 
-Follow the `nightshift-testplan` skill. It produces
+Follow the `testplan` skill. It produces
 `nightshift/<date>/testplan.html` on the preview branch: one section per ticket,
 with the acceptance criteria turned into concrete click-through steps, the
 branch and PR links, and the blocked/partial items called out at the top.
@@ -237,7 +237,7 @@ looked fine" is not approval to finalize all five — ask which ones.
 | 1 Queue | Admitted + skipped lists | main |
 | 2 Implement | One pushed branch + draft PR per ticket | **parallel agents, worktree-isolated** |
 | 3 Preview | `nightshift/<date>` branch | script |
-| 4 Test plan | `testplan.html` on the preview | `nightshift-testplan` |
+| 4 Test plan | `testplan.html` on the preview | `testplan` |
 | 5 Report | Morning summary | main |
 
 ## Red flags — stop
