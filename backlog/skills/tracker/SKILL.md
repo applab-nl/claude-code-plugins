@@ -1,11 +1,11 @@
 ---
-name: backlog-config
+name: tracker
 description: Use when a backlog operation needs to know which ticketing system this repo uses and no `.claude/backlog.json` exists yet, or the existing one is stale, incomplete or fails validation — a provider call returns "unknown team/project", the project key looks wrong, the column names don't match the board. Also use when the user says "set up the backlog integration", "point this at Jira", "we moved to GitHub Issues", "reconfigure the board", "which board are we on?", or before the first unattended run in a repo.
 ---
 
-# backlog-config — detect the ticketing provider once, persist it forever
+# tracker — detect the ticketing provider once, persist it forever
 
-Every other skill in this plugin (`backlog-refine`, `nightshift`) needs the same
+Every other skill in this plugin (`refine`, `nightshift`) needs the same
 five facts: which provider, which project, which columns mean what, what this
 repo's conventions are, and which tools to call. Re-deriving those every session
 is slow, and **an unattended run cannot derive them at all** — nightshift starts

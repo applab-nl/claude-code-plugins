@@ -11,7 +11,7 @@ description: Detect this repo's ticketing system and write .claude/backlog.json
 
 ## Task
 
-Use the **`backlog-config`** skill and follow it exactly.
+Use the **`tracker`** skill and follow it exactly.
 
 Detect which trackers are reachable (Linear MCP, Jira/Atlassian MCP, GitHub
 Issues via `gh`), confirm the provider, project key, scope and column mapping
