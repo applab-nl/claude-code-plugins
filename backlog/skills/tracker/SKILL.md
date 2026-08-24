@@ -1,13 +1,13 @@
 ---
 name: tracker
-description: Use when a backlog operation needs to know which ticketing system this repo uses and no `.claude/backlog.json` exists yet, or the existing one is stale, incomplete or fails validation — a provider call returns "unknown team/project", the project key looks wrong, the column names don't match the board. Also use when the user says "set up the backlog integration", "point this at Jira", "we moved to GitHub Issues", "reconfigure the board", "which board are we on?", or before the first unattended run in a repo.
+description: Use when a backlog operation needs to know which ticketing system this repo uses and no `.claude/backlog.json` exists yet, or the existing one is stale, incomplete or fails validation — a provider call returns "unknown team/project", the project key looks wrong, the column names don't match the board. Also use when the user says "set up the backlog integration", "point this at Jira", "we moved to GitHub Issues", "reconfigure the board", "which board are we on?", or before the first unattended run in a repo. Also use when the repo's spec-driven planning kit changes or isn't recognised — "we use Spec Kit now", "point refine at our spec workflow", or a handoff that produced no spec files.
 ---
 
 # tracker — detect the ticketing provider once, persist it forever
 
 Every other skill in this plugin (`refine`, `nightshift`) needs the same
-five facts: which provider, which project, which columns mean what, what this
-repo's conventions are, and which tools to call. Re-deriving those every session
+facts: which provider, which project, which columns mean what, how this repo
+turns a ticket into a design, what its conventions are, and which tools to call. Re-deriving those every session
 is slow, and **an unattended run cannot derive them at all** — nightshift starts
 at 03:00 with nobody to ask.
 
@@ -41,10 +41,18 @@ committed to the repo — it describes the project, not the person.
     "done":       ["Done"],
     "dropped":    ["Canceled", "Duplicate"]
   },
-  "conventions": {
-    "planningSystem": "superpowers",
+  "planning": {
+    "kind": "superpowers",
+    "invoke": {
+      "type": "skill",
+      "steps": ["superpowers:brainstorming", "superpowers:writing-plans"]
+    },
     "specsDir": "docs/superpowers/specs",
     "plansDir": "docs/superpowers/plans",
+    "naming": "<YYYY-MM-DD>-<slug>-design.md",
+    "notes": null
+  },
+  "conventions": {
     "changelogFile": "src/lib/changelog/entries.ts",
     "sourceDirs": ["src"],
     "testCommand": "bun run test",
@@ -61,9 +69,15 @@ committed to the repo — it describes the project, not the person.
 }
 ```
 
-**Every field is required except `scope.*` sub-keys, `conventions.buildCommand`
-and `conventions.changelogFile`, which may be `null`.** A `null` you chose is
-fine; a missing key means the config was hand-edited badly — re-run detection.
+**Every field is required except `scope.*` sub-keys, `planning.naming`,
+`planning.notes`, `conventions.buildCommand` and `conventions.changelogFile`,
+which may be `null`.** A `null` you chose is fine; a missing key means the config
+was hand-edited badly — re-run detection.
+
+`planning` describes **how this repo turns a refined ticket into a design**. It
+is deliberately an adapter, not an enum: `kind` is a free-text label, and
+`invoke` says how to *start* the kit rather than naming a kit the skill has to
+know about. See "Step 4 — the planning kit" below.
 
 ## Step 1 — Is there already a config?
 
@@ -113,9 +127,11 @@ so the user is confirming, not composing:
    Jira board columns, or GitHub labels/Projects columns) and propose the
    mapping. Boards rarely use the canonical names: "Ready" is often `todo`,
    "QA" is often `inReview`.
-4. **Conventions** — propose from what's actually in the repo: a `docs/specs/`
-   or `openspec/` directory, the test script in `package.json`, a changelog
-   file. Only offer paths that exist.
+4. **Conventions** — propose from what's actually in the repo: the test and
+   typecheck scripts in `package.json` (or the equivalent), a changelog file,
+   the source directories. Only offer paths that exist.
+5. **Planning kit** — see Step 4; ask it in this same batched call when the
+   fingerprint was unambiguous, and as its own follow-up when it wasn't.
 
 `nightshift.*` defaults (5 tickets, draft PRs on, ready-tickets-only) are sane —
 apply them silently and mention them in the summary rather than spending a
@@ -133,7 +149,69 @@ looks unambiguous, and show the ticket count it currently resolves to:
 A user who sees "7 tickets" catches a mis-mapping that a user who sees "Todo"
 does not.
 
-## Step 4 — Write it
+## Step 4 — The planning kit
+
+When `refine` decides a ticket is too big to implement from a description alone,
+it hands off to whatever spec-driven kit this repo uses. Kits differ in how they
+are *started* — a skill, a slash command, or a document that tells the agent
+what to do — so the config records that, rather than a name this skill would
+have to recognise.
+
+### `invoke.type` — three ways to start a kit, plus "no kit"
+
+| `type` | Means | `steps` holds | Example |
+|---|---|---|---|
+| `skill` | Invoke skills in order via the `Skill` tool | skill names | `["superpowers:brainstorming", "superpowers:writing-plans"]` |
+| `command` | Run slash commands in order | command strings | `["/specify", "/plan"]` |
+| `docs` | Read the kit's own agent instructions and follow them | file paths | `["openspec/AGENTS.md"]` |
+| `none` | No kit — the refined description *is* the deliverable | `[]` | `[]` |
+
+Anything a kit can be started with fits one of the first three. If you find
+yourself wanting a fourth, you are describing a workflow, not an entry point —
+put it in `notes`, which is passed to the handoff verbatim.
+
+### Fingerprints — a shortcut, not a whitelist
+
+Probe for these, in this order. **Treat every row as a hypothesis to confirm
+with the user, not a fact** — kits change layouts, and a repo may use one in a
+non-standard way:
+
+| Likely kit | Fingerprint to look for | Proposed `invoke` |
+|---|---|---|
+| superpowers | the superpowers plugin is installed; `docs/*/specs/` + `docs/*/plans/` | `skill` → `superpowers:brainstorming`, `superpowers:writing-plans` |
+| openspec | an `openspec/` directory containing `AGENTS.md` | `docs` → `openspec/AGENTS.md` |
+| spec-kit | a `.specify/` directory, or `specs/<NNN>-<slug>/spec.md` | `command` → `/specify`, `/plan` |
+| kiro | `.kiro/specs/<feature>/` with `requirements.md` / `design.md` / `tasks.md` | `docs` → the kit's steering files |
+| bmad | a `.bmad-core/` directory or BMAD agent definitions | `docs` → its agent instructions |
+| *(none found)* | no planning artifacts anywhere | ask — see below |
+
+Corroborate a fingerprint before proposing it: open the directory and confirm it
+holds what you expect. A `specs/` folder containing three stale markdown files
+is not a kit.
+
+### When you don't recognise it, ask — that is the mechanism, not the fallback
+
+Most repos will not match a fingerprint, and a wrong guess here is expensive:
+`refine` would either invoke a kit that doesn't exist or silently drop to
+writing designs inline, and the user would only notice when a spec never
+appeared. So when detection is ambiguous or empty, ask directly:
+
+> **How does this repo turn a ticket into a design/spec before implementation?**
+> · Runs a skill — which one(s)?
+> · Runs a slash command — which one(s)?
+> · Follow a document in the repo — which path?
+> · Nothing formal — a refined ticket description is enough
+
+Then confirm the artifact paths (`specsDir`, `plansDir`) by asking where the kit
+*writes*, and check the directory exists. Record any quirk — numbered feature
+folders, a required branch name, a `tasks.md` that must be generated separately —
+in `notes`. That text is handed to the kit verbatim at handoff time, so it is
+where kit-specific knowledge lives instead of in this skill.
+
+`specsDir` and `plansDir` may be the same directory; several kits keep
+`spec.md` and `plan.md` side by side in one per-feature folder.
+
+## Step 5 — Write it
 
 Write `.claude/backlog.json`, create `.claude/` if needed. Then **read it back
 and validate it** — a config that doesn't round-trip is worse than none, because
@@ -168,3 +246,6 @@ it into the issue body instead of failing the run.
 - About to map the todo column without showing its ticket count → the user can't catch your mistake
 - About to put an API token in this file → it goes in the MCP/env config
 - About to proceed with no detectable provider → stop and say what to install
+- About to set `planning.kind` from a directory name without opening it → confirm the fingerprint
+- About to default `planning` to `none` because you didn't recognise the kit → **ask the user instead**; silently dropping to inline designs is the failure this adapter exists to prevent
+- About to invent a `steps` entry (a skill or command you haven't seen exist) → ask for the real one

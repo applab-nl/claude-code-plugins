@@ -17,7 +17,7 @@ line** for every hit — a signal without a path is not a signal.
 | `CODE` | `sourceDirs` from the config | A module, route, component or migration that *is* this feature. `src/lib/<thing>/`, `src/app/<route>/`, a table in the schema. |
 | `LOG` | `changelogFile` from the config | An entry describing this feature to users. Quote it with its line number. |
 | `PR` | `gh pr list --state merged --search "<keywords>"`, `git log --oneline --grep="<keywords>"` | A merged PR or commit that implements it. Include the number or SHA. |
-| `SPEC` | `specsDir`, `plansDir` from the config | A design document for it. **Weakest signal — see below.** |
+| `SPEC` | `planning.specsDir`, `planning.plansDir` from the config | A design document for it, whatever kit wrote it. **Weakest signal — see below.** |
 
 Search by *concept*, not by ticket title alone. A ticket called "Fast-dismiss"
 may have shipped as `dismissAction`, `quickDismiss` or `snooze`. Try 2–3 naming

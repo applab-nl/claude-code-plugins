@@ -28,7 +28,7 @@ Read `.claude/backlog.json`. **If it is missing or invalid, run the
 the column names.
 
 From the config you now have: `provider`, `projectKey`, `scope`, `columns`,
-`conventions`, and `tools.prefix`. Everything below is written in the provider
+`planning`, `conventions`, and `tools.prefix`. Everything below is written in the provider
 verbs (`list_issues`, `get_issue`, `update_issue`, `comment`); `tracker`
 holds the mapping to real tool names. Load them in **one** `ToolSearch` call.
 
@@ -96,9 +96,9 @@ rules, so every batch judges by the same contract:
 Read `${CLAUDE_PLUGIN_ROOT}/skills/refine/references/cleanup-evidence.md`
 and follow it exactly.
 
-Repo conventions (from .claude/backlog.json):
-  specsDir:      docs/superpowers/specs
-  plansDir:      docs/superpowers/plans
+Repo layout (from .claude/backlog.json):
+  specsDir:      docs/superpowers/specs      <- planning.specsDir
+  plansDir:      docs/superpowers/plans      <- planning.plansDir
   changelogFile: src/lib/changelog/entries.ts
   sourceDirs:    src
 
@@ -234,17 +234,39 @@ a stopping condition — say which box is still open and ask about it.
 is implementable unattended; one that doesn't will be skipped at 03:00. Refining
 to "good enough for a human to figure out" is what leaves nightshift idle.
 
-### Step 3.5 — Spec-worthy? Chain into the planning system
+### Step 3.5 — Spec-worthy? Hand off to the repo's planning kit
 
 If the ticket is a genuine capability — multiple surfaces, new concepts, schema
-changes, 5+ points — chain into `conventions.planningSystem`:
+changes, 5+ points — hand off to whatever kit this repo uses. **You do not need
+to know the kit.** `planning.invoke` tells you how to start it:
 
-- `superpowers` → invoke `superpowers:brainstorming`, then `superpowers:writing-plans`
-- `openspec` → follow the repo's `openspec/AGENTS.md` change-proposal flow
-- `none` → write the design inline in the ticket description; create no files
+| `planning.invoke.type` | What you do |
+|---|---|
+| `skill` | Invoke each entry in `steps`, in order, via the `Skill` tool |
+| `command` | Run each entry in `steps`, in order, as a slash command |
+| `docs` | Read each path in `steps` and follow those instructions |
+| `none` | Write the design inline in the ticket description; create no files |
 
-Pass everything the interview produced. Small, well-understood tickets do NOT
-get a spec file — a refined description is the whole deliverable for them.
+Always pass the kit **everything the interview produced** — the summary, scope,
+acceptance criteria, out-of-scope, and the constraints the user gave you. A kit
+started with no context re-asks the questions you just answered, which is how a
+refinement session doubles in length.
+
+Also pass `planning.notes` verbatim if it is set. That is where the repo's
+kit-specific quirks live (numbered feature folders, a required branch name, a
+`tasks.md` that must be generated separately) — it exists so this skill doesn't
+have to special-case anything.
+
+When the handoff finishes, **verify the files it claims to have written actually
+exist** at `planning.specsDir` / `planning.plansDir` before you reference them in
+Step 3.6. A kit that failed silently must not produce a `**Spec:**` trailer.
+
+Small, well-understood tickets do NOT get a spec — a refined description is the
+whole deliverable for them, regardless of which kit is configured.
+
+**If `planning` is missing from the config**, stop and run the `tracker` skill
+rather than guessing. Defaulting to `none` looks like it worked and quietly
+produces no spec at all.
 
 ### Step 3.6 — Write the refinement back
 
@@ -270,8 +292,8 @@ Why this matters now, what it builds on.
 ## Out of scope
 * What this deliberately does not do.
 
-**Spec:** <specsDir>/<file>.md
-**Plan:** <plansDir>/<file>.md
+**Spec:** <planning.specsDir>/<file>.md
+**Plan:** <planning.plansDir>/<file>.md
 ```
 
 The `**Spec:**` / `**Plan:**` trailer is **REQUIRED whenever Step 3.5 produced
