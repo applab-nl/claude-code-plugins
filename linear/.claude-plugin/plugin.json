@@ -1,7 +1,7 @@
 {
   "name": "linear",
-  "version": "1.0.0",
-  "description": "Start (and shepherd) work on a Linear ticket end-to-end — fetch the issue via the Linear MCP, classify quick-fix vs spec-driven, create an isolated worktree using Linear's canonical branchName, move the ticket to In Progress, and chain into the right follow-up skill (OpenSpec or superpowers). Also advances tickets to In Review on PR open and Done on merge via a persisted worktree sentinel.",
+  "version": "1.1.0",
+  "description": "Start (and shepherd) work on a Linear ticket end-to-end — fetch the issue via the Linear MCP, classify quick-fix vs spec-driven, create an isolated worktree using Linear's canonical branchName, rename the session after the ticket, move the ticket to In Progress, and chain into the right follow-up skill (OpenSpec or superpowers). Also advances tickets to In Review on PR open and Done on merge via a persisted worktree sentinel.",
   "author": {
     "name": "AppLab",
     "url": "https://github.com/applab-nl"

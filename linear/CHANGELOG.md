@@ -5,6 +5,18 @@ All notable changes to the Linear plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-08-25
+
+### Added
+
+- **Session rename on ticket start** — a new Step 7 names the session `<TICKET-ID> <short title>` (e.g. `APP-123 onboarding redirect loop`) as soon as the worktree exists, so parallel sessions stay tellable apart in `/resume`, the background-job list, and the terminal tab. The skill writes the session-title sidecar directly (the same file the built-in `/rename` persists) and prints a ready-to-run `/rename` line for the live header and tab title, which only the built-in command can update.
+
+### Changed
+
+- Start-mode steps 7–11 renumbered to 8–12 to make room for the rename step.
+- Fixed a stale cross-reference in Step 4: it pointed at the workflow-state lookup rather than the status update when skipping the transition for an already-started ticket.
+- The Step 12 summary now reports the session name alongside the worktree and ticket status.
+
 ## [1.0.0] - 2026-05-28
 
 ### Added
