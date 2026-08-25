@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -141,7 +141,7 @@
     {
       "name": "linear",
       "source": "./linear",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "description": "Start and shepherd work on a Linear ticket end-to-end - fetch via MCP, classify quick-fix vs spec-driven, create an isolated worktree, move the ticket to In Progress, and chain into the right follow-up skill. Advances tickets through In Review and Done via a persisted worktree sentinel",
       "author": {
         "name": "AppLab",
