@@ -40,7 +40,7 @@ picks up the repo's test/typecheck commands and planning conventions, and writes
 
 Four phases:
 
-1. **Queue** — every backlog/todo/in-review ticket, scored by `priority +
+1. **Queue** — every backlog/todo/ready/in-review ticket, scored by `priority +
    recency` so urgent work floats up without burying fresh thinking.
 2. **Cleanup** — parallel subagents sweep the codebase for evidence that a
    ticket already shipped (`CODE`, `LOG`, `PR`, `SPEC`), and you approve one
@@ -51,7 +51,9 @@ Four phases:
    later?"*. Title-only tickets get an open "explain this to me" question before
    anything structured. The interview continues until six questions are
    answerable — what the user sees, the unhappy path, what it touches, what's
-   out of scope, how to verify it, what it ships behind.
+   out of scope, how to verify it, what it ships behind. Answer all six and the
+   ticket is **promoted to the ready column**, which is where `nightshift` picks
+   it up; leave one open and it stays put, with a line saying which.
 4. **Land** — any specs written during the sweep are committed on their own
    branch, never straight to `main`, then merged into `main` directly — docs-only
    work needs no PR — and every `**Spec:**` path written into a ticket is
@@ -73,7 +75,7 @@ conversation.
 ```
 
 ```
-todo column ──┬─ ticket A ─→ branch A ─→ draft PR A ─┐
+ready column ─┬─ ticket A ─→ branch A ─→ draft PR A ─┐
               ├─ ticket B ─→ branch B ─→ draft PR B ─┼─→ preview branch ─→ testplan.html
               └─ ticket C ─→ branch C ─→ draft PR C ─┘
 ```
@@ -136,8 +138,9 @@ touches your default branch.
   "scope": { "teamId": "...", "projectId": null, "boardId": null },
   "tools": { "prefix": "mcp__claude_ai_Linear__", "kind": "mcp" },
   "columns": {
-    "backlog": ["Backlog"], "todo": ["Todo"], "inProgress": ["In Progress"],
-    "inReview": ["In Review"], "done": ["Done"], "dropped": ["Canceled"]
+    "backlog": ["Backlog"], "todo": ["Todo"], "ready": null,
+    "inProgress": ["In Progress"], "inReview": ["In Review"],
+    "done": ["Done"], "dropped": ["Canceled"]
   },
   "planning": {
     "kind": "superpowers",

@@ -29,8 +29,10 @@ the column names.
 
 From the config you now have: `provider`, `projectKey`, `scope`, `columns`,
 `planning`, `conventions`, and `tools.prefix`. Everything below is written in the provider
-verbs (`list_issues`, `get_issue`, `update_issue`, `comment`); `tracker`
-holds the mapping to real tool names. Load them in **one** `ToolSearch` call.
+verbs (`list_issues`, `get_issue`, `update_issue`, `move_issue`, `comment`);
+`tracker` holds the mapping to real tool names. Load them in **one** `ToolSearch`
+call — `move_issue` included, since both the cleanup close and the promotion to
+ready depend on it.
 
 ---
 
@@ -38,9 +40,10 @@ holds the mapping to real tool names. Load them in **one** `ToolSearch` call.
 
 Fetch the sweep set in one call, scoped by `projectKey` / `scope`, limit 250.
 
-**In scope:** anything in `columns.backlog` or `columns.todo`, plus tickets
-sitting in `columns.inReview` (these are the stale ones — the biggest cleanup
-win). Sub-issues are refined **individually**, not folded into their parent.
+**In scope:** anything in `columns.backlog` or `columns.todo`, plus
+`columns.ready` if the board has one, plus tickets sitting in `columns.inReview`
+(these are the stale ones — the biggest cleanup win). Sub-issues are refined
+**individually**, not folded into their parent.
 
 **Out of scope:** `columns.inProgress` (someone is on it), `columns.done`,
 `columns.dropped`.
@@ -234,6 +237,10 @@ a stopping condition — say which box is still open and ask about it.
 is implementable unattended; one that doesn't will be skipped at 03:00. Refining
 to "good enough for a human to figure out" is what leaves nightshift idle.
 
+A full pass is therefore also the **promotion trigger**: six boxes ticked means
+the ticket moves to the ready column in Step 3.6. Six boxes are all of them —
+don't tick one because the answer feels inferable.
+
 ### Step 3.5 — Spec-worthy? Hand off to the repo's planning kit
 
 If the ticket is a genuine capability — multiple surfaces, new concepts, schema
@@ -310,6 +317,7 @@ Then propose the other field updates in the same pass:
 
 | Field | What to do |
 |---|---|
+| Status | **Move to the ready column** — but only if all six Step 3.4 boxes tick. See below. |
 | Estimate | Set points now that scope is known. Drives nightshift's per-ticket budget. |
 | Labels | Apply the repo's `bug` / `improvement` equivalents. |
 | Dependencies | Real blockers as relations — `blockedBy` / `blocks`. "Do this after X merges" belongs in a relation, not in prose. |
@@ -317,11 +325,37 @@ Then propose the other field updates in the same pass:
 
 **Do not set priority.** The user maintains priority by hand.
 
-Show the proposed description and field changes, get approval, then
-`update_issue`. Confirm in one line and move on:
+#### Promote the ticket to the ready column
+
+A refined ticket that stays in Backlog is refined for nobody. `nightshift`
+builds its queue from the ready column and never looks anywhere else, so the
+move **is** the handoff — skip it and a fully-specced ticket sits invisible
+until someone drags it by hand.
+
+The target is `columns.ready` when the config sets it, and `columns.todo` when
+it is `null` — most boards have no separate Ready column, and their todo column
+*is* ready. Never invent a status name the config doesn't list.
+
+Move it when **all six Step 3.4 boxes tick**, and only then:
+
+- **Six boxes ticked** → `move_issue` to the ready column, in the same approval
+  as the description. This is nightshift's admission gate; passing it is exactly
+  what "ready" means.
+- **Any box open** → leave the status alone and say which box, in one line:
+  `IRIS-38 refined · left in Backlog — no acceptance criteria yet`. A
+  half-refined ticket promoted to ready is a ticket nightshift will implement
+  from guesses.
+- **Already in the ready column** → nothing to move; say so rather than
+  re-issuing the call.
+- **Blocked by an open ticket** (a `blockedBy` relation you just created) →
+  leave it where it is. Ready means *implementable now*.
+
+Show the proposed description, the status move and the field changes together,
+get one approval, then `update_issue` (and `move_issue`). Confirm in one line
+and move on:
 
 ```
-IRIS-38 refined · estimate 2 · labels Improvement · no spec needed
+IRIS-38 refined · → Todo (ready) · estimate 2 · labels Improvement · no spec needed
 ```
 
 ---
@@ -382,7 +416,7 @@ to a file on `main`. A dangling path is worse than no path.
 | 0 Config | `.claude/backlog.json` read | main | Once, at setup |
 | 1 Queue | Scored, ordered list printed | main | Can redirect |
 | 2 Cleanup | One evidence table of close candidates | **subagents, parallel** | Approves the batch |
-| 3 Refine | now/later → prose → interview → write-back | main (conversation) | Answers; decides |
+| 3 Refine | now/later → prose → interview → write-back → promote to ready | main (conversation) | Answers; decides |
 | 4 Land | Specs committed on their own branch, merged to `main` — no PR | main | Nothing |
 
 ## Red flags — stop and re-read this skill
@@ -396,6 +430,8 @@ to a file on `main`. A dangling path is worse than no path.
 - About to write `**Spec:**` pointing at a file you didn't create → delete the line
 - About to let the planning kit write spec files while you're still on `main` → branch first
 - About to open a PR to land a docs-only sweep → merge the branch into `main` yourself
+- About to leave a ticket that ticks all six boxes sitting in Backlog → promote it to the ready column
+- About to move a ticket to ready with an open 3.4 box → that's the gate; leave it and say which box
 - About to change priority → don't
 - About to refine 12 tickets without a single `AskUserQuestion` → this is an interview, not a batch job
 
@@ -403,6 +439,8 @@ to a file on `main`. A dangling path is worse than no path.
 
 - Don't close, drop or reopen anything without explicit approval in this session.
 - Don't touch in-progress tickets — someone is working on them.
+- Don't move a ticket to ready without the user's approval, and never to a status
+  name that isn't in `columns` — the config owns the vocabulary.
 - Don't write a `refine-later` label or deferral comment; deferral is session-only by design.
 - Don't fold sub-issues into their parent — refine them individually.
 - Don't rewrite a description in a way that loses the original text.

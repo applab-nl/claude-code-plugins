@@ -36,6 +36,7 @@ committed to the repo — it describes the project, not the person.
   "columns": {
     "backlog":    ["Backlog"],
     "todo":       ["Todo"],
+    "ready":      null,
     "inProgress": ["In Progress"],
     "inReview":   ["In Review"],
     "done":       ["Done"],
@@ -69,9 +70,9 @@ committed to the repo — it describes the project, not the person.
 }
 ```
 
-**Every field is required except `scope.*` sub-keys, `planning.naming`,
-`planning.notes`, `conventions.buildCommand` and `conventions.changelogFile`,
-which may be `null`.** A `null` you chose is fine; a missing key means the config
+**Every field is required except `scope.*` sub-keys, `columns.ready`,
+`planning.naming`, `planning.notes`, `conventions.buildCommand` and
+`conventions.changelogFile`, which may be `null`.** A `null` you chose is fine; a missing key means the config
 was hand-edited badly — re-run detection.
 
 `planning` describes **how this repo turns a refined ticket into a design**. It
@@ -85,7 +86,7 @@ Read `.claude/backlog.json`. If it parses and validates (all required keys, a
 known `provider`, a non-empty `projectKey`), **use it and stop**. Say one line:
 
 ```
-Backlog: linear · IRIS · todo column "Todo" (.claude/backlog.json)
+Backlog: linear · IRIS · ready column "Todo" (.claude/backlog.json)
 ```
 
 Do not re-interview a user who already configured this repo.
@@ -125,8 +126,11 @@ so the user is confirming, not composing:
    `owner/repo`. Offer what you found; let them correct it.
 3. **Column mapping** — fetch the real workflow states (`list_issue_statuses`,
    Jira board columns, or GitHub labels/Projects columns) and propose the
-   mapping. Boards rarely use the canonical names: "Ready" is often `todo`,
-   "QA" is often `inReview`.
+   mapping. Boards rarely use the canonical names: "QA" is often `inReview`.
+   Ask specifically whether the board has a **distinct "Ready" column** sitting
+   between backlog and in-progress. Most don't — their "Ready" *is* the todo
+   column, so leave `columns.ready` `null`. Set it only when Ready and Todo are
+   genuinely two different columns on this board.
 4. **Conventions** — propose from what's actually in the repo: the test and
    typecheck scripts in `package.json` (or the equivalent), a changelog file,
    the source directories. Only offer paths that exist.
@@ -137,17 +141,26 @@ so the user is confirming, not composing:
 apply them silently and mention them in the summary rather than spending a
 question on them.
 
-### The one thing you must not guess: the todo column
+### The one thing you must not guess: the ready column
 
-`nightshift` implements everything in `columns.todo` while the user sleeps. If
-that maps to the wrong column, it implements the wrong work — or the entire
-backlog. **Always confirm the todo column explicitly**, even when detection
-looks unambiguous, and show the ticket count it currently resolves to:
+**The ready column is `columns.ready` when it is set, and `columns.todo` when it
+is `null`.** Both other skills pivot on it: `refine` promotes a ticket into it
+the moment that ticket passes its readiness checklist, and `nightshift`
+implements everything sitting in it while the user sleeps. If it maps to the
+wrong column, nightshift implements the wrong work — or the entire backlog.
 
-> Todo column → **"Todo"** (7 tickets). Nightshift will implement from here.
+**Always confirm it explicitly**, even when detection looks unambiguous, and
+show the ticket count it currently resolves to:
+
+> Ready column → **"Todo"** (7 tickets, `columns.ready` unset → falls back to
+> `columns.todo`). Refine promotes into here; nightshift implements from here.
 
 A user who sees "7 tickets" catches a mis-mapping that a user who sees "Todo"
 does not.
+
+When the board *does* have a separate Ready column, confirm both — the todo
+column still defines what `refine` sweeps, and the ready column defines where
+refined tickets land.
 
 ## Step 4 — The planning kit
 
@@ -243,7 +256,7 @@ it into the issue body instead of failing the run.
 
 - About to ask the user questions when `.claude/backlog.json` already validates → **read it instead**
 - About to write a config with a guessed `projectKey` → confirm it, always
-- About to map the todo column without showing its ticket count → the user can't catch your mistake
+- About to map the ready column without showing its ticket count → the user can't catch your mistake
 - About to put an API token in this file → it goes in the MCP/env config
 - About to proceed with no detectable provider → stop and say what to install
 - About to set `planning.kind` from a directory name without opening it → confirm the fingerprint

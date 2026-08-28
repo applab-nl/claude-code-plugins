@@ -16,7 +16,7 @@ Use the **`nightshift`** skill and follow it exactly.
 
 Argument: `$ARGUMENTS`
 
-- **empty** → Run mode. Preflight, build the night's queue from the todo column,
+- **empty** → Run mode. Preflight, build the night's queue from the ready column,
   dispatch one worktree-isolated implementation agent per admitted ticket in a
   single message, assemble the preview branch, render the HTML test plan, push
   draft PRs, and finish with the morning report.
