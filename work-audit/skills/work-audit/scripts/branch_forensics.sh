@@ -73,10 +73,24 @@ for b in $REFS; do
   row=$(printf '  %-58s ahead:%-5s behind:%-5s %s%s' \
         "$b" "$ahead" "$behind" "$last" "${wt:+  [worktree]}")
 
+  # Signal 3 — absorption. A MULTI-COMMIT squash merge defeats signal 2, because the
+  # squashed commit's patch-id matches none of the originals. But if every path the
+  # branch touched is now identical between trunk and branch, its content is present
+  # regardless of how it got there.
+  absorbed=0
+  touched=$(git diff --name-only "$TRUNK...$b" 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$touched" -gt 0 ]; then
+    if git diff --name-only -z "$TRUNK...$b" 2>/dev/null \
+       | xargs -0 git diff --quiet "$TRUNK" "$b" -- 2>/dev/null; then
+      absorbed=1
+    fi
+  fi
+
   if git merge-base --is-ancestor "$b" "$TRUNK" 2>/dev/null; then
     ancestor=$((ancestor + 1)); anc_list="${anc_list}${row}"$'\n'
-  elif [ "$unique" -eq 0 ]; then
-    content=$((content + 1)); con_list="${con_list}${row}"$'\n'
+  elif [ "$unique" -eq 0 ] || [ "$absorbed" -eq 1 ]; then
+    tag=""; [ "$unique" -gt 0 ] && tag="  (squash-absorbed)"
+    content=$((content + 1)); con_list="${con_list}${row}${tag}"$'\n'
   else
     unmerged=$((unmerged + 1))
     unm_list="${unm_list}${row}  unique:${unique}"$'\n'

@@ -77,8 +77,32 @@ Classify as:
   without reading.
 - **UNMERGED** — real unique commits. These are the only branches worth a human's attention.
 
-`scripts/branch_forensics.sh` does this for every branch and prints the three buckets with exact
-counts. Use it rather than rewriting the loop.
+Run the bundled script rather than rewriting this loop by hand — it already handles the third signal
+below, which the two above miss. Its path is relative to **this skill's own directory**, so invoke it
+with the directory you loaded this file from:
+
+```bash
+bash "$SKILL_DIR/scripts/branch_forensics.sh"                 # local branches
+bash "$SKILL_DIR/scripts/branch_forensics.sh" --remote        # origin/* instead
+bash "$SKILL_DIR/scripts/branch_forensics.sh" --risk-only     # just the loss risk
+bash "$SKILL_DIR/scripts/worktree_health.sh" .worktrees .claude/worktrees
+```
+
+Both are read-only, take an optional trunk ref as their first argument, and print exact counts. If
+you find yourself writing a `for b in $(git for-each-ref ...)` loop, stop and run the script instead.
+
+**A third signal the scripts add, which you will otherwise miss.** A *multi-commit* squash merge
+defeats `git cherry` entirely: the squashed commit's patch-id matches none of the originals, so a
+branch that is fully absorbed still reports unique commits. The script therefore also checks whether
+every path the branch touched is now identical between trunk and branch:
+
+```bash
+git diff --name-only -z "$trunk...$branch" | xargs -0 git diff --quiet "$trunk" "$branch" --
+```
+
+Exit 0 means the branch's content is present regardless of how it landed. Without this check, every
+squash-merged branch in the repository is misreported as unmerged — which on a squash-merge project
+is most of them.
 
 **The trap that will catch you:** `git cherry` compares patch-ids, so content that was *re-authored*
 rather than cherry-picked shows as unique even though the intent shipped. A branch that renamed a

@@ -5,7 +5,7 @@ rescuing. Every trap below has produced a wrong conclusion in a real audit.
 
 ## Contents
 
-- [The two merge signals](#the-two-merge-signals)
+- [The three merge signals](#the-three-merge-signals)
 - [Trap: patch-id false positives](#trap-patch-id-false-positives)
 - [Trap: three-dot diffs](#trap-three-dot-diffs)
 - [Trap: scanning by worktree](#trap-scanning-by-worktree)
@@ -15,16 +15,25 @@ rescuing. Every trap below has produced a wrong conclusion in a real audit.
 - [Dead work: content targeting retired subsystems](#dead-work-content-targeting-retired-subsystems)
 - [Useful one-liners](#useful-one-liners)
 
-## The two merge signals
+## The three merge signals
 
 ```bash
 git merge-base --is-ancestor "$branch" "$trunk"   # exit 0 = fully merged
 git cherry "$trunk" "$branch" | grep -c '^+'      # 0 = no unique patches remain
 ```
 
-Ancestry is exact but blind to squash and rebase merges, which are how most projects actually land
-work. Patch-id catches those, but has its own failure mode below. Run both. `scripts/branch_forensics.sh`
-does this across all branches and prints the buckets.
+Ancestry is exact but blind to squash and rebase merges. Patch-id catches a *rebase*, where patches
+survive one-to-one — but not a **multi-commit squash**, whose single commit has a patch-id matching
+none of the originals. For that you need a third signal: are the paths the branch touched now
+identical on both sides?
+
+```bash
+git diff --name-only -z "$trunk...$branch" | xargs -0 git diff --quiet "$trunk" "$branch" --
+```
+
+Exit 0 means the content is present however it landed. On a squash-merge project this is the signal
+that does most of the work — without it nearly every merged branch reads as unmerged.
+`scripts/branch_forensics.sh` runs all three and prints the buckets.
 
 ## Trap: patch-id false positives
 

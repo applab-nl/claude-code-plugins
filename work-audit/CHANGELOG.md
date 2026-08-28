@@ -18,7 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `/work-audit` and `/work-audit-cleanup` commands, with `allowed-tools` scoped so the audit command
   is read-only at the harness level.
 - `scripts/branch_forensics.sh` — classifies every branch as fully-merged, content-merged or
-  unmerged using both ancestry and patch-id signals, and lists commits that exist on no remote.
+  unmerged using three signals, and lists commits that exist on no remote. Ancestry misses squash
+  and rebase merges; patch-id catches a rebase but not a *multi-commit squash*, whose single commit
+  matches none of the originals; a touched-path content comparison catches that. Found by the eval
+  fixtures, which planted a squash-merged branch that the first two signals both misreported.
 - `scripts/worktree_health.sh` — per-worktree dirty/unpushed state, repository-wide stashes, and
   orphan directory detection that distinguishes a true orphan from a parent of nested worktrees.
 - `references/git-forensics.md` — the commands, plus seven traps that have each produced a wrong
