@@ -19,6 +19,7 @@ with the user, detect this repo's conventions (planning system, specs/plans
 directories, changelog file, test and typecheck commands), then write and
 validate `.claude/backlog.json`.
 
-Confirm the **todo column** explicitly and show how many tickets it currently
-resolves to — `nightshift` implements from that column unattended, so a
+Confirm the **ready column** explicitly (`columns.ready`, falling back to
+`columns.todo`) and show how many tickets it currently resolves to — `refine`
+promotes into that column and `nightshift` implements from it unattended, so a
 mis-mapping there is the most expensive mistake available here.

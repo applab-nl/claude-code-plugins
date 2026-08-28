@@ -29,8 +29,10 @@ the column names.
 
 From the config you now have: `provider`, `projectKey`, `scope`, `columns`,
 `planning`, `conventions`, and `tools.prefix`. Everything below is written in the provider
-verbs (`list_issues`, `get_issue`, `update_issue`, `comment`); `tracker`
-holds the mapping to real tool names. Load them in **one** `ToolSearch` call.
+verbs (`list_issues`, `get_issue`, `update_issue`, `move_issue`, `comment`);
+`tracker` holds the mapping to real tool names. Load them in **one** `ToolSearch`
+call — `move_issue` included, since both the cleanup close and the promotion to
+ready depend on it.
 
 ---
 
@@ -38,9 +40,10 @@ holds the mapping to real tool names. Load them in **one** `ToolSearch` call.
 
 Fetch the sweep set in one call, scoped by `projectKey` / `scope`, limit 250.
 
-**In scope:** anything in `columns.backlog` or `columns.todo`, plus tickets
-sitting in `columns.inReview` (these are the stale ones — the biggest cleanup
-win). Sub-issues are refined **individually**, not folded into their parent.
+**In scope:** anything in `columns.backlog` or `columns.todo`, plus
+`columns.ready` if the board has one, plus tickets sitting in `columns.inReview`
+(these are the stale ones — the biggest cleanup win). Sub-issues are refined
+**individually**, not folded into their parent.
 
 **Out of scope:** `columns.inProgress` (someone is on it), `columns.done`,
 `columns.dropped`.
@@ -234,6 +237,10 @@ a stopping condition — say which box is still open and ask about it.
 is implementable unattended; one that doesn't will be skipped at 03:00. Refining
 to "good enough for a human to figure out" is what leaves nightshift idle.
 
+A full pass is therefore also the **promotion trigger**: six boxes ticked means
+the ticket moves to the ready column in Step 3.6. Six boxes are all of them —
+don't tick one because the answer feels inferable.
+
 ### Step 3.5 — Spec-worthy? Hand off to the repo's planning kit
 
 If the ticket is a genuine capability — multiple surfaces, new concepts, schema
@@ -256,6 +263,11 @@ Also pass `planning.notes` verbatim if it is set. That is where the repo's
 kit-specific quirks live (numbered feature folders, a required branch name, a
 `tasks.md` that must be generated separately) — it exists so this skill doesn't
 have to special-case anything.
+
+**Before you invoke the kit, check you are not on `main`** (`git branch
+--show-current`). The kit writes files the moment it runs, and spec artifacts
+live on their own branch — see Phase 4. Branch once, on the first spec-worthy
+ticket; every later ticket in the sweep reuses it.
 
 When the handoff finishes, **verify the files it claims to have written actually
 exist** at `planning.specsDir` / `planning.plansDir` before you reference them in
@@ -305,6 +317,7 @@ Then propose the other field updates in the same pass:
 
 | Field | What to do |
 |---|---|
+| Status | **Move to the ready column** — but only if all six Step 3.4 boxes tick. See below. |
 | Estimate | Set points now that scope is known. Drives nightshift's per-ticket budget. |
 | Labels | Apply the repo's `bug` / `improvement` equivalents. |
 | Dependencies | Real blockers as relations — `blockedBy` / `blocks`. "Do this after X merges" belongs in a relation, not in prose. |
@@ -312,28 +325,87 @@ Then propose the other field updates in the same pass:
 
 **Do not set priority.** The user maintains priority by hand.
 
-Show the proposed description and field changes, get approval, then
-`update_issue`. Confirm in one line and move on:
+#### Promote the ticket to the ready column
+
+A refined ticket that stays in Backlog is refined for nobody. `nightshift`
+builds its queue from the ready column and never looks anywhere else, so the
+move **is** the handoff — skip it and a fully-specced ticket sits invisible
+until someone drags it by hand.
+
+The target is `columns.ready` when the config sets it, and `columns.todo` when
+it is `null` — most boards have no separate Ready column, and their todo column
+*is* ready. Never invent a status name the config doesn't list.
+
+Move it when **all six Step 3.4 boxes tick**, and only then:
+
+- **Six boxes ticked** → `move_issue` to the ready column, in the same approval
+  as the description. This is nightshift's admission gate; passing it is exactly
+  what "ready" means.
+- **Any box open** → leave the status alone and say which box, in one line:
+  `IRIS-38 refined · left in Backlog — no acceptance criteria yet`. A
+  half-refined ticket promoted to ready is a ticket nightshift will implement
+  from guesses.
+- **Already in the ready column** → nothing to move; say so rather than
+  re-issuing the call.
+- **Blocked by an open ticket** (a `blockedBy` relation you just created) →
+  leave it where it is. Ready means *implementable now*.
+
+Show the proposed description, the status move and the field changes together,
+get one approval, then `update_issue` (and `move_issue`). Confirm in one line
+and move on:
 
 ```
-IRIS-38 refined · estimate 2 · labels Improvement · no spec needed
+IRIS-38 refined · → Todo (ready) · estimate 2 · labels Improvement · no spec needed
 ```
 
 ---
 
 ## Phase 4 — Land the specs
 
-Specs and plans written during a sweep must end up **on the main branch**, not
-stranded on a branch that gets deleted with the session.
+Specs and plans written during a sweep must end up **on `main`** — not stranded
+on a branch that gets deleted with the session. But they must **get there via
+their own branch**: nothing a sweep writes is ever committed straight to `main`.
 
-Work the whole sweep in ONE worktree (e.g. `refinement-YYYY-MM-DD`),
-collect every spec/plan file from the session, and open a **single docs-only
-PR** — then merge it. Docs-only changes need no changelog entry and no test run.
-If the sweep somehow touched source, hand off to `ship-it` and let it run the
-full gates.
+### Branch before the first file is written
+
+Step 3.5 hands off to a planning kit that writes files **immediately**. If the
+sweep is sitting on `main` when that happens, the artifacts are already in the
+wrong place and you are cleaning up instead of refining. So the moment the first
+ticket looks spec-worthy — before invoking the kit — get onto a branch:
+
+```bash
+git switch -c refinement-YYYY-MM-DD      # or a worktree on that branch
+```
+
+ONE branch for the whole sweep. Every spec and plan from the session shares it,
+and it is committed there:
+
+```bash
+git add <specsDir> <plansDir>
+git commit -m "📝 docs(specs): refinement sweep YYYY-MM-DD"
+```
+
+### Merge it yourself — no pull request
+
+These are docs-only changes: no changelog entry, no test run, and no review
+round-trip to wait on. Merge the branch into `main` directly and push:
+
+```bash
+git switch main && git pull --ff-only
+git merge --no-ff refinement-YYYY-MM-DD -m "📝 docs(specs): refinement sweep YYYY-MM-DD"
+git push
+git branch -d refinement-YYYY-MM-DD
+```
+
+If the push is rejected because `main` is protected, the repo has taken the
+choice out of your hands — open the docs-only PR and merge that instead. Do not
+work around the protection.
+
+If the sweep somehow touched **source**, none of this applies: hand off to
+`ship-it` and let it run the full gates.
 
 Before finishing, verify every `**Spec:**` path you wrote into a ticket resolves
-to a file in that PR. A dangling path is worse than no path.
+to a file on `main`. A dangling path is worse than no path.
 
 ---
 
@@ -344,8 +416,8 @@ to a file in that PR. A dangling path is worse than no path.
 | 0 Config | `.claude/backlog.json` read | main | Once, at setup |
 | 1 Queue | Scored, ordered list printed | main | Can redirect |
 | 2 Cleanup | One evidence table of close candidates | **subagents, parallel** | Approves the batch |
-| 3 Refine | now/later → prose → interview → write-back | main (conversation) | Answers; decides |
-| 4 Land | One docs-only PR merged | main | Nothing |
+| 3 Refine | now/later → prose → interview → write-back → promote to ready | main (conversation) | Answers; decides |
+| 4 Land | Specs committed on their own branch, merged to `main` — no PR | main | Nothing |
 
 ## Red flags — stop and re-read this skill
 
@@ -356,6 +428,10 @@ to a file in that PR. A dangling path is worse than no path.
 - About to write a description for a title-only ticket without asking what it means → you are guessing
 - About to stop interviewing because it feels like enough → run the 3.4 checklist
 - About to write `**Spec:**` pointing at a file you didn't create → delete the line
+- About to let the planning kit write spec files while you're still on `main` → branch first
+- About to open a PR to land a docs-only sweep → merge the branch into `main` yourself
+- About to leave a ticket that ticks all six boxes sitting in Backlog → promote it to the ready column
+- About to move a ticket to ready with an open 3.4 box → that's the gate; leave it and say which box
 - About to change priority → don't
 - About to refine 12 tickets without a single `AskUserQuestion` → this is an interview, not a batch job
 
@@ -363,9 +439,12 @@ to a file in that PR. A dangling path is worse than no path.
 
 - Don't close, drop or reopen anything without explicit approval in this session.
 - Don't touch in-progress tickets — someone is working on them.
+- Don't move a ticket to ready without the user's approval, and never to a status
+  name that isn't in `columns` — the config owns the vocabulary.
 - Don't write a `refine-later` label or deferral comment; deferral is session-only by design.
 - Don't fold sub-issues into their parent — refine them individually.
 - Don't rewrite a description in a way that loses the original text.
 - Don't hardcode a team id, project key or column name — it comes from the config.
 - Don't fabricate ticket content when a provider call fails — surface the error verbatim and stop.
-- Don't leave a session's specs unmerged on a branch.
+- Don't commit spec artifacts straight to `main` — they land by merging their branch.
+- Don't leave a session's specs unmerged on a branch either; Phase 4 finishes the job.

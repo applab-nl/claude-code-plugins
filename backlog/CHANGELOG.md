@@ -5,6 +5,67 @@ All notable changes to the Backlog plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-08-28
+
+### Added
+
+#### Refined tickets are promoted to the ready column
+
+`refine` interviewed a ticket to completion, wrote the description, set the
+estimate and the labels — and then left it exactly where it found it. Since
+`nightshift` builds its queue from one column and never looks anywhere else, a
+fully-specced ticket sitting in Backlog was invisible to the overnight run until
+somebody dragged it across by hand. The skill warned about the *symptom* ("what
+leaves nightshift idle") while the plumbing produced it for perfectly refined
+tickets.
+
+Step 3.6 now moves the ticket as part of the same approval as the description,
+gated on the Step 3.4 checklist:
+
+- **All six boxes ticked** → `move_issue` to the ready column. That checklist is
+  already nightshift's admission gate, so passing it is precisely what "ready"
+  means.
+- **Any box open** → status untouched, with one line naming the box
+  (`left in Backlog — no acceptance criteria yet`). Promoting a half-refined
+  ticket is how nightshift ends up implementing a guess.
+- Tickets already in the column, and tickets with an open `blockedBy` relation,
+  are left alone — ready means *implementable now*.
+
+The target is a new **optional `columns.ready`** in `.claude/backlog.json`,
+falling back to `columns.todo` when it is `null`. Most boards have no separate
+Ready column and need no config change; boards that do (Backlog / Ready / Todo
+as three distinct columns) can now say so. `tracker` asks about it during the
+column-mapping interview, and its "the one thing you must not guess" section is
+now about the ready column, since both other skills pivot on it. `nightshift`
+reads its queue from the same `columns.ready ?? columns.todo` resolution, so the
+new key can never become a column that only gets written to.
+
+### Changed
+
+#### `refine` Phase 4 — spec artifacts land via their own branch, without a PR
+
+The landing rule was "open a single docs-only PR, then merge it", which put a
+review round-trip in front of documents the user had just approved line by line
+in the interview. It also said nothing about *when* to branch, so a sweep that
+started on `main` had the planning kit write spec files straight into the trunk
+working tree at Step 3.5 — before Phase 4 was ever read.
+
+Both halves are now explicit:
+
+- **Branch before the first file is written.** Step 3.5 checks the current
+  branch before invoking the planning kit, and Phase 4 creates one branch
+  (`refinement-YYYY-MM-DD`, or a worktree on it) for the whole sweep. Nothing a
+  sweep produces is committed directly to `main`.
+- **No pull request.** The branch is merged into `main` locally and pushed —
+  docs-only changes need no changelog entry, no test run and no review. The
+  documented fallback for a protected `main` is the docs-only PR; working around
+  the protection is not an option. A sweep that touched source still hands off
+  to `ship-it` for the full gates.
+
+Two red flags and a `Do NOT` entry were added to keep both halves enforceable,
+and the quick-reference table now reads "Specs committed on their own branch,
+merged to `main` — no PR".
+
 ## [1.1.0] - 2026-08-24
 
 ### Changed
