@@ -1,0 +1,31 @@
+{
+  "name": "work-audit",
+  "version": "1.0.0",
+  "description": "Audit every piece of outstanding work — branches, worktrees, PRs, tracker tickets, stale planning artifacts and parallel sessions — verifying each claimed status against what is actually on the trunk, then produce an HTML report and a phased close-down plan. Includes an opt-in cleanup workflow that preserves before it deletes.",
+  "author": {
+    "name": "AppLab",
+    "url": "https://github.com/applab-nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/work-audit",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "audit",
+    "backlog",
+    "git",
+    "branches",
+    "worktrees",
+    "pull-requests",
+    "linear",
+    "jira",
+    "github-issues",
+    "cleanup",
+    "triage",
+    "technical-debt",
+    "reporting",
+    "workflow",
+    "productivity"
+  ],
+  "commands": "./commands",
+  "skills": "./skills"
+}
