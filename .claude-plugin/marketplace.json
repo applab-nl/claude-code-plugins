@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -175,6 +175,19 @@
       },
       "category": "productivity",
       "keywords": ["backlog", "refinement", "grooming", "linear", "jira", "github-issues", "tickets", "unattended", "overnight", "worktree", "preview-branch", "test-plan", "draft-pr", "subagents", "project-management"],
+      "license": "MIT"
+    },
+    {
+      "name": "work-audit",
+      "source": "./work-audit",
+      "version": "1.0.0",
+      "description": "Audit every piece of outstanding work - branches, worktrees, PRs, tracker tickets, stale planning artifacts and parallel sessions - verifying each claimed status against what is actually on the trunk, then produce an HTML report and a phased close-down plan. Read-only, and it confirms first when it fires on inference rather than a direct request. Includes an opt-in cleanup that preserves before it deletes",
+      "author": {
+        "name": "AppLab",
+        "email": "plugins@applab.nl"
+      },
+      "category": "productivity",
+      "keywords": ["audit", "backlog", "git", "branches", "worktrees", "pull-requests", "linear", "jira", "github-issues", "cleanup", "triage", "technical-debt", "reporting"],
       "license": "MIT"
     }
   ]
