@@ -52,8 +52,10 @@ Four phases:
    anything structured. The interview continues until six questions are
    answerable — what the user sees, the unhappy path, what it touches, what's
    out of scope, how to verify it, what it ships behind.
-4. **Land** — any specs written during the sweep go to `main` in one docs-only
-   PR, and every `**Spec:**` path written into a ticket is verified to exist.
+4. **Land** — any specs written during the sweep are committed on their own
+   branch, never straight to `main`, then merged into `main` directly — docs-only
+   work needs no PR — and every `**Spec:**` path written into a ticket is
+   verified to exist.
 
 The cleanup fan-out is the performance story: 30+ tickets × 4 signals is dozens
 of greps whose raw output you never need. Subagents return verdicts, not

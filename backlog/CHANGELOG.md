@@ -5,6 +5,34 @@ All notable changes to the Backlog plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-08-28
+
+### Changed
+
+#### `refine` Phase 4 — spec artifacts land via their own branch, without a PR
+
+The landing rule was "open a single docs-only PR, then merge it", which put a
+review round-trip in front of documents the user had just approved line by line
+in the interview. It also said nothing about *when* to branch, so a sweep that
+started on `main` had the planning kit write spec files straight into the trunk
+working tree at Step 3.5 — before Phase 4 was ever read.
+
+Both halves are now explicit:
+
+- **Branch before the first file is written.** Step 3.5 checks the current
+  branch before invoking the planning kit, and Phase 4 creates one branch
+  (`refinement-YYYY-MM-DD`, or a worktree on it) for the whole sweep. Nothing a
+  sweep produces is committed directly to `main`.
+- **No pull request.** The branch is merged into `main` locally and pushed —
+  docs-only changes need no changelog entry, no test run and no review. The
+  documented fallback for a protected `main` is the docs-only PR; working around
+  the protection is not an option. A sweep that touched source still hands off
+  to `ship-it` for the full gates.
+
+Two red flags and a `Do NOT` entry were added to keep both halves enforceable,
+and the quick-reference table now reads "Specs committed on their own branch,
+merged to `main` — no PR".
+
 ## [1.1.0] - 2026-08-24
 
 ### Changed

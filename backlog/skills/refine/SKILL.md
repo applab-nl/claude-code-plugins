@@ -257,6 +257,11 @@ kit-specific quirks live (numbered feature folders, a required branch name, a
 `tasks.md` that must be generated separately) — it exists so this skill doesn't
 have to special-case anything.
 
+**Before you invoke the kit, check you are not on `main`** (`git branch
+--show-current`). The kit writes files the moment it runs, and spec artifacts
+live on their own branch — see Phase 4. Branch once, on the first spec-worthy
+ticket; every later ticket in the sweep reuses it.
+
 When the handoff finishes, **verify the files it claims to have written actually
 exist** at `planning.specsDir` / `planning.plansDir` before you reference them in
 Step 3.6. A kit that failed silently must not produce a `**Spec:**` trailer.
@@ -323,17 +328,50 @@ IRIS-38 refined · estimate 2 · labels Improvement · no spec needed
 
 ## Phase 4 — Land the specs
 
-Specs and plans written during a sweep must end up **on the main branch**, not
-stranded on a branch that gets deleted with the session.
+Specs and plans written during a sweep must end up **on `main`** — not stranded
+on a branch that gets deleted with the session. But they must **get there via
+their own branch**: nothing a sweep writes is ever committed straight to `main`.
 
-Work the whole sweep in ONE worktree (e.g. `refinement-YYYY-MM-DD`),
-collect every spec/plan file from the session, and open a **single docs-only
-PR** — then merge it. Docs-only changes need no changelog entry and no test run.
-If the sweep somehow touched source, hand off to `ship-it` and let it run the
-full gates.
+### Branch before the first file is written
+
+Step 3.5 hands off to a planning kit that writes files **immediately**. If the
+sweep is sitting on `main` when that happens, the artifacts are already in the
+wrong place and you are cleaning up instead of refining. So the moment the first
+ticket looks spec-worthy — before invoking the kit — get onto a branch:
+
+```bash
+git switch -c refinement-YYYY-MM-DD      # or a worktree on that branch
+```
+
+ONE branch for the whole sweep. Every spec and plan from the session shares it,
+and it is committed there:
+
+```bash
+git add <specsDir> <plansDir>
+git commit -m "📝 docs(specs): refinement sweep YYYY-MM-DD"
+```
+
+### Merge it yourself — no pull request
+
+These are docs-only changes: no changelog entry, no test run, and no review
+round-trip to wait on. Merge the branch into `main` directly and push:
+
+```bash
+git switch main && git pull --ff-only
+git merge --no-ff refinement-YYYY-MM-DD -m "📝 docs(specs): refinement sweep YYYY-MM-DD"
+git push
+git branch -d refinement-YYYY-MM-DD
+```
+
+If the push is rejected because `main` is protected, the repo has taken the
+choice out of your hands — open the docs-only PR and merge that instead. Do not
+work around the protection.
+
+If the sweep somehow touched **source**, none of this applies: hand off to
+`ship-it` and let it run the full gates.
 
 Before finishing, verify every `**Spec:**` path you wrote into a ticket resolves
-to a file in that PR. A dangling path is worse than no path.
+to a file on `main`. A dangling path is worse than no path.
 
 ---
 
@@ -345,7 +383,7 @@ to a file in that PR. A dangling path is worse than no path.
 | 1 Queue | Scored, ordered list printed | main | Can redirect |
 | 2 Cleanup | One evidence table of close candidates | **subagents, parallel** | Approves the batch |
 | 3 Refine | now/later → prose → interview → write-back | main (conversation) | Answers; decides |
-| 4 Land | One docs-only PR merged | main | Nothing |
+| 4 Land | Specs committed on their own branch, merged to `main` — no PR | main | Nothing |
 
 ## Red flags — stop and re-read this skill
 
@@ -356,6 +394,8 @@ to a file in that PR. A dangling path is worse than no path.
 - About to write a description for a title-only ticket without asking what it means → you are guessing
 - About to stop interviewing because it feels like enough → run the 3.4 checklist
 - About to write `**Spec:**` pointing at a file you didn't create → delete the line
+- About to let the planning kit write spec files while you're still on `main` → branch first
+- About to open a PR to land a docs-only sweep → merge the branch into `main` yourself
 - About to change priority → don't
 - About to refine 12 tickets without a single `AskUserQuestion` → this is an interview, not a batch job
 
@@ -368,4 +408,5 @@ to a file in that PR. A dangling path is worse than no path.
 - Don't rewrite a description in a way that loses the original text.
 - Don't hardcode a team id, project key or column name — it comes from the config.
 - Don't fabricate ticket content when a provider call fails — surface the error verbatim and stop.
-- Don't leave a session's specs unmerged on a branch.
+- Don't commit spec artifacts straight to `main` — they land by merging their branch.
+- Don't leave a session's specs unmerged on a branch either; Phase 4 finishes the job.
