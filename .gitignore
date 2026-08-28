@@ -1,3 +1,6 @@
 logs/
 .claude/settings.local.json
 .idea/
+
+__pycache__/
+*.pyc
