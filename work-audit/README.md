@@ -35,6 +35,23 @@ then deletes verified-merged branches, removes finished worktrees, prunes orphan
 superseded PRs. Separate by design: the audit is safe to run any time, the cleanup never happens by
 accident.
 
+## When it runs
+
+Type `/work-audit` and it starts immediately — you asked for it, so it does not ask back.
+
+The skill also fires on its own when you sound disoriented about the state of your work ("I'm lost
+with everything outstanding", "why do we have 40 branches", "did that ever actually ship"). In that
+case it **confirms before doing anything**, tells you roughly what a full sweep costs, and offers a
+narrower alternative — because one of these usually answers the real question in seconds:
+
+| Instead of the full audit | Answers |
+|---|---|
+| At-risk work only | "Could I lose anything?" |
+| Branch classification only | "What can I delete?" |
+| One ticket or branch verified | "Is this actually done?" |
+
+Nothing it does mutates the repository either way.
+
 ## The core discipline
 
 **Never report a status you have not verified against the trunk.**
@@ -45,8 +62,9 @@ the tracker is worthless. What the user cannot see is which parts of the tracker
 
 ## Things it knows that are easy to get wrong
 
-- **Two merge signals, not one.** Ancestry is blind to squash merges; patch-id false-positives on
-  re-authored work. Each catches what the other misses.
+- **Three merge signals, not one.** Ancestry is blind to squash and rebase merges; patch-id catches a
+  rebase but not a *multi-commit squash*, and false-positives on re-authored work; a touched-path
+  comparison catches what both miss.
 - **Never scan by worktree.** A branch not checked out anywhere never appears — and those are exactly
   the forgotten ones.
 - **Three-dot vs two-dot diffs.** `A...B` diffs from the merge-base and will show you the trunk's own

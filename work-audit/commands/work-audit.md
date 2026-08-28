@@ -8,6 +8,10 @@ Run a full work audit of this repository using the `work-audit` skill.
 
 Trunk reference: ${ARGUMENTS:-auto-detect (origin/main, then origin/master)}
 
+**This is an explicit invocation — begin immediately.** The skill asks for confirmation when it fires
+on inference rather than a direct request; that gate does not apply here, and asking the user to
+confirm what they just typed would be an irritation, not a courtesy.
+
 This is a **read-only** investigation. Do not create, delete, rebase or check out branches. Follow
 the skill's order of work:
 

@@ -8,6 +8,9 @@ Execute the work-audit cleanup using the `work-audit-cleanup` skill.
 
 Scope: ${ARGUMENTS:-all phases, confirming before each destructive group}
 
+This is an explicit invocation, so do not ask whether to begin. Do still confirm before each
+destructive group — that gate is about protecting data, not about consent to run.
+
 This performs **destructive** git operations. Before starting:
 
 - Require a current audit from this session. If there isn't one, run `/work-audit` first — acting on

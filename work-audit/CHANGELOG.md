@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release, generalised from a real audit of a multi-worktree Kotlin/Supabase monorepo.
 - `work-audit` skill — read-only audit of branches, worktrees, pull requests, tracker tickets,
   planning artifacts and parallel agent sessions, verifying each claimed status against the trunk.
+- Consent gate: an explicit invocation (`/work-audit`, "run a work audit") starts immediately,
+  while an inferred one confirms first, states the cost, and offers a narrower alternative — a full
+  sweep is minutes of work and should not arrive unrequested.
 - `work-audit-cleanup` skill — opt-in destructive cleanup that completes preservation before
   beginning deletion, re-verifies merge state at the moment of deletion, and uses `git branch -d`
   rather than `-D`.

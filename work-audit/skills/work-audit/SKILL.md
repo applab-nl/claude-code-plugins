@@ -1,9 +1,42 @@
 ---
 name: work-audit
-description: Audit every piece of outstanding work in a repository — branches, worktrees, pull requests, issue-tracker tickets, stale planning artifacts and parallel agent sessions — verifying each claimed status against what is actually on the trunk, then produce a report and a phased close-down plan. Use this whenever someone is disoriented about the state of their work or wants it consolidated: "I'm lost with everything that's outstanding", "what's still open", "audit our branches", "which branches can I delete", "is this ticket actually done", "what have we forgotten", "clean up the repo", "why do we have 40 branches", "what's safe to delete", before a release or a team handover, when returning to a project after time away, or when the backlog feels larger than the work. Also use it whenever a status is in doubt and the answer must come from the code rather than from a ticket, a doc, or a memory.
+description: Audit every piece of outstanding work in a repository — branches, worktrees, pull requests, issue-tracker tickets, stale planning artifacts and parallel agent sessions — verifying each claimed status against what is actually on the trunk, then produce a report and a phased close-down plan. Consult this skill whenever someone sounds disoriented about the state of their work or wants it consolidated, even when they do not ask for an "audit" by name: "I'm lost with everything that's outstanding", "what's still open", "what have we forgotten", "why do we have 40 branches", "which branches can I delete", "what's safe to delete", "is this ticket actually done", "did that ever ship", "clean up the repo", "can I lose anything", before a release or a team handover, when returning to a project after time away, or when the backlog feels larger than the work. Also consult it whenever a status is in doubt and the answer has to come from the code rather than from a ticket, a doc, or a memory. The skill is read-only and changes nothing; when it fires on inference rather than an explicit request it confirms with the user first, and offers a narrower one-question alternative, because a full sweep is minutes of work and should not be a surprise.
 ---
 
 # Work Audit
+
+## First: were you asked for this, or did you decide it yourself?
+
+A full audit is a heavy operation. It sweeps every branch, worktree, pull request and ticket, reads
+code on the trunk to verify each one, usually fans out subagents, and takes minutes rather than
+seconds. That is a reasonable price when someone asked for it and a rude surprise when they did not.
+
+**If the user invoked this directly, start work immediately.** A slash command, "run a work audit",
+"audit the outstanding work", or anything else that names the operation *is* consent. Do not ask
+again — being made to confirm something you just explicitly requested is its own small insult.
+
+**If this skill fired on its own** — the user said something like "I'm lost with everything that's
+outstanding" or "why do we have so many branches", and you inferred an audit would help — **stop and
+ask before doing any of it.** Use `AskUserQuestion` if available, otherwise ask in plain text. The
+confirmation is only useful if it carries the cost and the alternatives, so say:
+
+- what it will do — a read-only sweep of branches, worktrees, PRs, tickets and planning artifacts,
+  verifying each status against the trunk;
+- roughly what it costs — several minutes, and subagents if they are available;
+- that it changes nothing;
+- and offer the cheap version, because it is very often what they actually wanted.
+
+The narrow options are worth naming explicitly, since one of them usually answers the real question
+in under a minute:
+
+| Instead of the full audit | Answers |
+|---|---|
+| At-risk work only | "Could I lose anything?" — one script, seconds |
+| Branch classification only | "What can I delete?" |
+| One ticket or branch verified | "Is this actually done?" |
+
+If they decline, do the narrow thing they asked for and drop the audit entirely. If they accept,
+proceed through the order of work below without asking again.
 
 ## What this is for
 
