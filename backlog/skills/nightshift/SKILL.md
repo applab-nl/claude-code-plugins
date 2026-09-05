@@ -1,20 +1,21 @@
 ---
 name: nightshift
-description: Use when the user wants unattended overnight implementation of a whole column of ready tickets — "/nightshift", "run the nightshift", "work through the todo column tonight", "have it built by morning", "implement everything that's ready while I sleep", "give me something to test in the morning". Also use the morning after, when they ask "what happened last night?", "show me the test plan", or want a tested nightshift PR marked ready for review and shipped.
+description: Use when the user wants unattended overnight implementation of a whole column of planned tickets — "/nightshift", "run the nightshift", "work through the todo column tonight", "have it built by morning", "implement everything that's ready while I sleep", "give me something to test in the morning". Also use the morning after, when they ask "what happened last night?", "show me the test plan", or want a tested nightshift PR marked ready for review and shipped.
 ---
 
 # nightshift — a column of tickets in, a testable preview branch out
 
-You start it before you go to bed. It reads the ready column, implements as many
+You start it before you go to bed. It reads the **pickup column** — the column
+the user plans work into — implements as many
 tickets as it can, keeps **one branch per ticket** so each can ship
 independently, merges them into **one preview branch** so everything can be
 tested together, and writes an **HTML test plan** describing exactly what to
 click. In the morning the user tests the preview, then marks the good PRs ready.
 
 ```
-ready column ─┬─ ticket A ─→ branch A ─→ draft PR A ─┐
-              ├─ ticket B ─→ branch B ─→ draft PR B ─┼─→ preview branch ─→ testplan.html
-              └─ ticket C ─→ branch C ─→ draft PR C ─┘
+pickup column ─┬─ ticket A ─→ branch A ─→ draft PR A ─┐
+               ├─ ticket B ─→ branch B ─→ draft PR B ─┼─→ preview branch ─→ testplan.html
+               └─ ticket C ─→ branch C ─→ draft PR C ─┘
 ```
 
 ## Modes
@@ -38,7 +39,7 @@ explanation:
 - [ ] Working tree is clean and on the default branch, synced with `origin`
 - [ ] `gh auth status` succeeds and the repo has a remote
 - [ ] `conventions.testCommand` runs green **on the current default branch** — a red baseline means you cannot tell your breakage from pre-existing breakage
-- [ ] The ready column (`columns.ready ?? columns.todo`) resolves to ≥1 ticket
+- [ ] The pickup column (`columns.todo`) resolves to ≥1 ticket
 
 Print the preflight result as a checklist. This is the last thing a human may
 ever read before morning; make it complete.
@@ -51,15 +52,33 @@ skipping tests. Abort and explain.
 
 ## Phase 1 — Build the night's queue
 
-`list_issues` scoped to **the ready column** — `columns.ready` when the config
-sets it, `columns.todo` when it is `null`. That is the column `refine` promotes
-into, which is what makes the two skills one loop. Then apply the **readiness
-gate** — this is what separates nightshift from a machine that generates noise.
+`list_issues` scoped to **the pickup column** — `columns.todo`, always. Then
+apply the **readiness gate** — this is what separates nightshift from a machine
+that generates noise.
+
+### Why the pickup column, and not the ready column
+
+The board carries two post-refinement columns, and they mean different things:
+
+- **ready column** (`columns.ready ?? columns.todo`) — refined and implementable.
+  `refine` promotes here and stops.
+- **pickup column** (`columns.todo`) — *planned*. The user moves a ticket here by
+  hand when they want it built.
+
+You read the pickup column because that hand-move is the whole point: it is the
+user's decision about what gets built tonight. Reading the ready column instead
+would implement every refined idea on the board, including the ones deliberately
+parked.
+
+On boards where `columns.ready` is `null` the two collapse onto `columns.todo` —
+`refine` promotes straight into the column you read, and there is no manual gate.
+Both are valid; the config says which board this is, and you never need to care
+beyond reading `columns.todo`.
 
 ### The readiness gate
 
 A ticket is admitted only if it answers all six (the same checklist
-`refine` Step 3.4 refines toward):
+`refine` Step 4.5 refines toward):
 
 - [ ] What the user sees, and where
 - [ ] The trigger, and the unhappy path
@@ -191,7 +210,7 @@ plumbing.
   changes individually, and a combined PR destroys it.
 - The preview branch gets **no PR**. It is a disposable integration artifact;
   opening a PR for it invites someone to merge the whole night in one click.
-- Leave the tickets in the ready column. **Nightshift does not move tickets** —
+- Leave the tickets in the pickup column. **Nightshift does not move tickets** —
   work that hasn't been tested isn't in review. Post one comment per ticket
   linking its branch and draft PR.
 

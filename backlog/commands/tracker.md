@@ -19,7 +19,10 @@ with the user, detect this repo's conventions (planning system, specs/plans
 directories, changelog file, test and typecheck commands), then write and
 validate `.claude/backlog.json`.
 
-Confirm the **ready column** explicitly (`columns.ready`, falling back to
-`columns.todo`) and show how many tickets it currently resolves to — `refine`
-promotes into that column and `nightshift` implements from it unattended, so a
-mis-mapping there is the most expensive mistake available here.
+Confirm **both post-refinement columns** explicitly, with the ticket count each
+resolves to: the **ready column** (`columns.ready`, falling back to
+`columns.todo`) that `refine` promotes into, and the **pickup column**
+(`columns.todo`) that `nightshift` implements from unattended. Setting
+`columns.ready` is what gives the user a manual planning gate between the two —
+say so while asking, because a mis-mapping here is the most expensive mistake
+available in this skill.

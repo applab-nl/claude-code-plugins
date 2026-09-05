@@ -16,10 +16,11 @@ Use the **`nightshift`** skill and follow it exactly.
 
 Argument: `$ARGUMENTS`
 
-- **empty** → Run mode. Preflight, build the night's queue from the ready column,
-  dispatch one worktree-isolated implementation agent per admitted ticket in a
-  single message, assemble the preview branch, render the HTML test plan, push
-  draft PRs, and finish with the morning report.
+- **empty** → Run mode. Preflight, build the night's queue from the **pickup
+  column** (`columns.todo`) — what the user has actually planned, not everything
+  `refine` has marked ready — dispatch one worktree-isolated implementation agent
+  per admitted ticket in a single message, assemble the preview branch, render
+  the HTML test plan, push draft PRs, and finish with the morning report.
 - **`finalize <KEY-123>`** → Finalize mode. That ticket tested clean on the
   preview: mark its draft PR ready for review, move the ticket to in-review, and
   hand off to `ship-it` if available. One ticket at a time.

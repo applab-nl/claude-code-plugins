@@ -15,12 +15,18 @@ Use the **`refine`** skill and follow it exactly.
 
 Argument: `$ARGUMENTS`
 
-- **empty** → Full sweep: build the scored queue, dispatch parallel subagents to
-  gather cleanup evidence, present one batch of close candidates for approval,
-  then walk the remaining tickets through the refinement interview.
-- **a ticket key** → Skip the sweep; refine that one ticket interactively,
-  starting from the "refine now or later?" question.
+- **empty** → Full sweep: build the scored queue from the backlog column, triage
+  the whole open board (already shipped? already on the board twice?) into one
+  approval batch, agree which tickets this session, dispatch parallel codebase
+  recon for them, then walk them through the refinement interview.
+- **a ticket key** → Skip the sweep; duplicate-check and recon that one ticket,
+  then refine it interactively from the "refine now or later?" question.
 
-Remember the two rules that make this work: **CODE is mandatory** before
-proposing any close (a spec is a design, not a shipment), and **the user decides
-everything** — this is an interview, not a batch job.
+Refinement moves a ticket **from the backlog column to the ready column, and
+stops there**. The move from ready to the pickup column is the user's planning
+step — never make it for them.
+
+Remember the three rules that make this work: **CODE is mandatory** before
+proposing any close (a spec is a design, not a shipment), **read the code before
+you ask** (recon first, then questions), and **the user decides everything** —
+this is an interview, not a batch job.

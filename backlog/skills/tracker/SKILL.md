@@ -35,8 +35,8 @@ committed to the repo — it describes the project, not the person.
   },
   "columns": {
     "backlog":    ["Backlog"],
+    "ready":      ["READY"],
     "todo":       ["Todo"],
-    "ready":      null,
     "inProgress": ["In Progress"],
     "inReview":   ["In Review"],
     "done":       ["Done"],
@@ -86,7 +86,7 @@ Read `.claude/backlog.json`. If it parses and validates (all required keys, a
 known `provider`, a non-empty `projectKey`), **use it and stop**. Say one line:
 
 ```
-Backlog: linear · IRIS · ready column "Todo" (.claude/backlog.json)
+Backlog: linear · IRIS · ready "READY" → pickup "Todo" (.claude/backlog.json)
 ```
 
 Do not re-interview a user who already configured this repo.
@@ -128,9 +128,10 @@ so the user is confirming, not composing:
    Jira board columns, or GitHub labels/Projects columns) and propose the
    mapping. Boards rarely use the canonical names: "QA" is often `inReview`.
    Ask specifically whether the board has a **distinct "Ready" column** sitting
-   between backlog and in-progress. Most don't — their "Ready" *is* the todo
-   column, so leave `columns.ready` `null`. Set it only when Ready and Todo are
-   genuinely two different columns on this board.
+   between backlog and todo, and describe what each answer buys — see "the two
+   columns you must not guess" below. Set `columns.ready` only when Ready and
+   Todo are genuinely two different columns on this board; leave it `null`
+   otherwise.
 4. **Conventions** — propose from what's actually in the repo: the test and
    typecheck scripts in `package.json` (or the equivalent), a changelog file,
    the source directories. Only offer paths that exist.
@@ -141,26 +142,41 @@ so the user is confirming, not composing:
 apply them silently and mention them in the summary rather than spending a
 question on them.
 
-### The one thing you must not guess: the ready column
+### The two columns you must not guess
 
-**The ready column is `columns.ready` when it is set, and `columns.todo` when it
-is `null`.** Both other skills pivot on it: `refine` promotes a ticket into it
-the moment that ticket passes its readiness checklist, and `nightshift`
-implements everything sitting in it while the user sleeps. If it maps to the
-wrong column, nightshift implements the wrong work — or the entire backlog.
+Two roles come out of `columns`, and every other skill pivots on them:
 
-**Always confirm it explicitly**, even when detection looks unambiguous, and
-show the ticket count it currently resolves to:
+| Role | Resolves to | Who writes it |
+|---|---|---|
+| **ready column** | `columns.ready ?? columns.todo` | `refine`, when a ticket passes its readiness checklist |
+| **pickup column** | `columns.todo`, always | the **user**, by hand — `nightshift` implements what sits here |
 
-> Ready column → **"Todo"** (7 tickets, `columns.ready` unset → falls back to
-> `columns.todo`). Refine promotes into here; nightshift implements from here.
+Map either one wrong and the damage is real: nightshift builds the wrong work,
+or `refine` promotes tickets into a column nobody watches.
+
+**The choice this config makes is whether the user gets a manual planning gate.**
+Say it out loud while asking, because it is not obvious from the column names:
+
+- **Distinct Ready column** (`columns.ready` set) → `refine` promotes into Ready
+  and stops. Nothing gets built until the user drags it to Todo themselves.
+  Refined ≠ scheduled.
+- **No Ready column** (`columns.ready` null) → both roles are Todo. A ticket
+  `refine` promotes is admitted to the next nightshift automatically. Simpler,
+  faster, no gate.
+
+**Always confirm both explicitly**, even when detection looks unambiguous, and
+show the ticket count each currently resolves to:
+
+> Ready column → **"READY"** (4 tickets). `refine` promotes here and stops.
+> Pickup column → **"Todo"** (7 tickets). You move tickets here when you want
+> them built; `nightshift` implements from here.
 
 A user who sees "7 tickets" catches a mis-mapping that a user who sees "Todo"
 does not.
 
-When the board *does* have a separate Ready column, confirm both — the todo
-column still defines what `refine` sweeps, and the ready column defines where
-refined tickets land.
+When `columns.ready` is `null`, say that consequence in the same breath —
+"`refine` promotes straight into Todo, so a refined ticket is queued for the
+next nightshift" — rather than reporting one column twice.
 
 ## Step 4 — The planning kit
 
@@ -256,7 +272,8 @@ it into the issue body instead of failing the run.
 
 - About to ask the user questions when `.claude/backlog.json` already validates → **read it instead**
 - About to write a config with a guessed `projectKey` → confirm it, always
-- About to map the ready column without showing its ticket count → the user can't catch your mistake
+- About to map the ready or pickup column without showing its ticket count → the user can't catch your mistake
+- About to set `columns.ready` without saying it creates a manual planning gate → that consequence *is* the question
 - About to put an API token in this file → it goes in the MCP/env config
 - About to proceed with no detectable provider → stop and say what to install
 - About to set `planning.kind` from a directory name without opening it → confirm the fingerprint

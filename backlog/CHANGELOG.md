@@ -5,6 +5,71 @@ All notable changes to the Backlog plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-09-05
+
+### Added
+
+#### A refined ticket is ready, not scheduled
+
+`refine` promoted a ticket into the ready column and `nightshift` implemented
+everything sitting in that same column. On a board with three post-refinement
+columns (Backlog / READY / Todo) that meant refining a ticket queued it for the
+next overnight run — the manual "I actually want this built" step had nowhere to
+live, and parking a refined idea was impossible.
+
+The two columns are now two roles:
+
+- **ready column** (`columns.ready ?? columns.todo`) — refined and implementable.
+  `refine` promotes here and stops. It never writes the pickup column.
+- **pickup column** (`columns.todo`, always) — planned. The user moves a ticket
+  here by hand; `nightshift` builds its queue from here.
+
+Boards with `columns.ready` unset are unaffected: both roles resolve to
+`columns.todo`, which is exactly the previous behaviour. `tracker` now confirms
+**both** columns with their live ticket counts and says which choice the config
+is making, because "do you have a separate Ready column?" is really the question
+"do you want a manual planning gate?".
+
+#### Duplicate detection during triage
+
+A backlog accumulates the same idea more than once, and refining the second copy
+of a ticket that is already in progress is pure waste. Phase 2 now fetches a
+**board index** — the most recent Done, Canceled, Duplicate, In Progress and In
+Review tickets — once, and matches every backlog ticket against it on domain
+nouns rather than wording. Hits are presented in the same approval batch as the
+already-shipped closes, with three offered actions: close as duplicate and link
+the survivor, merge the better detail into the survivor first, or keep both and
+record why. The user always picks, and always picks the survivor when the two
+copies are equally deep.
+
+#### Refinement is grounded in the codebase
+
+The interview used to run on the ticket text alone, which produced acceptance
+criteria for modules that don't exist and "new" features that were half-built.
+A new Phase 3 asks which tickets are in scope for the session, then dispatches
+one read-only `Explore` agent per ticket — all in a single message — against the
+new `references/codebase-recon.md` contract. Each returns a brief: entry point,
+the files a change would touch, the pattern this repo already uses, the closest
+prior art, whether part of it exists, where the tests live, and at most two
+risks. Every path is one the agent actually opened.
+
+The interview then names real files in its options, the readiness checklist's
+"which modules does it touch" box requires **verified paths** rather than a
+guess, and the written description gains a `## Codebase` section pointing an
+implementer at the file to open first. A recon that reports the feature already
+exists is routed back as a close proposal instead of being refined.
+
+### Changed
+
+- `refine` runs in **five** phases (queue → triage → prepare → refine → land);
+  its interview steps renumbered from `3.x` to `4.x`. The readiness checklist —
+  still six boxes, still nightshift's admission gate — is now Step 4.5.
+- `refine`'s interview loop walks **`columns.backlog` only**. Ready, pickup and
+  in-review tickets are still swept by triage but never re-interviewed: they
+  already cleared refinement, and re-asking reproduces a description they have.
+- `nightshift` reads `columns.todo` directly instead of resolving
+  `columns.ready ?? columns.todo`.
+
 ## [1.2.0] - 2026-08-28
 
 ### Added
