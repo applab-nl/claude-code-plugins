@@ -11,6 +11,7 @@ End-of-session workflow that takes an in-progress feature branch from "code is d
 
 Runs the user's standard session close-out:
 
+0. **Sync specs** when a spec-driven kit (OpenSpec, Superpowers, Spec Kit) is present: update, synchronize, and archive where needed
 1. **Commit** outstanding changes with an auto-generated conventional-commits message
 2. **Push** the branch to origin (setting upstream if needed)
 3. **Open a PR** with an auto-generated title and body
@@ -39,6 +40,35 @@ Before doing anything destructive, verify:
 - `gh` CLI is installed and authenticated (`gh auth status`)
 
 If any precondition fails, report the specific problem and stop. Don't try to "fix" them silently.
+
+## Step 0 — Sync specs (spec-driven projects only)
+
+If the repo uses a spec-driven development kit, the specs ship with the code: they get updated, synchronized and (where the kit says so) archived **before** Step 1, so they land in the same PR. A PR that changes behaviour while its spec still describes the old plan is not shippable.
+
+Detect the kit by its footprint:
+
+| Kit | Footprint |
+|---|---|
+| **OpenSpec** | `openspec/` directory (`openspec/changes/`, `openspec/specs/`, often `openspec/AGENTS.md`) |
+| **Superpowers** | `docs/superpowers/specs/` and/or `docs/superpowers/plans/` (older: `docs/plans/`) |
+| **Spec Kit** | `.specify/` directory plus `specs/<NNN-feature>/` |
+
+None found → skip this step silently. If the project documents its own spec workflow (e.g. `openspec/AGENTS.md`, a CLAUDE.md section, a project skill or slash command such as `/opsx:archive`), follow that over the generic recipe below.
+
+Scope it to **this branch's work**: find the relevant change/spec/plan via `git diff main...HEAD --name-status` plus the working tree, and the conversation context. Don't touch unrelated in-flight changes that other branches own.
+
+For each relevant artifact:
+
+1. **Up to date** — the spec/design reflects what was actually built. If the implementation deviated (dropped a requirement, added a scenario, changed an approach), update the spec to match, or — if the deviation looks unintended — ask the user which one is right.
+2. **Synchronized** — task/plan checklists match reality: tick off what's done. Unchecked tasks that weren't done are a decision point: ask whether they're out of scope (note it in the doc) or whether shipping should wait.
+3. **Archived if necessary** — only once every task is complete:
+   - **OpenSpec**: `openspec validate <change-id> --strict`, then `openspec archive <change-id> --yes`. This merges the change's delta specs into `openspec/specs/` and moves the change to `openspec/changes/archive/`. Re-run `openspec validate --strict` afterwards. If the CLI isn't installed, surface that rather than hand-moving files.
+   - **Spec Kit**: make sure `specs/<feature>/tasks.md` is fully checked and `spec.md`/`plan.md` match the implementation. There's no archive step.
+   - **Superpowers**: make sure the plan's checkboxes and the spec match what shipped. There's no archive step — don't invent one or move the files.
+
+Spec edits get committed with everything else in Step 1. Use a `📝 docs(<scope>): …` commit of their own when the code is already committed; otherwise they go in the same commit.
+
+If a change has incomplete tasks and the user decides to ship anyway, **don't archive it**. Mention in the PR body that the spec change stays open.
 
 ## Step 1 — Commit
 
