@@ -15,6 +15,17 @@ When you say "ship it", "/ship-it", "wrap up the session", "land this", etc., th
 7. **Merges** with `--merge` (regular merge commit) and `--delete-branch`
 8. **Cleans up** — switches back to `main`, pulls, deletes the local branch, and calls `ExitWorktree`
 
+## Project-specific ship-it (`/install-ship-it`)
+
+The generic flow doesn't know about your mobile builds, device checks or database migrations. `/install-ship-it` generates a ship-it skill for the current repo:
+
+1. **Analyzes** the project: stack and commands, CI, mobile targets, migrations, spec kits, deploy and release setup, ticketing
+2. **Interviews** you about what the code can't tell (merge strategy, manual device verification, who applies migrations, …)
+3. **Proposes steps** grouped by phase (pre-commit, PR, post-merge) for you to pick from
+4. **Writes** a self-contained `.claude/skills/ship-it/SKILL.md`, committed or local-only, with a provenance header recording the template version
+
+Run it again later to **review and upgrade** an existing project skill: it checks template changes since the recorded version and drift in the project (new migrations dir, removed commands, …), then applies only the suggestions you select, keeping your own edits. The generic `ship-it` defers to the project skill whenever one exists.
+
 ## Linear integration
 
 If a `.linear-ticket.json` sentinel is present at the worktree root (written by the [`linear`](../linear) plugin when work started), `ship-it` advances the linked Linear ticket at two moments:
