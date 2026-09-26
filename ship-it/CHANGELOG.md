@@ -5,6 +5,12 @@ All notable changes to the Ship It plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-09-26
+
+### Added
+
+- Step 0, "Sync specs": when a spec-driven kit is detected (OpenSpec, Superpowers, Spec Kit), the branch's specs and plans are brought up to date with the implementation, their task checklists are synchronized, and completed OpenSpec changes are validated and archived before committing, so the specs ship in the same PR as the code.
+
 ## [1.0.0] - 2026-05-28
 
 ### Added

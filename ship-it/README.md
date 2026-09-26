@@ -6,13 +6,14 @@ End-of-session shipping workflow. Takes an in-progress feature branch from "code
 
 When you say "ship it", "/ship-it", "wrap up the session", "land this", etc., the skill:
 
-1. **Commits** outstanding changes with an auto-generated Conventional Commits message
-2. **Pushes** the branch to origin (setting upstream if needed)
-3. **Opens a PR** with an auto-generated title and body
-4. **Monitors** the PR via `ScheduleWakeup`-paced polling — CI checks, ultrareview/Claude review findings, mergeable status
-5. **Triages blockers** — fixes failing CI and critical/high-severity review comments; surfaces ambiguous severity judgments to the user
-6. **Merges** with `--merge` (regular merge commit) and `--delete-branch`
-7. **Cleans up** — switches back to `main`, pulls, deletes the local branch, and calls `ExitWorktree`
+1. **Syncs specs** when a spec-driven kit is present (OpenSpec, Superpowers, Spec Kit): brings specs and plans in line with what was built, ticks off finished tasks, and validates and archives completed OpenSpec changes so they ship in the same PR
+2. **Commits** outstanding changes with an auto-generated Conventional Commits message
+3. **Pushes** the branch to origin (setting upstream if needed)
+4. **Opens a PR** with an auto-generated title and body
+5. **Monitors** the PR via `ScheduleWakeup`-paced polling — CI checks, ultrareview/Claude review findings, mergeable status
+6. **Triages blockers** — fixes failing CI and critical/high-severity review comments; surfaces ambiguous severity judgments to the user
+7. **Merges** with `--merge` (regular merge commit) and `--delete-branch`
+8. **Cleans up** — switches back to `main`, pulls, deletes the local branch, and calls `ExitWorktree`
 
 ## Linear integration
 

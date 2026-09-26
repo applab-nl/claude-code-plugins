@@ -154,7 +154,7 @@
     {
       "name": "ship-it",
       "source": "./ship-it",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "description": "End-of-session shipping workflow - commit, push, open a PR, monitor CI and review findings, fix critical blockers, then merge and clean up branches and worktree. Advances linked Linear tickets through In Review on PR open and Done on merge",
       "author": {
         "name": "AppLab",
