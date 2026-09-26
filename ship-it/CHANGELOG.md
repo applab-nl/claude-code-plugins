@@ -5,6 +5,16 @@ All notable changes to the Ship It plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-09-26
+
+### Added
+
+- `install-ship-it` skill: analyzes the repository, interviews the user, lets them pick project-specific close-out steps (local gate, migration check, mobile build, device verification, preview smoke test, deploy watch, release tag, …) and generates a self-contained `.claude/skills/ship-it/SKILL.md`, either committed or local-only. When a project skill already exists, it reviews it against the current template and the project's current state and offers upgrades, keeping the user's own edits.
+
+### Changed
+
+- The generic `ship-it` defers to a project-specific `.claude/skills/ship-it/SKILL.md` when one exists, and points to `/install-ship-it` when the project has specifics it doesn't cover.
+
 ## [1.1.0] - 2026-09-26
 
 ### Added
