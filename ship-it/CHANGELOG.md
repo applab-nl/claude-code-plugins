@@ -5,6 +5,24 @@ All notable changes to the Ship It plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-10-03
+
+### Changed
+
+- **One run per PR.** `ship-it` waits for CI inside the run, with a background `gh pr checks --watch` and `Monitor` for review bots. It no longer re-invokes `/ship-it` through `ScheduleWakeup`, which re-read the whole session three or four times per PR and kept firing after the merge. `ScheduleWakeup` is now only a fallback.
+- **Worktree cleanup that works from linked worktrees.** Paths are resolved up front and used with `git -C`. If `ExitWorktree` refuses, or the worktree wasn't created by the harness (phantom, `.worktrees/`, plain `git worktree add`), cleanup falls back to `phantom delete` or `git worktree remove`. The local branch is deleted with `-D` once GitHub reports `MERGED`, because `-d` fails after squash merges and cherry-picks. Main is fast-forwarded only when the primary checkout is on main and clean. Leftover merged branches and worktrees are reported, not deleted.
+- `install-ship-it` carries the new invariants into generated skills. It also gates expensive project steps on changed paths, and ends user hand-offs (e.g. uploading a build) by opening the artifact instead of only reminding the user.
+
+### Added
+
+- A re-entry guard: a PR that is already merged leads straight to cleanup or a one-line exit. A closed PR stops the run.
+- When an auto-mode permission check refuses the merge, `ship-it` asks once instead of retrying.
+- The final report notes `no Linear ticket linked` when no sentinel exists.
+
+### Fixed
+
+- The fallback Linear tool name is now `mcp__claude_ai_Linear__save_issue`.
+
 ## [1.2.0] - 2026-09-26
 
 ### Added

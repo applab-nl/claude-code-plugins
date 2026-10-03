@@ -45,6 +45,16 @@ Before doing anything destructive, verify:
 
 If any precondition fails, report the specific problem and stop. Don't try to "fix" them silently.
 
+### Re-entry guard
+
+Run this first on every invocation, including a resumed or woken one: `gh pr view --json number,state,mergedAt,url`.
+
+- **`MERGED`**: the job is done. Go straight to [Step 6 cleanup](#step-6--merge-and-clean-up), skipping the merge. If cleanup is also done (branch and worktree gone), print `result: PR #N was already merged; nothing left to do` and stop. Don't re-check CI and don't schedule anything.
+- **`CLOSED`** (not merged): report it and stop.
+- **`OPEN`**: continue at the step that matches the current state (see Step 1).
+
+A stale wake-up or a background-task notification that arrives after the merge is common. Handle it with this one-line exit, and don't narrate or redo work.
+
 ## Step 0 — Sync specs (spec-driven projects only)
 
 If the repo uses a spec-driven development kit, the specs ship with the code: they get updated, synchronized and (where the kit says so) archived **before** Step 1, so they land in the same PR. A PR that changes behaviour while its spec still describes the old plan is not shippable.
@@ -131,18 +141,19 @@ Watch three signals until the PR is mergeable and clean:
 2. **Mergeable status** — `gh pr view <number> --json mergeable,mergeStateStatus`
 3. **Review findings** — `gh pr view <number> --json comments,reviews` plus `gh api repos/{owner}/{repo}/pulls/{number}/comments` for inline review comments. Ultrareview / Claude review bots post their findings here.
 
-### Pacing
+### Pacing: one run, one wait
 
-Don't tight-poll. Use `ScheduleWakeup` to pace:
+Wait **inside this run**. Don't re-invoke `/ship-it`. Each re-invocation re-reads the whole session context, and a wake-up scheduled earlier keeps firing after the PR has merged.
 
-- **First wait**: 300s (5 min). CI rarely finishes in under a few minutes.
-- **Subsequent waits while CI is still running**: 300s.
-- **When CI is almost done** (most checks complete, 1-2 still running): drop to 60–120s.
-- **When waiting on review only** (CI green, awaiting reviewer): 300s.
+1. **CI**: start one background watcher and let the harness notify you when it exits:
+   ```bash
+   gh pr checks <number> --watch --interval 30 --fail-fast
+   ```
+   Run it with Bash `run_in_background: true`. Don't poll it and don't sleep. Continue when the completion notification arrives: exit 0 means green, non-zero means a check failed (Step 5).
+2. **Review bots** (CI green, a Claude/ultrareview comment expected): use `Monitor` with an until-loop that checks `gh pr view <number> --json reviews,comments` every 60s. Give it a 20-minute ceiling. On timeout, merge if nothing blocking was posted and say so in the report. Don't wait indefinitely.
+3. **Fallback**: only when neither background Bash nor `Monitor` is available, use `ScheduleWakeup` (300s, then 60–120s when nearly done). Use a `prompt` of `continue ship-it for PR #<number>` and a specific `reason`. The re-entry guard makes a late wake-up harmless.
 
-Pass the verbatim `/ship-it` prompt back via `ScheduleWakeup`'s `prompt` field so the skill resumes on wake. Use a specific `reason` like "waiting for CI on PR #123, 3/5 checks running" — that's what the user sees.
-
-When you wake, re-check status before sleeping again. If everything is green, proceed to Step 5.
+Never leave a watcher, monitor or wake-up behind after the merge. If one fires late anyway, the re-entry guard handles it.
 
 ## Step 5 — Triage blockers
 
@@ -180,11 +191,32 @@ gh pr merge <number> --merge --delete-branch
 
 Immediately after merge succeeds, advance the Linear ticket to **Done** if a sentinel exists — see [Linear ticket transitions](#linear-ticket-transitions). Do this *before* the worktree cleanup below, because `.linear-ticket.json` lives inside the worktree and `ExitWorktree` may remove it.
 
-After merge:
+If the merge is refused by a permission check (for example auto mode's "merge without review"), ask the user once with `AskUserQuestion` whether to merge. Don't retry or rephrase the command to get past it.
 
-1. Switch back to `main` and pull: `git checkout main && git pull`
-2. Delete the local branch: `git branch -d <branch-name>` (use `-d` not `-D` — if there are unmerged commits, something is wrong and we want to know)
-3. If the current working directory is inside a git worktree (check `git rev-parse --git-common-dir` vs `--git-dir`), call **`ExitWorktree`** to let the harness clean up its tracking. Do **not** use `git worktree remove` directly — that bypasses the harness.
+### Cleanup
+
+The merge is verified by GitHub (`gh pr view --json state` is `MERGED`), not by local ancestry. After squash merges, cherry-picks or a moved HEAD, `git branch -d` refuses even though the work is safely on main. Once GitHub says `MERGED`, `branch -D` is correct.
+
+Resolve the paths first, and use `git -C` with absolute paths from here on. Another session may own the primary checkout, and a relative path breaks once the worktree is gone.
+
+```bash
+WT=$(git rev-parse --show-toplevel)                                        # where we are
+ROOT=$(git worktree list --porcelain | head -1 | sed 's/^worktree //')     # primary checkout
+BRANCH=$(git branch --show-current)
+```
+
+**In a linked worktree** (`$WT` ≠ `$ROOT`):
+
+1. Make sure nothing would be lost: `git -C "$WT" status --porcelain` must be empty, apart from gitignored files and `.linear-ticket.json`. If it isn't, stop and show the user.
+2. If this session entered the worktree with `EnterWorktree`, call `ExitWorktree` with action `remove`. If it refuses, or the worktree wasn't created by the harness (`phantom`, `.worktrees/`, or plain `git worktree add`), clean it up by hand from the primary checkout:
+   - phantom-managed (`phantom list` shows it): `phantom delete <name>`
+   - otherwise: `git -C "$ROOT" worktree remove "$WT"`. Never pass `--force`: if git refuses, report it.
+3. `git -C "$ROOT" branch -D "$BRANCH"`
+4. `git -C "$ROOT" fetch origin --prune`. Fast-forward main only if the primary checkout is on main and clean: `git -C "$ROOT" pull --ff-only`. If it is on another branch, a peer session is probably working there. Leave it alone.
+
+**In the primary checkout**: `git switch main`, `git pull --ff-only`, then `git branch -D "$BRANCH"`.
+
+**Leftovers**: list other local branches whose PRs are merged (`gh pr list --state merged --head <branch>`, for each branch from `git branch --format='%(refname:short)'`) and worktrees whose branch is gone (`git worktree list`). Report them in one line and offer to remove them. Don't delete them unasked, because they may belong to another session.
 
 ## Linear ticket transitions
 
@@ -217,13 +249,13 @@ The sentinel is written by the `/linear` skill when work starts; its shape is:
 
 ### Recipe
 
-1. **Check for sentinel.** If `.linear-ticket.json` is missing, skip silently — this PR isn't Linear-linked. Don't try to discover a ticket from the branch name or commit message; the sentinel is the single source of truth.
+1. **Check for sentinel.** If `.linear-ticket.json` is missing, skip the transitions and add `no Linear ticket linked` to the final report, so the user can still move it by hand if there is one. Don't try to discover a ticket from the branch name or commit message; the sentinel is the single source of truth.
 2. **Read it.** Parse the JSON; pull out `identifier` and the relevant `stateId`.
 3. **Load the Linear MCP tools** with `ToolSearch` if they aren't already in scope:
    ```
-   ToolSearch({ query: "select:mcp__plugin_linear_linear__save_issue", max_results: 1 })
+   ToolSearch({ query: "select:mcp__claude_ai_Linear__save_issue", max_results: 1 })
    ```
-   Fall back to `mcp__claude_ai_Linear_official__save_issue` if the plugin variant isn't installed.
+   This is the claude.ai connector, which is available on every Claude surface. Fall back to `mcp__plugin_linear_linear__save_issue` if only the Claude Code plugin is installed.
 4. **Transition.** Call `save_issue({ issueId: identifier, stateId: <target> })`.
 5. **Confirm in one line.** Print e.g. `APP-123: In Progress → In Review (PR #482 opened)` or `APP-123: In Review → Done (PR #482 merged)`. Don't narrate the MCP call; one line is enough.
 
@@ -250,13 +282,13 @@ result: Merged PR #123 (feat(auth): add SSO support); APP-123 → Done; branch +
 The user closes off most coding sessions with exactly this dance. Spelling it out as a skill means:
 
 - The model doesn't forget steps (especially the cleanup at the end)
-- Pacing is consistent — no burning tokens tight-polling CI
+- Pacing is consistent: one background wait per PR, with no tight polling and no re-invocations that re-read the whole session
 - Triage rules are explicit, so the agent doesn't either bother the user with nitpicks or silently merge over real blockers
 
 ## Edge cases worth knowing
 
 - **No commits yet on the branch** — if `git log main..HEAD` is empty, there's nothing to ship. Report and stop.
-- **PR was already merged** (user re-ran the command after merging) — just do the cleanup (Step 6 from "After merge"). Don't try to re-create.
+- **PR was already merged** (user re-ran the command after merging, or a late wake-up) — the re-entry guard handles it: cleanup only, or a one-line exit.
 - **Multiple PRs open from this branch** — shouldn't happen normally; surface to user.
 - **Required reviewers haven't approved** — `mergeStateStatus` will reflect this. Wait or, if the user has admin merge rights and explicitly OK'd it, surface that as a decision point.
 - **Auto-merge enabled** — if the repo has auto-merge on, `gh pr merge --auto` might be a better fit. Detect via repo settings (`gh repo view --json autoMergeAllowed`) and adapt.

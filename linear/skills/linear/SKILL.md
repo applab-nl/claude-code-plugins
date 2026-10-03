@@ -29,10 +29,10 @@ Starting from a Linear ticket has the same opening moves every time — read the
 The Linear MCP tools are typically deferred. Before calling them, load their schemas with `ToolSearch`. Prefer the plugin variant when both are available; fall back to the official one:
 
 ```
-ToolSearch({ query: "select:mcp__plugin_linear_linear__get_issue,mcp__plugin_linear_linear__list_issue_statuses,mcp__plugin_linear_linear__save_issue,mcp__plugin_linear_linear__get_team", max_results: 4 })
+ToolSearch({ query: "select:mcp__claude_ai_Linear__get_issue,mcp__claude_ai_Linear__list_issue_statuses,mcp__claude_ai_Linear__save_issue,mcp__claude_ai_Linear__get_team", max_results: 4 })
 ```
 
-If the plugin Linear MCP isn't installed, swap in `mcp__claude_ai_Linear_official__*` with the same suffixes. Throughout this skill, references to `get_issue` / `save_issue` / `list_issue_statuses` / `get_team` mean *whichever variant is available*.
+These are the claude.ai connector's tools, available on every Claude surface. If only the Claude Code Linear plugin is installed, swap in `mcp__plugin_linear_linear__*` with the same suffixes. Throughout this skill, references to `get_issue` / `save_issue` / `list_issue_statuses` / `get_team` mean *whichever variant is available*.
 
 ### Step 3 — Fetch the ticket
 
