@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Does the APK installed on the device (or a local .apk) contain <symbol>? Scans every classes*.dex.
-# Usage: dex-has-symbol.sh <serial> <package|path/to.apk> <symbol> [workdir]
+# Usage: dex-has-symbol.sh <serial> <package|path/to.apk> <symbol> [parent-dir for the temp workdir]
 # BSD strings/grep miss symbols in binaries; `LC_ALL=C grep -a` doesn't.
-serial="$1"; target="$2"; sym="$3"; work="${4:-${TMPDIR:-/tmp}/dex-has-symbol}"
-rm -rf "$work"; mkdir -p "$work"
+serial="$1"; target="$2"; sym="$3"
+work=$(mktemp -d "${4:-${TMPDIR:-/tmp}}/dex-has-symbol.XXXXXX") || exit 2
+trap 'rm -rf "$work"' EXIT
 if [[ -f "$target" ]]; then apk="$target"; else
   path=$(adb -s "$serial" shell pm path "$target" | tr -d '\r' | sed -n 's/^package://p' | head -1)
   [[ -n "$path" ]] || { echo "package $target not installed on $serial"; exit 2; }
