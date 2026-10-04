@@ -115,7 +115,7 @@
     {
       "name": "agents-md",
       "source": "./agents-md",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "description": "Convert CLAUDE.md to multi-platform AI instruction files following the AGENTS.md standard - supports GitHub Copilot, Gemini CLI, and OpenCode",
       "author": {
         "name": "AppLab",

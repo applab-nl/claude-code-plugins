@@ -23,6 +23,10 @@ This plugin converts your `CLAUDE.md` into a hierarchical structure where:
 
 **AGENTS.md is always leading** - all platform-specific files include its content inline plus their unique additions.
 
+## Project brief
+
+The `project-brief` skill writes `docs/PROJECT_OVERVIEW.md`, a one-page, LLM-optimized description of the repository's purpose, goals and shape, for handing the project to another agent. Ask "create a project overview for another agent" or run `/agents-md:project-brief`. It commits and pushes that file alone to the default branch.
+
 ## Installation
 
 ```bash
