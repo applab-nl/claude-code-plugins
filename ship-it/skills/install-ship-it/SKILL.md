@@ -17,9 +17,10 @@ Carry these invariants from the template into every generated skill. Leave them 
 
 - stage specific paths, never `git add -A` / `git add .`
 - no force push, no `--amend`, no `--no-verify`
-- `ScheduleWakeup`-paced monitoring, no tight polling
+- the re-entry guard: a PR that is already merged leads to cleanup only or a one-line exit
+- wait inside one run (background `gh pr checks --watch`, `Monitor` for review bots), with `ScheduleWakeup` only as a fallback; never re-invoke `/ship-it`, and no tight polling
 - conservative blocker triage (explicit critical/high only; ask when unsure)
-- refuse to run on the default branch; `ExitWorktree` for worktree cleanup
+- refuse to run on the default branch; worktree cleanup via `ExitWorktree`, falling back to `git -C <root>` (or `phantom delete`), with `branch -D` only after GitHub reports `MERGED`
 - a closing `result:` line
 
 ## Mode
@@ -92,6 +93,8 @@ Write `.claude/skills/ship-it/SKILL.md`:
   ```
 - **Body**: the template's structure, with selected steps inserted where they belong and numbered in order. Use the **exact commands** found in the repo (verified, not invented). Drop template sections that don't apply (e.g. Linear transitions when the project doesn't use Linear). Replace the template's merge strategy and default-branch name with the project's.
 - Keep it as lean as the template. Project steps state *what to run, what counts as pass/fail, and when to pause*. Don't pad them with generic advice.
+- **Gate expensive steps on changed paths.** Give each step that only matters for some changes (device verification, mobile builds, migration checks, release packaging) an explicit `Runs when git diff <default>...HEAD --name-only matches <globs>` line. The agent must not re-decide this on every run. A docs- or spec-only branch skips all of them and says so in one line.
+- **Hand-offs to the user end with the action, not a reminder.** When a step needs the user to do something outside the terminal, such as uploading a build or rotating a secret, open the file or folder or URL for them (`open <path>` on macOS), list the exact clicks, and say how the agent will confirm it worked.
 
 Then:
 

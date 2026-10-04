@@ -141,7 +141,7 @@
     {
       "name": "linear",
       "source": "./linear",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "description": "Start and shepherd work on a Linear ticket end-to-end - fetch via MCP, classify quick-fix vs spec-driven, create an isolated worktree, move the ticket to In Progress, and chain into the right follow-up skill. Advances tickets through In Review and Done via a persisted worktree sentinel",
       "author": {
         "name": "AppLab",
@@ -154,7 +154,7 @@
     {
       "name": "ship-it",
       "source": "./ship-it",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "description": "End-of-session shipping workflow - commit, push, open a PR, monitor CI and review findings, fix critical blockers, then merge and clean up branches and worktree. Advances linked Linear tickets through In Review on PR open and Done on merge. Includes install-ship-it to generate a project-specific ship-it skill",
       "author": {
         "name": "AppLab",
