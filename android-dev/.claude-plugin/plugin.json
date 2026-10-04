@@ -1,0 +1,14 @@
+{
+  "name": "android-dev",
+  "version": "1.0.0",
+  "description": "Android device testing over adb: device selection, reconnect-safe log capture, UI driving via uiautomator, ANR/crash diagnosis, APK symbol checks and Android Auto Desktop Head Unit sessions",
+  "author": {
+    "name": "AppLab",
+    "url": "https://github.com/applab-nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/android-dev",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["android", "adb", "device-testing", "logcat", "uiautomator", "android-auto", "dhu", "kmp"],
+  "skills": "./skills"
+}

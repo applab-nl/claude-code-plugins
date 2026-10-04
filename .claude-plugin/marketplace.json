@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -188,6 +188,19 @@
       },
       "category": "productivity",
       "keywords": ["audit", "backlog", "git", "branches", "worktrees", "pull-requests", "linear", "jira", "github-issues", "cleanup", "triage", "technical-debt", "reporting"],
+      "license": "MIT"
+    },
+    {
+      "name": "android-dev",
+      "source": "./android-dev",
+      "version": "1.0.0",
+      "description": "Android device testing over adb: device selection, reconnect-safe log capture, UI driving, ANR/crash diagnosis, APK symbol checks and Android Auto Desktop Head Unit sessions",
+      "author": {
+        "name": "AppLab",
+        "email": "plugins@applab.nl"
+      },
+      "category": "development",
+      "keywords": ["android", "adb", "device-testing", "logcat", "android-auto", "dhu", "kmp"],
       "license": "MIT"
     }
   ]
