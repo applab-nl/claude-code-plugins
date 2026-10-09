@@ -185,7 +185,10 @@ function pruneOrphans(outDir, docSlug, format, current) {
   let previous = {};
   try { previous = JSON.parse(readFileSync(manifest, 'utf8')); } catch { /* first run */ }
 
-  const removed = (previous[format] ?? []).filter((name) => !current.includes(name));
+  // The manifest is committed, so treat it as untrusted: only ever delete a plain file name
+  // of the shape this script writes for this document, never a path.
+  const ours = (name) => typeof name === 'string' && basename(name) === name && name.startsWith(`${docSlug}-`) && name.endsWith(`.${format}`);
+  const removed = (Array.isArray(previous[format]) ? previous[format] : []).filter((name) => ours(name) && !current.includes(name));
   for (const name of removed) {
     try { unlinkSync(join(outDir, name)); } catch { /* already gone */ }
   }

@@ -1,6 +1,6 @@
 {
   "name": "diagram-images",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Render Mermaid diagrams in markdown to SVG/PNG with one shared hand-drawn theme and a drift linter, so every diagram across every document looks like the same set",
   "author": {
     "name": "AppLab",
