@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -18,7 +18,15 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["notifications", "audio", "tts", "hooks", "macos", "statusline", "alerts"],
+      "keywords": [
+        "notifications",
+        "audio",
+        "tts",
+        "hooks",
+        "macos",
+        "statusline",
+        "alerts"
+      ],
       "license": "MIT"
     },
     {
@@ -31,7 +39,13 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["logging", "prompts", "analytics", "hooks", "audit"],
+      "keywords": [
+        "logging",
+        "prompts",
+        "analytics",
+        "hooks",
+        "audit"
+      ],
       "license": "MIT"
     },
     {
@@ -44,7 +58,16 @@
         "email": "plugins@applab.nl"
       },
       "category": "debugging",
-      "keywords": ["sentry", "error-tracking", "debugging", "ios", "android", "monitoring", "crash-analysis", "bug-fixing"],
+      "keywords": [
+        "sentry",
+        "error-tracking",
+        "debugging",
+        "ios",
+        "android",
+        "monitoring",
+        "crash-analysis",
+        "bug-fixing"
+      ],
       "license": "MIT"
     },
     {
@@ -57,7 +80,20 @@
         "email": "plugins@applab.nl"
       },
       "category": "development",
-      "keywords": ["nextjs", "frontend", "react", "typescript", "web-development", "app-router", "ssr", "server-components", "devtools", "testing", "playwright", "diagnostics"],
+      "keywords": [
+        "nextjs",
+        "frontend",
+        "react",
+        "typescript",
+        "web-development",
+        "app-router",
+        "ssr",
+        "server-components",
+        "devtools",
+        "testing",
+        "playwright",
+        "diagnostics"
+      ],
       "license": "MIT"
     },
     {
@@ -70,7 +106,19 @@
         "email": "plugins@applab.nl"
       },
       "category": "development",
-      "keywords": ["svelte", "svelte5", "sveltekit", "runes", "frontend", "reactive", "typescript", "ssr", "compiler", "web-development", "code-analysis"],
+      "keywords": [
+        "svelte",
+        "svelte5",
+        "sveltekit",
+        "runes",
+        "frontend",
+        "reactive",
+        "typescript",
+        "ssr",
+        "compiler",
+        "web-development",
+        "code-analysis"
+      ],
       "license": "MIT"
     },
     {
@@ -83,7 +131,21 @@
         "email": "plugins@applab.nl"
       },
       "category": "development",
-      "keywords": ["flutter", "dart", "mobile", "android", "ios", "widgets", "state-management", "cross-platform", "material-design", "riverpod", "supabase", "code-analysis", "pub-dev"],
+      "keywords": [
+        "flutter",
+        "dart",
+        "mobile",
+        "android",
+        "ios",
+        "widgets",
+        "state-management",
+        "cross-platform",
+        "material-design",
+        "riverpod",
+        "supabase",
+        "code-analysis",
+        "pub-dev"
+      ],
       "license": "MIT"
     },
     {
@@ -96,7 +158,31 @@
         "email": "plugins@applab.nl"
       },
       "category": "development",
-      "keywords": ["agents", "subagents", "specialists", "development", "code-review", "testing", "architecture", "debugging", "android", "ios", "frontend", "backend", "kotlin", "react", "nextjs", "svelte", "supabase", "git", "ci-cd", "refactoring", "dependencies", "monitoring", "sentry"],
+      "keywords": [
+        "agents",
+        "subagents",
+        "specialists",
+        "development",
+        "code-review",
+        "testing",
+        "architecture",
+        "debugging",
+        "android",
+        "ios",
+        "frontend",
+        "backend",
+        "kotlin",
+        "react",
+        "nextjs",
+        "svelte",
+        "supabase",
+        "git",
+        "ci-cd",
+        "refactoring",
+        "dependencies",
+        "monitoring",
+        "sentry"
+      ],
       "license": "MIT"
     },
     {
@@ -109,7 +195,17 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["git", "commit", "automation", "version-control", "workflow", "productivity", "commit-messages", "worktree", "branching"],
+      "keywords": [
+        "git",
+        "commit",
+        "automation",
+        "version-control",
+        "workflow",
+        "productivity",
+        "commit-messages",
+        "worktree",
+        "branching"
+      ],
       "license": "MIT"
     },
     {
@@ -122,7 +218,17 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["agents-md", "claude-md", "copilot", "gemini", "opencode", "ai-instructions", "conversion", "sync", "multi-platform"],
+      "keywords": [
+        "agents-md",
+        "claude-md",
+        "copilot",
+        "gemini",
+        "opencode",
+        "ai-instructions",
+        "conversion",
+        "sync",
+        "multi-platform"
+      ],
       "license": "MIT"
     },
     {
@@ -135,7 +241,16 @@
         "email": "plugins@applab.nl"
       },
       "category": "security",
-      "keywords": ["security", "audit", "backdoor", "supply-chain", "prompt-injection", "malware", "scanning", "code-review"],
+      "keywords": [
+        "security",
+        "audit",
+        "backdoor",
+        "supply-chain",
+        "prompt-injection",
+        "malware",
+        "scanning",
+        "code-review"
+      ],
       "license": "MIT"
     },
     {
@@ -148,7 +263,17 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["linear", "tickets", "issues", "workflow", "worktree", "openspec", "superpowers", "mcp", "project-management"],
+      "keywords": [
+        "linear",
+        "tickets",
+        "issues",
+        "workflow",
+        "worktree",
+        "openspec",
+        "superpowers",
+        "mcp",
+        "project-management"
+      ],
       "license": "MIT"
     },
     {
@@ -161,7 +286,18 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["ship", "git", "github", "pr", "pull-request", "ci", "merge", "workflow", "linear", "automation"],
+      "keywords": [
+        "ship",
+        "git",
+        "github",
+        "pr",
+        "pull-request",
+        "ci",
+        "merge",
+        "workflow",
+        "linear",
+        "automation"
+      ],
       "license": "MIT"
     },
     {
@@ -174,7 +310,23 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["backlog", "refinement", "grooming", "linear", "jira", "github-issues", "tickets", "unattended", "overnight", "worktree", "preview-branch", "test-plan", "draft-pr", "subagents", "project-management"],
+      "keywords": [
+        "backlog",
+        "refinement",
+        "grooming",
+        "linear",
+        "jira",
+        "github-issues",
+        "tickets",
+        "unattended",
+        "overnight",
+        "worktree",
+        "preview-branch",
+        "test-plan",
+        "draft-pr",
+        "subagents",
+        "project-management"
+      ],
       "license": "MIT"
     },
     {
@@ -187,7 +339,21 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["audit", "backlog", "git", "branches", "worktrees", "pull-requests", "linear", "jira", "github-issues", "cleanup", "triage", "technical-debt", "reporting"],
+      "keywords": [
+        "audit",
+        "backlog",
+        "git",
+        "branches",
+        "worktrees",
+        "pull-requests",
+        "linear",
+        "jira",
+        "github-issues",
+        "cleanup",
+        "triage",
+        "technical-debt",
+        "reporting"
+      ],
       "license": "MIT"
     },
     {
@@ -200,7 +366,37 @@
         "email": "plugins@applab.nl"
       },
       "category": "development",
-      "keywords": ["android", "adb", "device-testing", "logcat", "android-auto", "dhu", "kmp"],
+      "keywords": [
+        "android",
+        "adb",
+        "device-testing",
+        "logcat",
+        "android-auto",
+        "dhu",
+        "kmp"
+      ],
+      "license": "MIT"
+    },
+    {
+      "name": "diagram-images",
+      "source": "./diagram-images",
+      "version": "1.0.0",
+      "description": "Render Mermaid diagrams in markdown to SVG/PNG with one shared hand-drawn theme and a drift linter - every diagram across every document looks like the same set. Runs in headless Chrome, no puppeteer or Docker",
+      "author": {
+        "name": "AppLab",
+        "email": "plugins@applab.nl"
+      },
+      "category": "documentation",
+      "keywords": [
+        "diagrams",
+        "mermaid",
+        "svg",
+        "png",
+        "architecture",
+        "adr",
+        "documentation",
+        "theme"
+      ],
       "license": "MIT"
     }
   ]

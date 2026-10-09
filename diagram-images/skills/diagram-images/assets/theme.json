@@ -1,0 +1,37 @@
+{
+  "look": "handDrawn",
+  "handDrawnSeed": 42,
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Bradley Hand, Noteworthy, Marker Felt, Comic Sans MS, Segoe Print, cursive",
+    "fontSize": "15px",
+    "primaryColor": "#F1F3F5",
+    "primaryBorderColor": "#5A6672",
+    "primaryTextColor": "#16202B",
+    "secondaryColor": "#EEF2F7",
+    "tertiaryColor": "#FAFAF8",
+    "lineColor": "#6B7A8C",
+    "textColor": "#16202B",
+    "background": "#FFFFFF",
+    "edgeLabelBackground": "#FFFFFF",
+    "clusterBkg": "#FAFAF8",
+    "clusterBorder": "#B4BDC6",
+    "titleColor": "#16202B",
+    "nodeBorder": "#5A6672"
+  },
+  "themeCSS": ".edgeLabel { font-size: 14px; } .cluster rect { rx: 6px; ry: 6px; } .node rect, .node polygon, .node circle { stroke-width: 1.5px; } .node.consumer rect, .node.consumer polygon, .node.consumer path, .node.consumer circle { fill: #FDF3E3 !important; stroke: #B07D2B !important; } .node.platform rect, .node.platform polygon, .node.platform path, .node.platform circle { fill: #DCE9F7 !important; stroke: #2F6296 !important; stroke-width: 2.5px !important; } .node.service rect, .node.service polygon, .node.service path, .node.service circle { fill: #F1F3F5 !important; stroke: #5A6672 !important; } .node.datastore rect, .node.datastore polygon, .node.datastore path, .node.datastore circle { fill: #ECEFE9 !important; stroke: #5F7051 !important; } .node.external rect, .node.external polygon, .node.external path, .node.external circle { fill: #FFFFFF !important; stroke: #9AA5B1 !important; stroke-dasharray: 6 4 !important; } .node.decision rect, .node.decision polygon, .node.decision path, .node.decision circle { fill: #FFFFFF !important; stroke: #41505F !important; } .node.outcome rect, .node.outcome polygon, .node.outcome path, .node.outcome circle { fill: #E8EFE8 !important; stroke: #4A7A52 !important; } .node.warn rect, .node.warn polygon, .node.warn path, .node.warn circle { fill: #FBECEA !important; stroke: #A44A3C !important; } .node.muted rect, .node.muted polygon, .node.muted path, .node.muted circle { fill: #FFFFFF !important; stroke: #B4BDC6 !important; } .node.artefact rect, .node.artefact polygon, .node.artefact path, .node.artefact circle { fill: #F2EEF7 !important; stroke: #6B5B8A !important; } .rough-node .label-container path:nth-of-type(1) { stroke-width: 4px; } .rough-node.consumer .label-container path:nth-of-type(1) { stroke: #FBEBD0 !important; } .rough-node.consumer .label-container path:nth-of-type(2) { stroke: #B07D2B !important; } .rough-node.platform .label-container path:nth-of-type(1) { stroke: #CFE1F4 !important; } .rough-node.platform .label-container path:nth-of-type(2) { stroke: #2F6296 !important; stroke-width: 2.4px !important; } .rough-node.service .label-container path:nth-of-type(1) { stroke: #E9ECEF !important; } .rough-node.service .label-container path:nth-of-type(2) { stroke: #5A6672 !important; } .rough-node.datastore .label-container path:nth-of-type(1) { stroke: #E2E8DE !important; } .rough-node.datastore .label-container path:nth-of-type(2) { stroke: #5F7051 !important; } .rough-node.external .label-container path:nth-of-type(1) { stroke: none !important; } .rough-node.external .label-container path:nth-of-type(2) { stroke: #9AA5B1 !important; stroke-dasharray: 6 4 !important; } .rough-node.decision .label-container path:nth-of-type(1) { stroke: none !important; } .rough-node.decision .label-container path:nth-of-type(2) { stroke: #41505F !important; } .rough-node.outcome .label-container path:nth-of-type(1) { stroke: #DDE8DD !important; } .rough-node.outcome .label-container path:nth-of-type(2) { stroke: #4A7A52 !important; } .rough-node.warn .label-container path:nth-of-type(1) { stroke: #F7DFDB !important; } .rough-node.warn .label-container path:nth-of-type(2) { stroke: #A44A3C !important; } .rough-node.muted .label-container path:nth-of-type(1) { stroke: none !important; } .rough-node.muted .label-container path:nth-of-type(2) { stroke: #B4BDC6 !important; } .rough-node.artefact .label-container path:nth-of-type(1) { stroke: #EAE3F2 !important; } .rough-node.artefact .label-container path:nth-of-type(2) { stroke: #6B5B8A !important; } .node.muted .nodeLabel, .rough-node.muted .nodeLabel { fill: #6B7A8C !important; color: #6B7A8C !important; } .rough-node.decision > g:first-child > path:nth-of-type(1) { stroke: none !important; } .rough-node.decision > g:first-child > path:nth-of-type(2) { stroke: #41505F !important; } .node.muted text, .node.muted tspan, .rough-node.muted text, .rough-node.muted tspan { fill: #6B7A8C !important; }",
+  "htmlLabels": false,
+  "flowchart": {
+    "curve": "basis",
+    "nodeSpacing": 40,
+    "rankSpacing": 45,
+    "padding": 10,
+    "wrappingWidth": 320,
+    "useMaxWidth": false,
+    "htmlLabels": false
+  },
+  "sequence": {
+    "actorMargin": 60,
+    "useMaxWidth": false
+  }
+}

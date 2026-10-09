@@ -211,6 +211,26 @@ Comprehensive security audit for cloned repositories. Scans for backdoors, suppl
 - CI/CD security checks (GitHub Actions injection, secret exfiltration)
 - Structured risk reports (CLEAN/LOW/MEDIUM/HIGH/CRITICAL)
 
+### Documentation
+
+#### 🖼️ Diagram Images
+
+**Consistent Mermaid Diagrams as Images**
+
+Renders the Mermaid blocks in your markdown to SVG or PNG from one shared hand-drawn theme, with a linter that keeps styling out of the diagram source, so the twentieth diagram still looks like the first.
+
+- **Version**: 1.0.0
+- **Category**: Documentation
+- **Requires**: Node 18+, Chrome/Chromium/Edge (no puppeteer, no Docker)
+
+[View Documentation](./diagram-images/README.md)
+
+**Key Features:**
+- One theme and a ten-class shape vocabulary; diagram source holds topology and labels only
+- Drift linter (inline styles, config overrides, unknown classes, wrong shapes, multiple subjects)
+- Pinned, reproducible hand-drawn rendering with stable image names (`%% id:`) and stale-image cleanup
+- Portable SVG (plain text labels) or PNG for decks
+
 ### Agent Collections
 
 #### 🤖 Agents Collection
@@ -320,6 +340,9 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 
 ### 🔒 Security
 - **Repo Audit**: Repository security scanner with 7-phase audit
+
+### 📝 Documentation
+- **Diagram Images**: Themed Mermaid-to-SVG/PNG rendering with a drift linter
 
 ### 🤖 Development Tools & Agents
 - **Agents Collection**: 13 specialized agents for architecture, backend, testing, quality, DevOps, and monitoring

@@ -1,0 +1,14 @@
+{
+  "name": "diagram-images",
+  "version": "1.0.0",
+  "description": "Render Mermaid diagrams in markdown to SVG/PNG with one shared hand-drawn theme and a drift linter, so every diagram across every document looks like the same set",
+  "author": {
+    "name": "AppLab",
+    "email": "plugins@applab.nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/diagram-images",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["diagrams", "mermaid", "svg", "png", "architecture", "adr", "documentation", "theme"],
+  "skills": "./skills"
+}
