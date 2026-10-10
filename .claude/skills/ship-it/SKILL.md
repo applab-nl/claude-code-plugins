@@ -82,7 +82,7 @@ A plugin already bumped on this branch (compare against `git show main:<path>`) 
 
 **Runs when** a plugin was added, removed or had its version, category or purpose changed.
 
-Check the root `README.md`: a new plugin needs a section under the right `### …` heading of "Available Plugins" (version, category, doc link, key features) and a line in "Plugin Categories". Update the `**Version**` line of any bumped plugin. Don't rewrite the stale parts of the README (marketplace version footer, plugin count in `CLAUDE.md`) as a side effect; mention them in the PR body instead.
+Check the root `README.md`: a new plugin needs a section under the right `### …` heading of "Available Plugins" (version, category, doc link, key features) and a line in "Plugin Categories". Update the `**Version**` line of any bumped plugin. Also update the footer at the bottom of `README.md` (`Marketplace Version`, `Last Updated`, `Total Plugins`) to match `.claude-plugin/marketplace.json`. `CLAUDE.md` deliberately has no plugin list; don't add one.
 
 ## Step 5 — Audit new or third-party plugins
 
