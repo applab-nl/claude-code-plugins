@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -214,6 +214,18 @@
       },
       "category": "documentation",
       "keywords": ["diagrams", "mermaid", "svg", "png", "architecture", "adr", "documentation", "theme"],
+      "license": "MIT"
+    },
+    {
+      "name": "cache-tax",
+      "source": "./cache-tax",
+      "version": "2.2.1",
+      "description": "Keeps the one-hour prompt cache warm during breaks (/keepwarm), stops a cold send once with its estimated rewrite cost, and tracks cold writes. A Claude Code mod (hooks module) that needs Claude Code 2.1.287+; pings are model requests and cost tokens. Vendored from karanb192/cache-tax",
+      "author": {
+        "name": "Karan Bansal"
+      },
+      "category": "productivity",
+      "keywords": ["prompt-cache", "cache", "cost", "tokens", "mod", "hooks-module", "keepwarm"],
       "license": "MIT"
     }
   ]
