@@ -190,6 +190,25 @@ Convert CLAUDE.md files to multi-platform AI instruction formats following the A
 - OpenCode integration
 - Keep instructions in sync across platforms
 
+#### 🧊 Cache Tax
+
+**Prompt Cache Keep-Warm & Cold-Send Guard**
+
+A Claude Code mod (hooks module) that keeps the one-hour prompt cache warm during breaks and stops a cold send once with its estimated rewrite cost. Vendored from [karanb192/cache-tax](https://github.com/karanb192/cache-tax) (MIT) after a security review.
+
+- **Version**: 2.2.1
+- **Category**: Productivity, Cost control
+- **Requires**: Claude Code 2.1.287+ with `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1`
+- **Commands**: `/keepwarm`, `/cache-tax`
+
+[View Documentation](./cache-tax/README.md)
+
+**Key Features:**
+- Keep-warm window with a ping every 50 idle minutes (`/keepwarm 6h`)
+- One-time refusal of a cold send, with the price shown
+- Cold-write tally per session
+- Pings are model requests and cost tokens
+
 ### Security
 
 #### 🔒 Repo Audit
@@ -337,6 +356,7 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 - **Hooks Notifier**: Audio/visual notifications
 - **Prompt Logger**: Prompt analytics and logging
 - **Agents MD**: Multi-platform AI instruction sync
+- **Cache Tax**: Prompt cache keep-warm and cold-send guard
 
 ### 🔒 Security
 - **Repo Audit**: Repository security scanner with 7-phase audit
