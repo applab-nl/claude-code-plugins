@@ -209,6 +209,25 @@ A Claude Code mod (hooks module) that keeps the one-hour prompt cache warm durin
 - Cold-write tally per session
 - Pings are model requests and cost tokens
 
+#### 🧠 Claude Reflect
+
+**Self-Learning Corrections to CLAUDE.md**
+
+Captures your corrections and `remember:` notes as you work, then `/reflect` reviews them and writes the ones you approve to CLAUDE.md, rules and auto-memory. Vendored from [BayramAnnakov/claude-reflect](https://github.com/BayramAnnakov/claude-reflect) (MIT) after a security review.
+
+- **Version**: 3.3.1
+- **Category**: Productivity, Memory
+- **Commands**: `/reflect`, `/reflect-skills`, `/view-queue`, `/skip-reflect`
+- **Note**: hooks run on every prompt and keep raw prompts on disk; see the plugin changelog for known issues
+
+[View Documentation](./claude-reflect/README.md)
+
+**Key Features:**
+- Detects corrections and explicit `remember:` notes in any language
+- Review-and-confirm flow before anything is written
+- Multi-target: global and project CLAUDE.md, rules, auto-memory
+- Queue per project with session-history scan
+
 ### Security
 
 #### 🔒 Repo Audit
@@ -357,6 +376,7 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 - **Prompt Logger**: Prompt analytics and logging
 - **Agents MD**: Multi-platform AI instruction sync
 - **Cache Tax**: Prompt cache keep-warm and cold-send guard
+- **Claude Reflect**: Self-learning corrections to CLAUDE.md
 
 ### 🔒 Security
 - **Repo Audit**: Repository security scanner with 7-phase audit

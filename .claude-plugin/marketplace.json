@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -226,6 +226,19 @@
       },
       "category": "productivity",
       "keywords": ["prompt-cache", "cache", "cost", "tokens", "mod", "hooks-module", "keepwarm"],
+      "license": "MIT"
+    },
+    {
+      "name": "claude-reflect",
+      "source": "./claude-reflect",
+      "version": "3.3.1",
+      "description": "Self-learning for Claude Code: captures your corrections and \"remember:\" notes as you work, then /reflect reviews them and writes the approved ones to CLAUDE.md, rules and auto-memory. Hooks run on every prompt and keep raw prompts on disk. Vendored from BayramAnnakov/claude-reflect",
+      "author": {
+        "name": "Bayram Annakov",
+        "url": "https://github.com/bayramannakov"
+      },
+      "category": "productivity",
+      "keywords": ["self-learning", "corrections", "claude-md", "memory", "learnings", "hooks"],
       "license": "MIT"
     }
   ]
