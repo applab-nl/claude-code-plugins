@@ -541,7 +541,7 @@ Special thanks to:
 
 ---
 
-**Marketplace Version**: 1.1.0
-**Last Updated**: 2026-01-31
-**Total Plugins**: 10
+**Marketplace Version**: 1.11.0
+**Last Updated**: 2026-10-10
+**Total Plugins**: 19
 **Maintainer**: AppLab

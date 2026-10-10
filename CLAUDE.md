@@ -32,7 +32,7 @@ Monorepo where each plugin is a self-contained directory:
 ```
 claude-code-plugins/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace manifest (all 9 plugins)
+│   └── marketplace.json          # Marketplace manifest (source of truth for the plugin list and versions)
 ├── {plugin-name}/
 │   ├── .claude-plugin/
 │   │   └── plugin.json          # Individual plugin manifest
@@ -48,20 +48,7 @@ claude-code-plugins/
 
 ### Available Plugins
 
-**Productivity:**
-1. **hooks-notifier** (v2.0.0) — Audio/visual notifications when input needed or tasks complete (Python hooks)
-2. **prompt-logger** (v1.3.0) — Logs user prompts and AskUserQuestion interactions to JSON (Python hooks)
-3. **git-tools** (v1.3.0) — Git automation: commit messages, worktree management, branching workflows (commands + skills)
-4. **agents-md** (v1.0.0) — Convert CLAUDE.md to multi-platform AI instruction files: GitHub Copilot, Gemini, OpenCode (agent + commands + skills)
-
-**Development Specialists:**
-5. **next-dev** (v1.0.0) — Next.js specialist with `next-devtools-mcp` for runtime diagnostics
-6. **svelte-dev** (v1.0.0) — Svelte 5 specialist with `@sveltejs/mcp` for docs and code analysis
-7. **flutter-dev** (v1.2.0) — Flutter/Dart specialist with Dart MCP server for code analysis and testing
-8. **sentry-issue-fixer** (v1.0.0) — Sentry error investigation with `@modelcontextprotocol/server-sentry`
-
-**Agent Collections:**
-9. **agents** (v1.0.0) — 13 specialized agents: architecture, code review, testing, debugging, frontend, backend (Kotlin), mobile (iOS/Android), CI/CD, monitoring, refactoring, dependencies, Supabase
+The authoritative list, with versions, is `.claude-plugin/marketplace.json`. The root `README.md` describes each plugin by category. Don't duplicate the list here; it goes stale.
 
 ## Plugin Patterns
 
