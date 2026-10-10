@@ -228,6 +228,24 @@ Captures your corrections and `remember:` notes as you work, then `/reflect` rev
 - Multi-target: global and project CLAUDE.md, rules, auto-memory
 - Queue per project with session-history scan
 
+#### 🌐 Terminal Browser
+
+**Browser Pane Inside Claude Code**
+
+Renders a terminal browser in Claude Code's pane to preview websites and HTML documents, with an optional open/close tool for the agent. Vendors only the plugin from [zenbu-labs/terminal-browser](https://github.com/zenbu-labs/terminal-browser) (MIT); the app it drives is installed separately.
+
+- **Version**: 0.0.2
+- **Category**: Development
+- **Requires**: the `terminal-browser` app, and Claude Code with `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1`
+- **Note**: experimental; read the plugin changelog before installing the app (installer, upgrade and telemetry notes)
+
+[View Documentation](./terminal-browser/README.md)
+
+**Key Features:**
+- Browser rendered in the Claude Code pane
+- Local loopback bridge with bearer-token auth
+- Optional agent tool to open and close pages (off by default)
+
 ### Security
 
 #### 🔒 Repo Audit
@@ -377,6 +395,7 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 - **Agents MD**: Multi-platform AI instruction sync
 - **Cache Tax**: Prompt cache keep-warm and cold-send guard
 - **Claude Reflect**: Self-learning corrections to CLAUDE.md
+- **Terminal Browser**: Browser pane inside Claude Code
 
 ### 🔒 Security
 - **Repo Audit**: Repository security scanner with 7-phase audit
