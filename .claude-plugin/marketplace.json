@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -239,6 +239,18 @@
       },
       "category": "productivity",
       "keywords": ["self-learning", "corrections", "claude-md", "memory", "learnings", "hooks"],
+      "license": "MIT"
+    },
+    {
+      "name": "terminal-browser",
+      "source": "./terminal-browser",
+      "version": "0.0.2",
+      "description": "Renders a terminal browser inside Claude Code's pane to preview sites and HTML documents, with an optional open/close tool for the agent. Experimental function-hooks mod that needs the separately installed terminal-browser app and CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1. Vendored from zenbu-labs/terminal-browser (plugin only)",
+      "author": {
+        "name": "zenbu-labs"
+      },
+      "category": "development",
+      "keywords": ["browser", "terminal", "preview", "function-hooks", "mod"],
       "license": "MIT"
     }
   ]
