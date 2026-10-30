@@ -47,7 +47,7 @@ async function loadPrs($: $): Promise<void> {
   try {
     const out = await run($, [
       'gh', 'pr', 'list', '--state', 'all', '--limit', '100',
-      '--json', 'number,headRefName,state,isDraft,reviewDecision,statusCheckRollup',
+      '--json', 'number,headRefName,state,isDraft,isCrossRepository,headRefOid,reviewDecision,statusCheckRollup',
     ])
     if (out.ok) {
       prs = JSON.parse(out.text || '[]') as GhPr[]
@@ -59,6 +59,14 @@ async function loadPrs($: $): Promise<void> {
     prNote = 'No PR details: gh is not installed'
   }
   prsAt = Date.now()
+}
+
+// Whether a branch holds nothing its merged PR didn't: at the PR's last commit
+// or behind it. A commit git can't find here proves nothing, so it counts as no.
+async function isWithinPr($: $, target: string, headOid: string | undefined): Promise<boolean> {
+  if (!headOid) return false
+  if ((await git($, 'rev-parse', target)).text === headOid) return true
+  return (await git($, 'merge-base', '--is-ancestor', target, headOid)).ok
 }
 
 async function collect($: $): Promise<BranchesView | null> {
@@ -88,12 +96,13 @@ async function collect($: $): Promise<BranchesView | null> {
 
   // Remote branches are listed only for an open PR not checked out here.
   const remotes = prs
-    .filter(pr => pr.state === 'OPEN' && !localNames.has(pr.headRefName) && pr.headRefName !== mainName)
+    .filter(pr => pr.state === 'OPEN' && !pr.isCrossRepository && !localNames.has(pr.headRefName) && pr.headRefName !== mainName)
     .map(pr => pr.headRefName)
 
   const counted = async (name: string, target: string, committedAt: number, isRemoteOnly: boolean) => {
     const counts = parseCounts((await git($, 'rev-list', '--left-right', '--count', `${ref}...${target}`)).text)
     if (!counts) return undefined
+    const pr = byBranch.get(name)
     const input: RowInput = {
       name,
       counts,
@@ -101,7 +110,8 @@ async function collect($: $): Promise<BranchesView | null> {
       worktree: worktrees.find(w => w.branch === name)?.path,
       isCurrent: name === current.text,
       isRemoteOnly,
-      pr: byBranch.get(name),
+      pr,
+      hasCommitsSincePr: pr?.state === 'merged' && counts.ahead > 0 && !(await isWithinPr($, target, pr.headOid)),
     }
     return input
   }
@@ -153,6 +163,7 @@ const BAR_MAX = 12
 
 function badge(row: BranchRow): { text: string; color?: string; isDim?: boolean } | undefined {
   const pr = row.pr
+  if (pr?.state === 'merged' && row.hasCommitsSincePr) return { text: `#${pr.number} merged, new commits since`, color: 'warning' }
   if (pr?.state === 'merged') return { text: `merged #${pr.number}`, isDim: true }
   if (pr?.state === 'closed') return { text: `#${pr.number} closed`, isDim: true }
   if (!pr) return row.isMerged ? { text: 'in main', isDim: true } : undefined

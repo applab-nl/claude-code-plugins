@@ -19,7 +19,10 @@ detached
 const PRS: GhPr[] = [
   { number: 41, headRefName: 'feat/today-redesign', state: 'OPEN', reviewDecision: 'APPROVED', statusCheckRollup: [{ conclusion: 'SUCCESS' }] },
   { number: 30, headRefName: 'feat/today-redesign', state: 'CLOSED' },
-  { number: 38, headRefName: 'fix/oauth', state: 'MERGED' },
+  { number: 38, headRefName: 'fix/oauth', state: 'MERGED', headRefOid: 'aaa111' },
+  { number: 37, headRefName: 'feat/reused', state: 'MERGED', headRefOid: 'bbb222' },
+  { number: 36, headRefName: 'feat/forked', state: 'MERGED', isCrossRepository: true, headRefOid: 'ccc333' },
+  { number: 43, headRefName: 'feat/fork-open', state: 'OPEN', isCrossRepository: true },
   { number: 42, headRefName: 'feat/remote', state: 'OPEN', isDraft: true, statusCheckRollup: [{ conclusion: 'FAILURE' }, { status: 'IN_PROGRESS' }] },
 ]
 
@@ -38,9 +41,18 @@ test('worktrees, counts and checks parse', async () => {
 
 test('an open PR wins over an older closed one for its branch', async () => {
   const byBranch = prsByBranch(PRS)
-  expect(byBranch.get('feat/today-redesign')).toEqual({ number: 41, state: 'open', checks: 'pass', review: 'approved' })
+  expect(byBranch.get('feat/today-redesign')).toEqual({ number: 41, headOid: undefined, state: 'open', checks: 'pass', review: 'approved' })
+  expect(byBranch.get('feat/forked')).toBeUndefined()
   expect(byBranch.get('feat/remote')?.state).toBe('draft')
   expect(byBranch.get('feat/remote')?.checks).toBe('fail')
+})
+
+test('a branch with commits past its merged PR is not merged', async () => {
+  const rows = toRows([
+    { name: 'feat/reused', counts: { ahead: 2, behind: 0 }, committedAt: 1, isCurrent: false, isRemoteOnly: false, pr: prsByBranch(PRS).get('feat/reused'), hasCommitsSincePr: true },
+  ])
+  expect(rows[0]?.isMerged).toBe(false)
+  expect(rows[0]?.hasCommitsSincePr).toBe(true)
 })
 
 test('a squash-merged PR is merged though git sees commits ahead; unmerged rows come first', async () => {
@@ -90,11 +102,15 @@ const OUTPUT: Record<string, string> = {
   'git rev-parse --abbrev-ref HEAD': 'integration/daily-brief',
   'git worktree list --porcelain': WORKTREES,
   'git for-each-ref refs/heads --format=%(refname:short)%09%(committerdate:unix)':
-    'main\t1\nintegration/daily-brief\t50\nfeat/today-redesign\t40\nfix/oauth\t30\n',
+    'main\t1\nintegration/daily-brief\t50\nfeat/today-redesign\t40\nfix/oauth\t30\nfeat/reused\t20\nfeat/forked\t10\n',
   'git rev-list --left-right --count origin/main...integration/daily-brief': '0\t12',
   'git rev-list --left-right --count origin/main...feat/today-redesign': '2\t9',
   'git rev-list --left-right --count origin/main...fix/oauth': '5\t3',
   'git rev-list --left-right --count origin/main...origin/feat/remote': '0\t1',
+  'git rev-list --left-right --count origin/main...feat/reused': '0\t2',
+  'git rev-list --left-right --count origin/main...feat/forked': '0\t4',
+  'git rev-parse fix/oauth': 'aaa111',
+  'git rev-parse feat/reused': 'ddd444',
 }
 
 test('the pane lists branches parallel to main with their PRs', async ($, on) => {
@@ -112,7 +128,10 @@ test('the pane lists branches parallel to main with their PRs', async ($, on) =>
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const texts = (await ui.findAll({ type: 'Text' })).map(t => t.text ?? '')
 
-  expect(texts.find(t => t.includes('3 open · 1 merged'))).toBeDefined()
+  expect(texts.find(t => t.includes('5 open · 1 merged'))).toBeDefined()
+  expect(texts.find(t => t.includes('#37 merged, new commits since'))).toBeDefined()
+  expect(texts.find(t => t.includes('#36'))).toBeUndefined()
+  expect(texts.find(t => t.includes('#43'))).toBeUndefined()
   expect(texts).toContain('● integration/daily-brief')
   expect(texts.find(t => t.startsWith('▰') && t.includes('+9') && t.includes('#41'))).toContain('maya-wt-today')
   expect(texts.find(t => t.includes('#42 draft'))).toContain('origin only')
@@ -148,6 +167,6 @@ test('with PRs switched off, gh is never asked', { options: { showPrs: false } }
   expect(asked.some(line => line.startsWith('gh '))).toBe(false)
   expect(texts.find(t => t.includes('#41'))).toBeUndefined()
   // git alone cannot see the squash merge of fix/oauth
-  expect(texts.find(t => t.includes('3 open · 0 merged'))).toBeDefined()
+  expect(texts.find(t => t.includes('5 open · 0 merged'))).toBeDefined()
   await ui.unmount()
 })

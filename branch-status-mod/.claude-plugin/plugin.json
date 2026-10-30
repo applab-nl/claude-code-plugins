@@ -1,6 +1,6 @@
 {
   "name": "branch-status-mod",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pane listing the branches and worktrees that run parallel to main - commits ahead and behind, merged or not (squash merges included, via the PR), and their open PRs with checks and review",
   "author": {
     "name": "AppLab",

@@ -30,6 +30,7 @@ Run `/branches` to open the pane.
 | `−2` | Commits main gained since the branch left it |
 | `#41 ✓ approved` | Its PR: draft, checks passed (✓), failed (✗) or running (●), review approved or changes requested |
 | `merged #38 · delete?` | Merged, dimmed, kept until you delete the branch |
+| `#38 merged, new commits since` | Its PR merged, but the branch has commits that PR never held, so it still counts as open |
 | `in main` | No PR and no commits of its own beyond main |
 | `origin only` | A branch with an open PR that is not checked out locally |
 

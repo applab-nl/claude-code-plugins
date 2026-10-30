@@ -5,6 +5,8 @@ export type PrView = {
   state: 'open' | 'draft' | 'merged' | 'closed'
   checks?: Checks
   review?: 'approved' | 'changes' | 'required'
+  /** The commit the PR's branch stood at. */
+  headOid?: string
 }
 
 export type BranchRow = {
@@ -13,6 +15,8 @@ export type BranchRow = {
   behind: number
   /** Merged into main: by its PR, or with no commits of its own left. */
   isMerged: boolean
+  /** Its PR merged, but the branch has commits that PR never held. */
+  hasCommitsSincePr: boolean
   /** The worktree folder's name when the branch is checked out in one. */
   worktree?: string
   /** Checked out where this session runs. */
