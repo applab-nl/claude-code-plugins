@@ -1,0 +1,14 @@
+{
+  "name": "roadmap-status-mod",
+  "version": "1.1.0",
+  "description": "Live sidebar pane showing which phase or slice of a plan you are in and how far along it is - OpenSpec changes, Superpowers plans or any markdown roadmap",
+  "author": {
+    "name": "AppLab",
+    "email": "plugins@applab.nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/roadmap-status-mod",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["plan", "roadmap", "progress", "openspec", "superpowers", "tasks", "pane", "sidebar"],
+  "types": "./types/index.d.ts"
+}
