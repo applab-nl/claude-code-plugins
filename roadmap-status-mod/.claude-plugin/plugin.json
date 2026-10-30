@@ -1,6 +1,6 @@
 {
   "name": "roadmap-status-mod",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Live sidebar pane showing which phase or slice of a plan you are in and how far along it is - OpenSpec changes, Superpowers plans or any markdown roadmap",
   "author": {
     "name": "AppLab",

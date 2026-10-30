@@ -5,6 +5,12 @@ All notable changes to branch-status-mod will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-10-30
+
+### Security
+- A PR from a fork no longer counts for a branch that shares its name
+- A merged PR marks a branch as merged only if the branch holds nothing beyond that PR. A branch with later commits stays open and reads `#38 merged, new commits since`, without the "delete?" hint, so reusing a branch name can't invite deleting unmerged work
+
 ## [1.0.0] - 2026-10-29
 
 ### Added

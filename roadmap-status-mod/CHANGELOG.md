@@ -5,6 +5,14 @@ All notable changes to roadmap-status-mod will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-10-30
+
+### Security
+- Markdown from the open repository can no longer stall the parser: the heading, link and link-cleanup patterns no longer backtrack over long lines, and lines over 1,000 characters and files over 1,000,000 are skipped
+
+### Changed
+- A closing `#` on a heading is only dropped after a space, so `## C#` keeps its name
+
 ## [1.1.0] - 2026-10-29
 
 ### Added

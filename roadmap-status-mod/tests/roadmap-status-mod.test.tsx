@@ -103,6 +103,20 @@ test('task headings nest under phase headings until a heading closes the phase',
   expect(parsePlan('## Phase 1\n- [ ] a\n## Phase 2\n- [ ] b\n').phases.map(p => p.group)).toEqual([undefined, undefined])
 })
 
+test('a heading loses its closing hashes, long lines and huge files are skipped', async () => {
+  const plan = parsePlan(`## Setup ##\n- [ ] a\n## C#\n- [ ] b\n- [ ] ${'x'.repeat(2000)}\n`)
+  expect(plan.phases.map(p => [p.title, p.tasks.length])).toEqual([['Setup', 1], ['C#', 1]])
+  expect(parsePlan(`## Big\n- [ ] a\n${' '.repeat(1_000_001)}`).phases).toEqual([])
+})
+
+test('hostile headings and links parse quickly', async () => {
+  const line = `## ${'# '.repeat(400)}${' '.repeat(150)}x`
+  const links = `- [ ] ${'[a]('.repeat(240)}`
+  const started = Date.now()
+  parsePlan(Array.from({ length: 2000 }, (_, i) => (i % 2 ? line : links)).join('\n'))
+  expect(Date.now() - started).toBeLessThan(2000)
+})
+
 test('OpenSpec headings become phases with their checkboxes', async () => {
   const plan = parsePlan(OPENSPEC)
   expect(plan.phases.map(p => p.title)).toEqual(['1. Setup', '2. API'])

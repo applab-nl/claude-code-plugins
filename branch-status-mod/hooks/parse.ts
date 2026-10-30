@@ -11,6 +11,8 @@ export type GhPr = {
   headRefName: string
   state: 'OPEN' | 'MERGED' | 'CLOSED'
   isDraft?: boolean
+  isCrossRepository?: boolean
+  headRefOid?: string
   reviewDecision?: string | null
   statusCheckRollup?: { conclusion?: string | null; state?: string | null; status?: string | null }[] | null
 }
@@ -63,7 +65,7 @@ export function prView(pr: GhPr): PrView {
           : undefined
   const state =
     pr.state === 'MERGED' ? 'merged' : pr.state === 'CLOSED' ? 'closed' : pr.isDraft ? 'draft' : 'open'
-  return { number: pr.number, state, checks: state === 'open' || state === 'draft' ? summarizeChecks(pr.statusCheckRollup) : undefined, review }
+  return { number: pr.number, headOid: pr.headRefOid, state, checks: state === 'open' || state === 'draft' ? summarizeChecks(pr.statusCheckRollup) : undefined, review }
 }
 
 // An open PR wins over an older merged or closed one for the same branch.
@@ -71,6 +73,8 @@ export function prsByBranch(prs: readonly GhPr[]): Map<string, PrView> {
   const rank = { OPEN: 3, MERGED: 2, CLOSED: 1 }
   const best = new Map<string, GhPr>()
   for (const pr of prs) {
+    // A fork's branch shares only its name with ours.
+    if (pr.isCrossRepository) continue
     const held = best.get(pr.headRefName)
     if (!held || rank[pr.state] > rank[held.state] || (rank[pr.state] === rank[held.state] && pr.number > held.number)) {
       best.set(pr.headRefName, pr)
@@ -89,17 +93,22 @@ export type RowInput = {
   isCurrent: boolean
   isRemoteOnly: boolean
   pr?: PrView
+  hasCommitsSincePr?: boolean
 }
 
-// A squash merge leaves commits git calls ahead, so a merged PR decides; with
-// no PR, a branch with nothing ahead of main is in it.
+// A squash merge leaves commits git calls ahead, so a merged PR decides, unless
+// the branch moved on past that PR; with no PR, a branch with nothing ahead of
+// main is in it.
 export function toRows(inputs: readonly RowInput[]): BranchRow[] {
   const rows = inputs.map(input => ({
     row: {
       name: input.name,
       ahead: input.counts.ahead,
       behind: input.counts.behind,
-      isMerged: input.pr?.state === 'merged' || (input.counts.ahead === 0 && input.pr?.state !== 'open'),
+      isMerged:
+        (input.pr?.state === 'merged' && !input.hasCommitsSincePr) ||
+        (input.counts.ahead === 0 && input.pr?.state !== 'open'),
+      hasCommitsSincePr: input.hasCommitsSincePr ?? false,
       worktree: input.worktree ? folderName(input.worktree) : undefined,
       isCurrent: input.isCurrent,
       isRemoteOnly: input.isRemoteOnly,
