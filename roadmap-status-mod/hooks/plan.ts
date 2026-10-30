@@ -8,9 +8,13 @@ export type Phase = { title: string; tasks: Task[]; link?: string; group?: strin
 export type ParsedPlan = { title?: string; phases: Phase[] }
 export type ParseOptions = { tables?: boolean }
 
-const HEADING = /^(#{1,6})\s+(.+?)\s*#*\s*$/
+const HEADING = /^(#{1,6})[ \t]+(.+)$/
+// Plans come from whatever repository is open: past these sizes a line or file
+// is skipped, which also bounds how long the patterns here can take.
+const MAX_LINE = 1000
+const MAX_MARKDOWN = 1_000_000
 const LIST_ITEM = /^\s*(?:[-*+]|\d+[.)])\s+(?:\[([ xX])\]\s+)?(.*)$/
-const LINK = /\[([^\]]+)\]\(<?([^)\s>]+)>?\)/
+const LINK = /\[([^\][]+)\]\(<?([^)\s>]+)>?\)/
 const FENCE = /^\s*(```|~~~)/
 const TABLE_ROW = /^\s*\|(.*)\|\s*$/
 const TABLE_RULE = /^[\s|:-]+$/
@@ -20,7 +24,7 @@ const GROUP = /^(?:phase|stage|milestone|part|wave|sprint|epic)\b/i
 
 export function clean(text: string): string {
   return text
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\][]+)\]\([^)]*\)/g, '$1')
     .replace(/\*\*|__|`/g, '')
     .trim()
 }
@@ -32,6 +36,16 @@ function localLink(text: string): { label: string; target: string } | undefined 
   if (target === '' || /^[a-z][a-z0-9+.-]*:/i.test(target)) return undefined
   const isPlanLike = /\.md$/i.test(target) || !/\.[a-z0-9]+$/i.test(target)
   return isPlanLike ? { label: clean(match[1] ?? ''), target } : undefined
+}
+
+// Drops a closing "##" (only after a space, as in CommonMark) without a pattern
+// that backtracks over a long run of spaces or hashes.
+function headingText(raw: string): string {
+  const text = raw.trimEnd()
+  let cut = text.length
+  while (cut > 0 && text[cut - 1] === '#') cut -= 1
+  const isClosed = cut < text.length && (cut === 0 || /\s/.test(text[cut - 1] ?? ''))
+  return isClosed ? text.slice(0, cut) : text
 }
 
 const cells = (row: string) => row.split('|').map(cell => cell.trim())
@@ -56,6 +70,8 @@ type Section = { title: string; items: Item[]; isSliced: boolean; group?: string
 // A section that links to other plans, or a roadmap table, lists slices: each
 // item is a phase. Any other section is one phase holding its checkboxes.
 export function parsePlan(markdown: string, options: ParseOptions = {}): ParsedPlan {
+  if (markdown.length > MAX_MARKDOWN) return { phases: [] }
+
   const sections: Section[] = []
   let title: string | undefined
   let section: Section | undefined
@@ -73,6 +89,7 @@ export function parsePlan(markdown: string, options: ParseOptions = {}): ParsedP
   }
 
   for (const line of markdown.split(/\r?\n/)) {
+    if (line.length > MAX_LINE) continue
     if (FENCE.test(line)) {
       isInFence = !isInFence
       continue
@@ -99,7 +116,7 @@ export function parsePlan(markdown: string, options: ParseOptions = {}): ParsedP
 
     const [, hashes, text] = HEADING.exec(line) ?? []
     if (hashes && text) {
-      const name = clean(text)
+      const name = clean(headingText(text))
       const level = hashes.length
       if (level === 1 && title === undefined) title = name
       if (level > 1 && GROUP.test(name)) group = { title: name, level }
