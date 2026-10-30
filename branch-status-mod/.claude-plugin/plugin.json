@@ -1,0 +1,37 @@
+{
+  "name": "branch-status-mod",
+  "version": "1.0.0",
+  "description": "Pane listing the branches and worktrees that run parallel to main - commits ahead and behind, merged or not (squash merges included, via the PR), and their open PRs with checks and review",
+  "author": {
+    "name": "AppLab",
+    "email": "plugins@applab.nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/branch-status-mod",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "git",
+    "branches",
+    "worktrees",
+    "pull-requests",
+    "github",
+    "merged",
+    "pane",
+    "sidebar"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "showPrs": {
+      "type": "boolean",
+      "title": "Show pull requests",
+      "description": "Ask GitHub (gh) for each branch's PR: number, checks, review and merged state. Off, merges are seen by git alone, so a squash merge is not recognised.",
+      "default": true
+    },
+    "prRefreshMinutes": {
+      "type": "number",
+      "title": "PR refresh (minutes)",
+      "description": "How often PRs are fetched from GitHub. They are also fetched after a gh command or git push, and when /branches runs.",
+      "default": 5
+    }
+  }
+}
