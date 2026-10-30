@@ -1,16 +1,16 @@
 ---
-name: work-audit-cleanup
-description: Execute the cleanup a work audit recommended — push at-risk branches to a remote, delete branches verified as merged, remove finished worktrees, prune orphan directories, and close superseded pull requests. Use this only after an audit has established what is safe, when the user explicitly asks to carry it out: "do the cleanup", "delete the merged branches", "clean up the worktrees", "execute phase 4", "go ahead and tidy it up". This performs destructive git operations, so it always preserves before it deletes and confirms before each destructive group.
+name: status-report-cleanup
+description: Execute the cleanup a status report recommended — push at-risk branches to a remote, delete branches verified as merged, remove finished worktrees, prune orphan directories, and close superseded pull requests. Use this only after an audit has established what is safe, when the user explicitly asks to carry it out: "do the cleanup", "delete the merged branches", "clean up the worktrees", "execute phase 4", "go ahead and tidy it up". This performs destructive git operations, so it always preserves before it deletes and confirms before each destructive group.
 ---
 
-# Work Audit Cleanup
+# Status Report Cleanup
 
 ## Before anything
 
 This skill deletes things. That is its whole purpose, and it is why it is separate from the audit —
 the audit is read-only so it can be run freely, and this is opt-in so it cannot happen by accident.
 
-**Require a current audit.** If one has not been run in this session, run the `work-audit` skill
+**Require a current audit.** If one has not been run in this session, run the `status-report` skill
 first. Acting on a stale audit is how live work gets deleted: a branch that was merged last week may
 have been reopened, and a worktree that was clean may now hold uncommitted changes.
 
@@ -96,7 +96,7 @@ Migrate anything worth keeping out of a legacy worktree location before removing
 Only if the user asked. Apply the status changes the audit established, and comment the evidence on
 each one:
 
-> Closed by work audit: verified on `main` — `20260822100000_maintain_speaker_link_count.sql`
+> Closed by status report: verified on `main` — `20260822100000_maintain_speaker_link_count.sql`
 > implements the trigger, default and drift repair this ticket asks for.
 
 A status change without evidence is worse than no change, because it destroys the record of why.

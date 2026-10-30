@@ -1,4 +1,4 @@
-# Work Audit
+# Status Report
 
 Find out what is *actually* outstanding in a repository — and how much of the backlog only looks
 outstanding because the record stopped matching the code.
@@ -16,7 +16,7 @@ that had never landed.
 
 ## What it does
 
-**`/work-audit`** — a read-only investigation producing an HTML report and a phased plan:
+**`/status-report`** — a read-only investigation producing an HTML report and a phased plan:
 
 | Section | What it answers |
 |---|---|
@@ -30,14 +30,14 @@ that had never landed.
 | Planning artifacts | Complete-but-unarchived, effectively done, superseded stubs |
 | The plan | Phased, preservation before deletion |
 
-**`/work-audit-cleanup`** — the opt-in destructive half. Pushes at-risk work to a remote *first*,
+**`/status-report-cleanup`** — the opt-in destructive half. Pushes at-risk work to a remote *first*,
 then deletes verified-merged branches, removes finished worktrees, prunes orphans and closes
 superseded PRs. Separate by design: the audit is safe to run any time, the cleanup never happens by
 accident.
 
 ## When it runs
 
-Type `/work-audit` and it starts immediately — you asked for it, so it does not ask back.
+Type `/status-report` and it starts immediately — you asked for it, so it does not ask back.
 
 The skill also fires on its own when you sound disoriented about the state of your work ("I'm lost
 with everything outstanding", "why do we have 40 branches", "did that ever actually ship"). In that
@@ -81,15 +81,15 @@ the tracker is worthless. What the user cannot see is which parts of the tracker
 
 Auto-detects and adapts: **Linear**, **GitHub Issues**, **Jira**, or none. With no tracker it audits
 branches, worktrees and PRs, which is still useful. Tracker-specific queries live in
-`skills/work-audit/references/trackers/`.
+`skills/status-report/references/trackers/`.
 
 ## Bundled scripts
 
 Both are read-only and take an optional trunk ref:
 
 ```bash
-skills/work-audit/scripts/branch_forensics.sh [trunk] [--remote] [--risk-only]
-skills/work-audit/scripts/worktree_health.sh [worktree-parent-dir ...]
+skills/status-report/scripts/branch_forensics.sh [trunk] [--remote] [--risk-only]
+skills/status-report/scripts/worktree_health.sh [worktree-parent-dir ...]
 ```
 
 `branch_forensics.sh` prints the three merge buckets, the at-risk list, and how many branches are
@@ -107,7 +107,7 @@ directories — and correctly distinguishes an orphan from a *parent* of nested 
 
 ```
 /plugin marketplace add applab-nl/claude-code-plugins
-/plugin install work-audit@applab-plugins
+/plugin install status-report@applab-plugins
 ```
 
 ## Licence

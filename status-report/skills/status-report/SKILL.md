@@ -1,9 +1,9 @@
 ---
-name: work-audit
+name: status-report
 description: Audit every piece of outstanding work in a repository — branches, worktrees, pull requests, issue-tracker tickets, stale planning artifacts and parallel agent sessions — verifying each claimed status against what is actually on the trunk, then produce a report and a phased close-down plan. Consult this skill whenever someone sounds disoriented about the state of their work or wants it consolidated, even when they do not ask for an "audit" by name: "I'm lost with everything that's outstanding", "what's still open", "what have we forgotten", "why do we have 40 branches", "which branches can I delete", "what's safe to delete", "is this ticket actually done", "did that ever ship", "clean up the repo", "can I lose anything", before a release or a team handover, when returning to a project after time away, or when the backlog feels larger than the work. Also consult it whenever a status is in doubt and the answer has to come from the code rather than from a ticket, a doc, or a memory. The skill is read-only and changes nothing; when it fires on inference rather than an explicit request it confirms with the user first, and offers a narrower one-question alternative, because a full sweep is minutes of work and should not be a surprise.
 ---
 
-# Work Audit
+# Status Report
 
 ## First: were you asked for this, or did you decide it yourself?
 
@@ -11,7 +11,7 @@ A full audit is a heavy operation. It sweeps every branch, worktree, pull reques
 code on the trunk to verify each one, usually fans out subagents, and takes minutes rather than
 seconds. That is a reasonable price when someone asked for it and a rude surprise when they did not.
 
-**If the user invoked this directly, start work immediately.** A slash command, "run a work audit",
+**If the user invoked this directly, start work immediately.** A slash command, "run a status report",
 "audit the outstanding work", or anything else that names the operation *is* consent. Do not ask
 again — being made to confirm something you just explicitly requested is its own small insult.
 
@@ -297,7 +297,7 @@ analysis. This shape transfers well:
 
 Give each phase a realistic time estimate and concrete commands. For anything destructive, show the
 command but let the user run it, unless they have asked for the cleanup workflow — that is a
-separate, explicitly opt-in skill (`work-audit-cleanup`).
+separate, explicitly opt-in skill (`status-report-cleanup`).
 
 ## Staying honest
 

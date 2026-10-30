@@ -4,7 +4,7 @@ description: Audit all outstanding work — branches, worktrees, PRs, tickets, p
 argument-hint: [trunk-ref]
 ---
 
-Run a full work audit of this repository using the `work-audit` skill.
+Run a full status report of this repository using the `status-report` skill.
 
 Trunk reference: ${ARGUMENTS:-auto-detect (origin/main, then origin/master)}
 

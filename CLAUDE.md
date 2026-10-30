@@ -32,7 +32,7 @@ Monorepo where each plugin is a self-contained directory:
 ```
 claude-code-plugins/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace manifest (all 9 plugins)
+│   └── marketplace.json          # Marketplace manifest (all plugins)
 ├── {plugin-name}/
 │   ├── .claude-plugin/
 │   │   └── plugin.json          # Individual plugin manifest
@@ -49,19 +49,35 @@ claude-code-plugins/
 ### Available Plugins
 
 **Productivity:**
-1. **hooks-notifier** (v2.0.0) — Audio/visual notifications when input needed or tasks complete (Python hooks)
-2. **prompt-logger** (v1.3.0) — Logs user prompts and AskUserQuestion interactions to JSON (Python hooks)
-3. **git-tools** (v1.3.0) — Git automation: commit messages, worktree management, branching workflows (commands + skills)
-4. **agents-md** (v1.0.0) — Convert CLAUDE.md to multi-platform AI instruction files: GitHub Copilot, Gemini, OpenCode (agent + commands + skills)
+- **hooks-notifier** (v2.1.0) — Audio and visual notifications for Claude Code
+- **prompt-logger** (v1.3.0) — Logs user prompts and AskUserQuestion interactions to .claude/logs/prompts.json at project root for analysis and review
+- **git-tools** (v1.3.0) — Comprehensive Git automation tools
+- **agents-md** (v1.1.0) — Convert CLAUDE.md to multi-platform AI instruction files following the AGENTS.md standard
+- **linear** (v1.1.1) — Start and shepherd work on a Linear ticket end-to-end
+- **ship-it** (v1.3.0) — End-of-session shipping workflow
+- **backlog** (v1.3.0) — Provider-agnostic backlog automation
+- **status-report** (v2.0.0) — Audit every piece of outstanding work
+- **cache-tax** (v2.2.1) — Keeps the one-hour prompt cache warm during breaks (/keepwarm), stops a cold send once with its estimated rewrite cost, and tracks cold writes
+- **claude-reflect** (v3.3.1) — Self-learning for Claude Code: captures your corrections and "remember:" notes as you work, then /reflect reviews them and writes the approved ones to CLAUDE.md, rules and auto-memory
+- **roadmap-status-mod** (v1.1.0) — Live sidebar pane showing which phase or slice of a plan you are in and how far along it is
+- **branch-status-mod** (v1.0.0) — Pane listing the branches and worktrees that run parallel to main
 
-**Development Specialists:**
-5. **next-dev** (v1.0.0) — Next.js specialist with `next-devtools-mcp` for runtime diagnostics
-6. **svelte-dev** (v1.0.0) — Svelte 5 specialist with `@sveltejs/mcp` for docs and code analysis
-7. **flutter-dev** (v1.2.0) — Flutter/Dart specialist with Dart MCP server for code analysis and testing
-8. **sentry-issue-fixer** (v1.0.0) — Sentry error investigation with `@modelcontextprotocol/server-sentry`
+**Debugging:**
+- **sentry-issue-fixer** (v1.0.0) — Automated Sentry error investigation and resolution
 
-**Agent Collections:**
-9. **agents** (v1.0.0) — 13 specialized agents: architecture, code review, testing, debugging, frontend, backend (Kotlin), mobile (iOS/Android), CI/CD, monitoring, refactoring, dependencies, Supabase
+**Development:**
+- **next-dev** (v1.0.0) — Next.js development specialist with integrated next-devtools MCP server for runtime diagnostics, automated upgrades, page testing, and comprehensive documentation access
+- **svelte-dev** (v1.0.0) — Svelte 5 development specialist with integrated MCP server for documentation access, static code analysis, and comprehensive runes expertise ($state, $derived, $effect, $props)
+- **flutter-dev** (v1.2.0) — Flutter and Dart development specialist with integrated MCP server for code analysis, package management, testing, runtime introspection, and cross-platform mobile development
+- **agents** (v1.0.0) — Curated collection of 13 specialized agents for comprehensive development workflows across frontend, backend, mobile, testing, debugging, architecture, and DevOps
+- **android-dev** (v1.0.0) — Android device testing over adb: device selection, reconnect-safe log capture, UI driving, ANR/crash diagnosis, APK symbol checks and Android Auto Desktop Head Unit sessions
+- **terminal-browser** (v0.0.2) — Renders a terminal browser inside Claude Code's pane to preview sites and HTML documents, with an optional open/close tool for the agent
+
+**Security:**
+- **repo-audit** (v1.0.0) — Security audit for cloned repositories
+
+**Documentation:**
+- **diagram-images** (v1.0.1) — Render Mermaid diagrams in markdown to SVG/PNG with one shared hand-drawn theme and a drift linter
 
 ## Plugin Patterns
 

@@ -1,12 +1,12 @@
 {
-  "name": "work-audit",
-  "version": "1.0.0",
+  "name": "status-report",
+  "version": "2.0.0",
   "description": "Audit every piece of outstanding work — branches, worktrees, PRs, tracker tickets, stale planning artifacts and parallel sessions — verifying each claimed status against what is actually on the trunk, then produce an HTML report and a phased close-down plan. Read-only, and it confirms first when it fires on inference rather than a direct request. Includes an opt-in cleanup workflow that preserves before it deletes.",
   "author": {
     "name": "AppLab",
     "url": "https://github.com/applab-nl"
   },
-  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/work-audit",
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/status-report",
   "repository": "https://github.com/applab-nl/claude-code-plugins",
   "license": "MIT",
   "keywords": [

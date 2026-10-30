@@ -7,14 +7,14 @@ description: Close-out workflow for AppLab's claude-code-plugins marketplace —
 generated-by: install-ship-it
 generated-from: ship-it@1.3.0
 generated-on: 2026-10-10
-steps: [manifest-validation, version-changelog, readme-sync, plugin-audit]
+steps: [manifest-validation, local-gate, version-changelog, readme-sync, plugin-audit]
 -->
 
 # Ship It — claude-code-plugins
 
 Takes a branch of this marketplace monorepo from "changes are done" to "merged and cleaned up". Run hands-off on the happy path; pause only for blockers that need a human decision.
 
-There is no CI, no git hooks and no test suite in this repo, so Steps 1–4 below are the only safety net before a PR. Don't skip them.
+There is no CI and there are no git hooks in this repo, and only the mods have tests, so Steps 1–4 below are the only safety net before a PR. Don't skip them.
 
 ## Invariants
 
@@ -66,6 +66,14 @@ PY
 
 Any output other than `manifests ok` is a failure: fix the manifest and re-run before continuing.
 
+Then run the CLI's own checks and stop on failure. Warnings about a missing icon or the plugin directory's own rules don't fail the gate.
+
+```bash
+claude plugin validate .
+claude plugin validate <changed-plugin>   # each one; the last line starts with ✔
+claude plugin test <changed-plugin>       # each one holding *.test.ts or *.test.tsx; 0 fail
+```
+
 ## Step 3 — Version and changelog
 
 **Runs when** the diff touches files inside a plugin directory.
@@ -83,6 +91,8 @@ A plugin already bumped on this branch (compare against `git show main:<path>`) 
 **Runs when** a plugin was added, removed or had its version, category or purpose changed.
 
 Check the root `README.md`: a new plugin needs a section under the right `### …` heading of "Available Plugins" (version, category, doc link, key features) and a line in "Plugin Categories". Update the `**Version**` line of any bumped plugin. Don't rewrite the stale parts of the README (marketplace version footer, plugin count in `CLAUDE.md`) as a side effect; mention them in the PR body instead.
+
+When a plugin was added, removed or renamed, also update the Available Plugins list in `CLAUDE.md`, and check that the old name is gone: `git grep -n <old-name> -- ':!*/CHANGELOG.md'` finds nothing.
 
 ## Step 5 — Audit new or third-party plugins
 

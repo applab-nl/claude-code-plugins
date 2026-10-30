@@ -1,9 +1,17 @@
 # Changelog
 
-All notable changes to the Work Audit plugin will be documented in this file.
+All notable changes to the Status Report plugin (formerly Work Audit) will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.0.0] - 2026-10-30
+
+### Changed
+
+- **Breaking:** renamed the plugin from `work-audit` to `status-report`. The commands and skills are now
+  `/status-report` and `/status-report-cleanup`. Reinstall with
+  `/plugin install status-report@applab-plugins`.
 
 ## [1.0.0] - 2026-08-28
 
