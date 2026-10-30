@@ -141,7 +141,7 @@ Intelligent commit message generation, git worktree management for isolated deve
 
 A pane beside the chat showing which phase or slice of a plan you are in and how far along it is, redrawn as boxes get ticked.
 
-- **Version**: 1.0.0
+- **Version**: 1.1.1
 - **Category**: Productivity
 - **Works with**: OpenSpec, Superpowers, any markdown roadmap with checkboxes
 
@@ -158,7 +158,7 @@ A pane beside the chat showing which phase or slice of a plan you are in and how
 
 A pane listing every branch and worktree beside main: how far ahead and behind it is, whether it has merged (squash merges included, through its PR), and its open PR with checks and review.
 
-- **Version**: 1.0.0
+- **Version**: 1.0.1
 - **Category**: Productivity
 - **Requires**: git; `gh` for PR details (optional)
 

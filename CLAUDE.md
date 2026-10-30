@@ -59,8 +59,8 @@ claude-code-plugins/
 - **status-report** (v2.0.0) — Audit every piece of outstanding work
 - **cache-tax** (v2.2.1) — Keeps the one-hour prompt cache warm during breaks (/keepwarm), stops a cold send once with its estimated rewrite cost, and tracks cold writes
 - **claude-reflect** (v3.3.1) — Self-learning for Claude Code: captures your corrections and "remember:" notes as you work, then /reflect reviews them and writes the approved ones to CLAUDE.md, rules and auto-memory
-- **roadmap-status-mod** (v1.1.0) — Live sidebar pane showing which phase or slice of a plan you are in and how far along it is
-- **branch-status-mod** (v1.0.0) — Pane listing the branches and worktrees that run parallel to main
+- **roadmap-status-mod** (v1.1.1) — Live sidebar pane showing which phase or slice of a plan you are in and how far along it is
+- **branch-status-mod** (v1.0.1) — Pane listing the branches and worktrees that run parallel to main
 
 **Debugging:**
 - **sentry-issue-fixer** (v1.0.0) — Automated Sentry error investigation and resolution
