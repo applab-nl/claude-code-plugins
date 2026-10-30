@@ -135,6 +135,40 @@ Intelligent commit message generation, git worktree management for isolated deve
 - Streamlined branching workflows
 - Conventional commit support
 
+#### 📊 Roadmap Status
+
+**Live Plan Progress Pane**
+
+A pane beside the chat showing which phase or slice of a plan you are in and how far along it is, redrawn as boxes get ticked.
+
+- **Version**: 1.0.0
+- **Category**: Productivity
+- **Works with**: OpenSpec, Superpowers, any markdown roadmap with checkboxes
+
+[View Documentation](./roadmap-status-mod/README.md)
+
+**Key Features:**
+- Overall bar, every phase with its count, and the current phase's open tasks
+- Roadmap slices: items linking to other plans or OpenSpec changes take their progress from the linked file
+- Follows the most recently edited plan; `/roadmap-status <path>` pins one
+
+#### 🌿 Branch Status
+
+**Branches Running Parallel to Main**
+
+A pane listing every branch and worktree beside main: how far ahead and behind it is, whether it has merged (squash merges included, through its PR), and its open PR with checks and review.
+
+- **Version**: 1.0.0
+- **Category**: Productivity
+- **Requires**: git; `gh` for PR details (optional)
+
+[View Documentation](./branch-status-mod/README.md)
+
+**Key Features:**
+- Compact list with an ahead bar, `+ahead −behind`, worktree folder and PR badge per branch
+- Merged branches stay dimmed with a "delete?" hint until removed
+- Remote-only branches listed for their open PRs; PR refresh interval configurable
+
 #### 🔔 Hooks Notifier
 
 **Audio & Visual Notifications for Claude Code**
@@ -393,6 +427,8 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 - **Hooks Notifier**: Audio/visual notifications
 - **Prompt Logger**: Prompt analytics and logging
 - **Agents MD**: Multi-platform AI instruction sync
+- **Roadmap Status**: Live phase and progress pane for plans and roadmaps
+- **Branch Status**: Branches and worktrees beside main, merged state and PRs
 - **Cache Tax**: Prompt cache keep-warm and cold-send guard
 - **Claude Reflect**: Self-learning corrections to CLAUDE.md
 - **Terminal Browser**: Browser pane inside Claude Code
