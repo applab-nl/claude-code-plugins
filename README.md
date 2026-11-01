@@ -224,44 +224,6 @@ Convert CLAUDE.md files to multi-platform AI instruction formats following the A
 - OpenCode integration
 - Keep instructions in sync across platforms
 
-#### 🧊 Cache Tax
-
-**Prompt Cache Keep-Warm & Cold-Send Guard**
-
-A Claude Code mod (hooks module) that keeps the one-hour prompt cache warm during breaks and stops a cold send once with its estimated rewrite cost. Vendored from [karanb192/cache-tax](https://github.com/karanb192/cache-tax) (MIT) after a security review.
-
-- **Version**: 2.2.1
-- **Category**: Productivity, Cost control
-- **Requires**: Claude Code 2.1.287+ with `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1`
-- **Commands**: `/keepwarm`, `/cache-tax`
-
-[View Documentation](./cache-tax/README.md)
-
-**Key Features:**
-- Keep-warm window with a ping every 50 idle minutes (`/keepwarm 6h`)
-- One-time refusal of a cold send, with the price shown
-- Cold-write tally per session
-- Pings are model requests and cost tokens
-
-#### 🧠 Claude Reflect
-
-**Self-Learning Corrections to CLAUDE.md**
-
-Captures your corrections and `remember:` notes as you work, then `/reflect` reviews them and writes the ones you approve to CLAUDE.md, rules and auto-memory. Vendored from [BayramAnnakov/claude-reflect](https://github.com/BayramAnnakov/claude-reflect) (MIT) after a security review.
-
-- **Version**: 3.3.1
-- **Category**: Productivity, Memory
-- **Commands**: `/reflect`, `/reflect-skills`, `/view-queue`, `/skip-reflect`
-- **Note**: hooks run on every prompt and keep raw prompts on disk; see the plugin changelog for known issues
-
-[View Documentation](./claude-reflect/README.md)
-
-**Key Features:**
-- Detects corrections and explicit `remember:` notes in any language
-- Review-and-confirm flow before anything is written
-- Multi-target: global and project CLAUDE.md, rules, auto-memory
-- Queue per project with session-history scan
-
 #### 🌐 Terminal Browser
 
 **Browser Pane Inside Claude Code**
@@ -320,35 +282,6 @@ Renders the Mermaid blocks in your markdown to SVG or PNG from one shared hand-d
 - Drift linter (inline styles, config overrides, unknown classes, wrong shapes, multiple subjects)
 - Pinned, reproducible hand-drawn rendering with stable image names (`%% id:`) and stale-image cleanup
 - Portable SVG (plain text labels) or PNG for decks
-
-### Agent Collections
-
-#### 🤖 Agents Collection
-
-**13 Specialized Development Agents**
-
-Curated collection of specialized agents covering the entire development lifecycle from architecture to production monitoring.
-
-- **Version**: 1.0.0
-- **Category**: Development Tools, Subagents
-- **Coverage**: Frontend, Backend, Mobile, Testing, Debugging, Architecture, DevOps
-
-[View Documentation](./agents/README.md)
-
-**Included Agents:**
-- 🏛️ architecture-advisor - Architectural decisions and design patterns
-- 🎨 frontend-specialist - React/Next.js and Svelte 5 development
-- ⚙️ kotlin-backend-specialist - Spring Boot + Kotlin APIs
-- 🗄️ supabase-integration-expert - Supabase backend implementation
-- 🤖 android-debug-fixer - Android device debugging
-- 📱 ios-debug-fixer - iOS device debugging
-- 🔍 code-reviewer - Comprehensive code reviews
-- ♻️ refactoring-specialist - Safe incremental refactoring
-- ✅ test-engineer - Unit, integration, E2E testing
-- 🚀 ci-cd-specialist - GitHub Actions workflows
-- 🌿 git-workflow-manager - Git operations and worktrees
-- 📦 dependency-auditor - Security auditing and updates
-- 📊 monitoring-integration-specialist - Sentry.io integration
 
 ## Installation
 
@@ -429,8 +362,6 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 - **Agents MD**: Multi-platform AI instruction sync
 - **Roadmap Status**: Live phase and progress pane for plans and roadmaps
 - **Branch Status**: Branches and worktrees beside main, merged state and PRs
-- **Cache Tax**: Prompt cache keep-warm and cold-send guard
-- **Claude Reflect**: Self-learning corrections to CLAUDE.md
 - **Terminal Browser**: Browser pane inside Claude Code
 
 ### 🔒 Security
@@ -438,9 +369,6 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 
 ### 📝 Documentation
 - **Diagram Images**: Themed Mermaid-to-SVG/PNG rendering with a drift linter
-
-### 🤖 Development Tools & Agents
-- **Agents Collection**: 13 specialized agents for architecture, backend, testing, quality, DevOps, and monitoring
 
 ## Requirements
 
@@ -549,7 +477,6 @@ We welcome contributions! Please:
 - ✅ Next.js Development Specialist v1.0.0 (Runtime diagnostics & upgrades)
 - ✅ Svelte 5 Development Specialist v1.0.0 (Runes expertise)
 - ✅ Flutter Development Specialist v1.2.0 (Mobile development with MCP)
-- ✅ Agents Collection v1.0.0 (13 specialized development agents)
 - ✅ Git Tools v1.3.0 (Commit automation & worktrees)
 - ✅ Hooks Notifier v2.0.0 (Audio/visual notifications)
 - ✅ Prompt Logger v1.3.0 (Prompt analytics)
