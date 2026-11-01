@@ -141,7 +141,7 @@ Intelligent commit message generation, git worktree management for isolated deve
 
 A pane beside the chat showing which phase or slice of a plan you are in and how far along it is, redrawn as boxes get ticked.
 
-- **Version**: 1.1.1
+- **Version**: 1.1.2
 - **Category**: Productivity
 - **Works with**: OpenSpec, Superpowers, any markdown roadmap with checkboxes
 

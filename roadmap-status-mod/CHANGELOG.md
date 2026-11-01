@@ -5,6 +5,15 @@ All notable changes to roadmap-status-mod will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2026-11-01
+
+### Fixed
+- `/roadmap-status <path>` no longer answers "Pinned" for a file with no checkboxes or plan links, which the pane could not show: it says so and leaves the pin as it was
+- `/roadmap-status` takes the `@path`, `@"my plan.md"`, quoted and `~/` forms
+
+### Changed
+- The empty pane's hint says a pinned file needs checkboxes
+
 ## [1.1.1] - 2026-10-30
 
 ### Security
