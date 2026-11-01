@@ -186,8 +186,9 @@ const PANE = {
 
 type Files = Record<string, string>
 
-// Stands for the engine: a project at /repo with these files, nothing stored.
+// Stands for the engine: a project at /p/repo with these files, nothing stored at first.
 function project(on: On, files: Files) {
+  const store = new Map<string, unknown>()
   const dirs = (path: string) =>
     Object.keys(files)
       .filter(key => key.startsWith(`${path}/`))
@@ -197,8 +198,15 @@ function project(on: On, files: Files) {
   on('ui.open', () => ({ value: { isPlaced: true } }))
   on('session.start', (_, e) => ({ cwd: e.cwd }))
   on('session.root', () => ({ value: '/p/repo' }))
-  on('store.get', () => ({ value: undefined }))
-  on('store.set', () => ({ value: undefined }))
+  on('store.get', (_, e) => ({ value: store.get(e.key) }))
+  on('store.set', (_, e) => {
+    store.set(e.key, e.value)
+    return { value: undefined }
+  })
+  on('store.delete', (_, e) => {
+    store.delete(e.key)
+    return { value: undefined }
+  })
   on('clock.every', () => ({ value: undefined }))
   on('tool.call', () => ({ result: {} }))
   on('fs.list', (_, e) => ({
@@ -306,4 +314,69 @@ test('without a plan the pane says where it looks', async ($, on) => {
 
   expect((await ui.find({ type: 'Text', text: /No plan/ }))?.text).toBe('No plan found.')
   await ui.unmount()
+})
+
+const PINNED_FILES = {
+  '/p/repo/docs/superpowers/plans/board.md': NESTED,
+  '/p/repo/notes/release.md': OPENSPEC,
+  '/p/repo/notes/my plan.md': OPENSPEC,
+  '/Users/me/release.md': OPENSPEC,
+}
+
+for (const [args, shownPath] of [
+  ['notes/release.md', 'notes/release.md'],
+  ['/p/repo/notes/release.md', 'notes/release.md'],
+  ['@notes/release.md', 'notes/release.md'],
+  ['"notes/release.md"', 'notes/release.md'],
+  ['@"notes/my plan.md"', 'notes/my plan.md'],
+  ['~/release.md', '/Users/me/release.md'],
+] as const) {
+  test(`/roadmap-status ${args} pins that plan over the latest one`, async ($, on) => {
+    project(on, PINNED_FILES)
+    on('env.get', () => ({ value: '/Users/me' }))
+    await $.session.start({ cwd: '/p/repo', surface: 'terminal', isInteractive: true })
+    const run = await $.command.run({ command: 'roadmap-status', args })
+    const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+    const all = await texts(ui)
+    await ui.unmount()
+
+    expect(run.text).toContain(`Pinned ${shownPath}.`)
+    expect(all).toContain(`pinned · ${shownPath}`)
+  })
+}
+
+test('a markdown file with nothing to track is refused, keeping the plan shown', async ($, on) => {
+  project(on, {
+    '/p/repo/docs/superpowers/plans/board.md': NESTED,
+    '/p/repo/notes/prose.md': '# Notes\n\nJust words.\n\n- a bullet\n',
+  })
+  await $.session.start({ cwd: '/p/repo', surface: 'terminal', isInteractive: true })
+  const run = await $.command.run({ command: 'roadmap-status', args: 'notes/prose.md' })
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  const all = await texts(ui)
+  await ui.unmount()
+
+  expect(run.text).toBe('Not pinned: notes/prose.md has no checkboxes or links to other plans to track.')
+  expect(all).toContain('Board Plan')
+  expect(all.find(t => t.startsWith('pinned · '))).toBeUndefined()
+})
+
+test('a missing path says so, as cleaned up', async ($, on) => {
+  project(on, PINNED_FILES)
+  await $.session.start({ cwd: '/p/repo', surface: 'terminal', isInteractive: true })
+  const run = await $.command.run({ command: 'roadmap-status', args: '@nope.md' })
+
+  expect(run.text).toBe('No file or folder at nope.md.')
+})
+
+test('/roadmap-status auto unpins', async ($, on) => {
+  project(on, PINNED_FILES)
+  await $.session.start({ cwd: '/p/repo', surface: 'terminal', isInteractive: true })
+  await $.command.run({ command: 'roadmap-status', args: 'notes/release.md' })
+  await $.command.run({ command: 'roadmap-status', args: 'auto' })
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  const all = await texts(ui)
+  await ui.unmount()
+
+  expect(all.find(t => t.startsWith('pinned · '))).toBeUndefined()
 })

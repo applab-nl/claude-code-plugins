@@ -32,7 +32,7 @@ The pane opens by itself when a plan is found and the terminal is wide enough (1
 | Command | Effect |
 | --- | --- |
 | `/roadmap-status` | Open the pane |
-| `/roadmap-status <path>` | Pin a markdown file, or an OpenSpec change folder, for this project |
+| `/roadmap-status <path>` | Pin a markdown file with checkboxes or links to other plans, or an OpenSpec change folder, for this project. Takes relative, absolute, `~/` and `@` paths |
 | `/roadmap-status auto` | Unpin, and forget the plan the agent last touched |
 
 ## How it reads a plan

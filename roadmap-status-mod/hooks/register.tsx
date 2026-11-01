@@ -238,6 +238,9 @@ async function withAgentTasks($: $, plan: Built | undefined, list: AgentTask[]) 
 
 const pinKey = (root: string) => `pin:${root}`
 
+// The path as the composer may complete it: `@docs/plan.md`, `@"my plan.md"`.
+const pinPath = (arg: string) => arg.replace(/^@/, '').replace(/^(["'])(.*)\1$/, '$2')
+
 // One refresh at a time; a call during one runs it again after, so the
 // last tool call's change is always drawn.
 function refresh($: $): Promise<void> {
@@ -359,11 +362,16 @@ export const register: Register = on => {
       await update($, activePlan, () => null)
       text = 'Following the plan the agent works from, else the most recently edited one.'
     } else if (arg !== '') {
-      const abs = joinPath(root, arg)
+      const typed = pinPath(arg)
+      const home = typed.startsWith('~/') ? await $.env.get('HOME') : undefined
+      const abs = joinPath(root, home ? `${home}${typed.slice(1)}` : typed)
       const stat = await $.fs.stat(abs).catch(() => undefined)
-      if (!stat) return { text: `No file or folder at ${arg}.` }
+      if (!stat) return { text: `No file or folder at ${typed}.` }
       const path = stat.kind === 'dir' ? joinPath(abs, 'tasks.md') : abs
-      if (!(await $.fs.exists(path))) return { text: `No tasks.md in ${arg}.` }
+      if (!(await $.fs.exists(path))) return { text: `No tasks.md in ${typed}.` }
+      if (!(await buildView($, path, 'pinned', root))) {
+        return { text: `Not pinned: ${shown(path, root)} has no checkboxes or links to other plans to track.` }
+      }
       await $.store.set(pinKey(root), path)
       text = `Pinned ${shown(path, root)}. Run /roadmap-status auto to follow the agent again.`
     }
@@ -394,7 +402,7 @@ export const register: Register = on => {
           <Text dimColor>No plan found.</Text>
           <Text dimColor>
             Follows the plan the agent reads, else looks in openspec/changes, docs/superpowers/plans and
-            ROADMAP.md. Pin any markdown file with /roadmap-status &lt;path&gt;.
+            ROADMAP.md. Pin any markdown file with checkboxes using /roadmap-status &lt;path&gt;.
           </Text>
         </Box>
       )
