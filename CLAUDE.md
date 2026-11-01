@@ -57,8 +57,6 @@ claude-code-plugins/
 - **ship-it** (v1.3.0) — End-of-session shipping workflow
 - **backlog** (v1.3.0) — Provider-agnostic backlog automation
 - **status-report** (v2.0.0) — Audit every piece of outstanding work
-- **cache-tax** (v2.2.1) — Keeps the one-hour prompt cache warm during breaks (/keepwarm), stops a cold send once with its estimated rewrite cost, and tracks cold writes
-- **claude-reflect** (v3.3.1) — Self-learning for Claude Code: captures your corrections and "remember:" notes as you work, then /reflect reviews them and writes the approved ones to CLAUDE.md, rules and auto-memory
 - **roadmap-status-mod** (v1.1.2) — Live sidebar pane showing which phase or slice of a plan you are in and how far along it is
 - **branch-status-mod** (v1.0.1) — Pane listing the branches and worktrees that run parallel to main
 
@@ -69,7 +67,6 @@ claude-code-plugins/
 - **next-dev** (v1.0.0) — Next.js development specialist with integrated next-devtools MCP server for runtime diagnostics, automated upgrades, page testing, and comprehensive documentation access
 - **svelte-dev** (v1.0.0) — Svelte 5 development specialist with integrated MCP server for documentation access, static code analysis, and comprehensive runes expertise ($state, $derived, $effect, $props)
 - **flutter-dev** (v1.2.0) — Flutter and Dart development specialist with integrated MCP server for code analysis, package management, testing, runtime introspection, and cross-platform mobile development
-- **agents** (v1.0.0) — Curated collection of 13 specialized agents for comprehensive development workflows across frontend, backend, mobile, testing, debugging, architecture, and DevOps
 - **android-dev** (v1.0.0) — Android device testing over adb: device selection, reconnect-safe log capture, UI driving, ANR/crash diagnosis, APK symbol checks and Android Auto Desktop Head Unit sessions
 - **terminal-browser** (v0.0.2) — Renders a terminal browser inside Claude Code's pane to preview sites and HTML documents, with an optional open/close tool for the agent
 
@@ -99,7 +96,7 @@ Hooks are defined inline in `plugin.json` and run Python scripts via `uv run`:
 ```
 
 ### Pattern 2: Agents + Commands + Skills (Markdown)
-Used by: `git-tools`, `agents-md`, `agents`, `sentry-issue-fixer`, `flutter-dev`
+Used by: `git-tools`, `agents-md`, `sentry-issue-fixer`, `flutter-dev`
 
 Plugin manifest points to directories/files:
 ```json
