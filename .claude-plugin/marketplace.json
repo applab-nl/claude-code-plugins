@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -239,6 +239,19 @@
       },
       "category": "productivity",
       "keywords": ["git", "branches", "worktrees", "pull-requests", "github", "merged", "pane", "sidebar"],
+      "license": "MIT"
+    },
+    {
+      "name": "video-production",
+      "source": "./video-production",
+      "version": "1.0.0",
+      "description": "Make launch videos, product walkthroughs and social clips in code with HyperFrames (HTML + GSAP) - brief, motion language, product UI rebuilt in HTML, AI footage and voice through fal, word-timed captions on the beat, an eyes-on review gate, and renders for every channel",
+      "author": {
+        "name": "AppLab",
+        "email": "plugins@applab.nl"
+      },
+      "category": "media",
+      "keywords": ["video", "hyperframes", "gsap", "motion", "walkthrough", "captions", "fal", "elevenlabs", "ffmpeg", "render"],
       "license": "MIT"
     }
   ]
