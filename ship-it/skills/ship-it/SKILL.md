@@ -208,7 +208,7 @@ BRANCH=$(git branch --show-current)
 **In a linked worktree** (`$WT` ≠ `$ROOT`):
 
 1. Make sure nothing would be lost: `git -C "$WT" status --porcelain` must be empty, apart from gitignored files and `.linear-ticket.json`. If it isn't, stop and show the user.
-2. If this session entered the worktree with `EnterWorktree`, call `ExitWorktree` with action `remove`. If it refuses, or the worktree wasn't created by the harness (`phantom`, `.worktrees/`, or plain `git worktree add`), clean it up by hand from the primary checkout:
+2. If this session entered the worktree with `EnterWorktree`, call `ExitWorktree` with action `remove`. If it refuses, or the worktree wasn't created by the harness (`phantom` or plain `git worktree add`), clean it up by hand from the primary checkout:
    - phantom-managed (`phantom list` shows it): `phantom delete <name>`
    - otherwise: `git -C "$ROOT" worktree remove "$WT"`. Never pass `--force`: if git refuses, report it.
 3. `git -C "$ROOT" branch -D "$BRANCH"`

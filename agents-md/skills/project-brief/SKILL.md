@@ -85,7 +85,7 @@ How the commit reaches the default branch depends on the checkout:
 - **On the default branch, nothing else staged, no hook blocking edits**: `git add docs/PROJECT_OVERVIEW.md`, commit, then `git push`.
 - **Otherwise** (on a feature branch, other work staged or in progress, another session in the checkout, or a hook blocking edits in the shared checkout): don't touch that checkout's branch or index. Commit from a throwaway worktree off the default branch:
   ```bash
-  ROOT=$(git rev-parse --show-toplevel); WT="$ROOT/.worktrees/project-brief"
+  ROOT=$(git rev-parse --show-toplevel); WT="$ROOT/.claude/worktrees/project-brief"
   git -C "$ROOT" fetch origin
   git -C "$ROOT" worktree add --detach "$WT" origin/<default>
   # write the file into "$WT/docs/PROJECT_OVERVIEW.md", then:

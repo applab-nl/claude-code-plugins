@@ -2,6 +2,13 @@
 
 All notable changes to the agents-md plugin will be documented in this file.
 
+## [1.1.1] - 2026-11-03
+
+### Fixed
+
+- `project-brief` creates its throwaway worktree under `.claude/worktrees/project-brief`, Claude Code's built-in worktree location, instead of `.worktrees/project-brief`.
+- The `instruction-analyzer` agent's frontmatter is now valid YAML: its `description` is now a block scalar. Since the plugin was added it had failed to parse, so the agent loaded with every frontmatter field except its name silently dropped.
+
 ## [1.1.0] - 2026-10-03
 
 ### Added

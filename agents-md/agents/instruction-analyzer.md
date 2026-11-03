@@ -1,33 +1,34 @@
 ---
 name: instruction-analyzer
-description: Use this agent when converting CLAUDE.md to multi-platform instruction files, analyzing instruction content for classification, or determining what content is platform-specific vs generic. Examples:
+description: |
+  Use this agent when converting CLAUDE.md to multi-platform instruction files, analyzing instruction content for classification, or determining what content is platform-specific vs generic. Examples:
 
-<example>
-Context: User wants to convert their existing CLAUDE.md to AGENTS.md format
-user: "/agents-md:convert"
-assistant: "I'll analyze your CLAUDE.md and split it into platform-specific files."
-<commentary>
-The /convert command triggers this agent to analyze and classify the instruction content.
-</commentary>
-</example>
+  <example>
+  Context: User wants to convert their existing CLAUDE.md to AGENTS.md format
+  user: "/agents-md:convert"
+  assistant: "I'll analyze your CLAUDE.md and split it into platform-specific files."
+  <commentary>
+  The /convert command triggers this agent to analyze and classify the instruction content.
+  </commentary>
+  </example>
 
-<example>
-Context: User is manually reviewing content classification
-user: "Is this section Claude-specific or generic?"
-assistant: "Let me analyze this section for Claude-specific keywords."
-<commentary>
-Direct classification questions should use this agent for consistent analysis.
-</commentary>
-</example>
+  <example>
+  Context: User is manually reviewing content classification
+  user: "Is this section Claude-specific or generic?"
+  assistant: "Let me analyze this section for Claude-specific keywords."
+  <commentary>
+  Direct classification questions should use this agent for consistent analysis.
+  </commentary>
+  </example>
 
-<example>
-Context: User wants to understand what content should go where
-user: "What makes content Claude-specific vs generic?"
-assistant: "I'll explain the classification criteria and analyze your content."
-<commentary>
-Questions about classification logic should use this agent for accurate explanations.
-</commentary>
-</example>
+  <example>
+  Context: User wants to understand what content should go where
+  user: "What makes content Claude-specific vs generic?"
+  assistant: "I'll explain the classification criteria and analyze your content."
+  <commentary>
+  Questions about classification logic should use this agent for accurate explanations.
+  </commentary>
+  </example>
 
 model: inherit
 color: cyan

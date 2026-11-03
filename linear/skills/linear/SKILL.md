@@ -268,7 +268,7 @@ The `ship-it` skill handles the commit / PR / merge / cleanup flow. When it runs
 - **Linear MCP not configured**: stop and tell the user how to install it. Don't try to scrape Linear via web.
 - **Multiple Linear MCP variants installed**: the plugin and the claude.ai official one expose identical surfaces. Pick one and use it for all calls in this run — don't mix.
 - **Ticket is a sub-issue of an active spec change**: prefer to slot the work under that change rather than spawning a new one. In OpenSpec projects, use `openspec-continue-change` if the parent has an existing change directory.
-- **User is on `main` already with no worktree**: still create one. The whole point is isolation, especially in repos like this one where `WorktreeCreate` hooks set up env files.
+- **User is on `main` already with no worktree**: still create one. The whole point is isolation, especially in repos that copy env files into new worktrees through `.worktreeinclude`.
 - **`$CLAUDE_CODE_SESSION_ID` is unset or no transcript matches the glob** (a harness that doesn't expose it, a sandboxed run): skip the Step 7 sidecar write silently and still print the `/rename` line. Don't try to derive the session directory from `pwd`.
 - **Branch already exists locally but not as a worktree**: `EnterWorktree({ branch })` will check it out into a new worktree linked to the existing branch — that's fine.
 
