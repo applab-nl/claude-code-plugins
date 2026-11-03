@@ -283,6 +283,26 @@ Renders the Mermaid blocks in your markdown to SVG or PNG from one shared hand-d
 - Pinned, reproducible hand-drawn rendering with stable image names (`%% id:`) and stale-image cleanup
 - Portable SVG (plain text labels) or PNG for decks
 
+### Media
+
+#### 🎬 Video Production
+
+**Videos Made in Code, Reviewed Frame by Frame**
+
+Ten skills for launch videos, product walkthroughs and social clips built with HyperFrames (HTML + GSAP): from a one-page brief through motion, rebuilt product UI, AI footage and voice via fal, beat-synced captions and an eyes-on review gate, to renders for every channel.
+
+- **Version**: 1.0.0
+- **Category**: Media
+- **Requires**: Node 18+ or Bun, ffmpeg, Python 3 + numpy; `FAL_KEY` only for generated footage and voice
+
+[View Documentation](./video-production/README.md)
+
+**Key Features:**
+- Deterministic HyperFrames scenes with a pinned CLI and telemetry/self-update opt-outs
+- A motion language with numbers, and product UI rebuilt in HTML instead of screenshots
+- Spend-logged fal calls with an upload guard; on-set dialogue treatment and loudness mix
+- Word-timed captions, beat grid cuts, a review checklist and per-channel exports (MP4, GIF, poster)
+
 ## Installation
 
 ### Add This Marketplace
@@ -369,6 +389,9 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 
 ### 📝 Documentation
 - **Diagram Images**: Themed Mermaid-to-SVG/PNG rendering with a drift linter
+
+### 🎬 Media
+- **Video Production**: Videos made in code with HyperFrames, from brief to per-channel renders
 
 ## Requirements
 

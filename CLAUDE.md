@@ -76,6 +76,9 @@ claude-code-plugins/
 **Documentation:**
 - **diagram-images** (v1.0.1) — Render Mermaid diagrams in markdown to SVG/PNG with one shared hand-drawn theme and a drift linter
 
+**Media:**
+- **video-production** (v1.0.0) — Make launch videos, product walkthroughs and social clips in code with HyperFrames (HTML + GSAP), from brief to per-channel renders
+
 ## Plugin Patterns
 
 Plugins use one or more of these patterns:
