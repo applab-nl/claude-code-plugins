@@ -1,0 +1,64 @@
+<!-- compositions/hero.html: one scene. Mounted from index.html by a host with data-composition-id="hero". -->
+<template>
+  <style>
+    @font-face { font-family: "Display"; src: url("assets/fonts/display-800.woff2") format("woff2"); font-weight: 800; }
+    #hero-root { position: absolute; inset: 0; overflow: hidden; background: #F4EFE6; font-family: "Inter", sans-serif; color: #131210; }
+    #hero-title { position: absolute; left: 0; right: 0; top: 380px; text-align: center; font: 800 128px/1 "Display", "Inter", sans-serif; letter-spacing: -0.04em; z-index: 1; }
+    #hero-title span { display: inline-block; }
+    #hero-num { position: absolute; left: 0; right: 0; top: 620px; text-align: center; font: 700 72px "Inter"; font-variant-numeric: tabular-nums; z-index: 1; }
+    #hero-dots { position: absolute; inset: 0; z-index: 0; }
+    .hero-dot { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #E8612C; }
+  </style>
+
+  <div id="hero-root" data-composition-id="hero" data-width="1920" data-height="1080">
+    <h1 id="hero-title" class="clip" data-start="0.2" data-duration="5.6"><span>Just</span> <span>dropped</span></h1>
+    <!-- Frame 0 is the thumbnail: something readable is on screen at 0.0 s. -->
+    <div id="hero-num" class="clip" data-start="0" data-duration="5.8">120</div>
+    <div id="hero-dots"></div>
+  </div>
+
+  <script>
+    // Seeded RNG: same seed, same layout, every render.
+    function mulberry32(a) {
+      return function () {
+        a |= 0; a = (a + 0x6D2B79F5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    const rnd = mulberry32(7);
+    const D = 6; // must equal the host's data-duration
+    const tl = gsap.timeline({ paused: true });
+
+    // Build DOM first, synchronously. Measure layout here, never inside onUpdate.
+    const dots = document.querySelector("#hero-dots");
+    const made = [];
+    for (let i = 0; i < 24; i++) {
+      const d = document.createElement("div");
+      d.className = "hero-dot";
+      d.style.left = 160 + rnd() * 1600 + "px";
+      d.style.top = 120 + rnd() * 840 + "px";
+      dots.appendChild(d);
+      made.push(d);
+    }
+
+    // Animate children of .clip elements (or opacity/transform on them), never display/visibility.
+    tl.fromTo("#hero-title span", { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.42, stagger: 0.08, ease: "expo.out" }, 0.2);
+
+    // A counter: the text is a pure function of the tween value.
+    const n = { v: 120 };
+    tl.to(n, { v: 1284, duration: 2.0, ease: "power2.out", onUpdate: () => {
+      document.querySelector("#hero-num").textContent = Math.round(n.v).toLocaleString("en-US");
+    } }, 0.3);
+
+    // Idle motion with a finite repeat that fills the scene exactly: 4 legs x 1.5 s = 6 s, ends where it began.
+    made.forEach((d, i) => {
+      tl.fromTo(d, { y: 0 }, { y: -12 - (i % 3) * 4, duration: 1.5, yoyo: true, repeat: 3, ease: "sine.inOut" }, 0);
+    });
+
+    tl.set({}, {}, D); // pad the timeline to the scene length
+    window.__timelines = window.__timelines || {};
+    window.__timelines["hero"] = tl; // key = data-composition-id, registered last
+  </script>
+</template>
