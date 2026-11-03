@@ -2,6 +2,12 @@
 
 All notable changes to the agents-md plugin will be documented in this file.
 
+## [1.1.1] - 2026-11-03
+
+### Fixed
+
+- `project-brief` creates its throwaway worktree under `.claude/worktrees/project-brief`, Claude Code's built-in worktree location, instead of `.worktrees/project-brief`.
+
 ## [1.1.0] - 2026-10-03
 
 ### Added

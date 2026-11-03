@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.14.0",
+  "version": "1.14.1",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -102,7 +102,7 @@
     {
       "name": "agents-md",
       "source": "./agents-md",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "description": "Convert CLAUDE.md to multi-platform AI instruction files following the AGENTS.md standard - supports GitHub Copilot, Gemini CLI, and OpenCode",
       "author": {
         "name": "AppLab",
@@ -128,7 +128,7 @@
     {
       "name": "linear",
       "source": "./linear",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "description": "Start and shepherd work on a Linear ticket end-to-end - fetch via MCP, classify quick-fix vs spec-driven, create an isolated worktree, move the ticket to In Progress, and chain into the right follow-up skill. Advances tickets through In Review and Done via a persisted worktree sentinel",
       "author": {
         "name": "AppLab",
@@ -141,7 +141,7 @@
     {
       "name": "ship-it",
       "source": "./ship-it",
-      "version": "1.3.0",
+      "version": "1.3.1",
       "description": "End-of-session shipping workflow - commit, push, open a PR, monitor CI and review findings, fix critical blockers, then merge and clean up branches and worktree. Advances linked Linear tickets through In Review on PR open and Done on merge. Includes install-ship-it to generate a project-specific ship-it skill",
       "author": {
         "name": "AppLab",

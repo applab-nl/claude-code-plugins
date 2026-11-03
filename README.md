@@ -211,7 +211,7 @@ Logs user prompts and AskUserQuestion interactions to JSON files for analysis an
 
 Convert CLAUDE.md files to multi-platform AI instruction formats following the AGENTS.md standard.
 
-- **Version**: 1.0.0
+- **Version**: 1.1.1
 - **Category**: Productivity, Tooling
 - **Supports**: GitHub Copilot, Gemini CLI, OpenCode
 

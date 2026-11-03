@@ -5,6 +5,12 @@ All notable changes to the Linear plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2026-11-03
+
+### Fixed
+
+- The edge case for starting on `main` no longer credits `WorktreeCreate` hooks with setting up env files; it now refers to env files copied into new worktrees through `.worktreeinclude`.
+
 ## [1.1.1] - 2026-10-03
 
 ### Changed
