@@ -9,12 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Self-installing.** On a fresh run in a repo with no project ship-it skill, `ship-it` offers to generate one: install now (runs `install-ship-it`, then keeps shipping with the new skill), use the generic flow this time, or don't ask again in this repo. The opt-out is a local marker at `$(git rev-parse --git-common-dir)/ship-it-generic` that all worktrees share and that never gets committed. The offer is skipped for resumed or woken runs, branches that already have a PR, and unattended runs.
+- **Self-installing.** On a fresh run in a repo with no project ship-it skill, `ship-it` offers to generate one: install now (runs the install procedure, then keeps shipping with the new skill), use the generic flow this time, or don't ask again in this repo. The opt-out is a local marker at `$(git rev-parse --git-common-dir)/ship-it-generic` that all worktrees share and that never gets committed. The offer is skipped for resumed or woken runs, branches that already have a PR, and unattended runs.
 - A project skill installed during a ship is committed in its own `chore(ship-it)` commit on the same branch.
 
 ### Changed
 
-- `install-ship-it` hands control back when `ship-it` called it, leaves the new project skill check out of the skills it generates, and clears the opt-out marker after an install.
+- **`install-ship-it` is no longer a skill.** Its procedure moved to `skills/ship-it/references/install.md`, which only `ship-it` reads, so a single skill shows up when you invoke ship-it. To set up, review or upgrade a project skill, ask `ship-it` ("install ship-it for this project", "upgrade our ship-it skill").
+- The install procedure hands control back to the ship run that called it, leaves the project skill check out of the skills it generates, and clears the opt-out marker after an install.
 
 ## [1.3.1] - 2026-11-03
 

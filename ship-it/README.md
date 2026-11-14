@@ -15,22 +15,22 @@ When you say "ship it", "/ship-it", "wrap up the session", "land this", etc., th
 7. **Merges** with `--merge` (regular merge commit) and `--delete-branch`
 8. **Cleans up** — switches back to `main`, pulls, deletes the local branch, and calls `ExitWorktree`
 
-## Project-specific ship-it (`/install-ship-it`)
+## Project-specific ship-it
 
 The generic flow doesn't know about your mobile builds, device checks or database migrations, so the plugin installs a project skill for itself. The first time you run `/ship-it` in a repo that has none, it asks whether to:
 
-- **Install now**: runs `install-ship-it`, then ships the current branch with the new skill, which gets committed in its own commit
+- **Install now**: runs the install procedure, then ships the current branch with the new skill, which gets committed in its own commit
 - **Use the generic flow this time**: asks again next time
-- **Not ask again here**: writes a local marker at `$(git rev-parse --git-common-dir)/ship-it-generic`. Delete the marker, or run `/install-ship-it`, to undo it
+- **Not ask again here**: writes a local marker at `$(git rev-parse --git-common-dir)/ship-it-generic`. Delete the marker, or ask ship-it to install a project skill, to undo it
 
-Branches that already have a PR, resumed runs and unattended runs aren't asked. You can also run `/install-ship-it` yourself at any time. It generates a ship-it skill for the current repo:
+Branches that already have a PR, resumed runs and unattended runs aren't asked. You can also ask for it directly ("install ship-it for this project", "upgrade our ship-it skill"). There is no separate install skill: the procedure is a reference inside `ship-it` (`skills/ship-it/references/install.md`). It generates a ship-it skill for the current repo:
 
 1. **Analyzes** the project: stack and commands, CI, mobile targets, migrations, spec kits, deploy and release setup, ticketing
 2. **Interviews** you about what the code can't tell (merge strategy, manual device verification, who applies migrations, …)
 3. **Proposes steps** grouped by phase (pre-commit, PR, post-merge) for you to pick from
 4. **Writes** a self-contained `.claude/skills/ship-it/SKILL.md`, committed or local-only, with a provenance header recording the template version
 
-Run it again later to **review and upgrade** an existing project skill: it checks template changes since the recorded version and drift in the project (new migrations dir, removed commands, …), then applies only the suggestions you select, keeping your own edits. The generic `ship-it` defers to the project skill whenever one exists.
+Ask again later to **review and upgrade** an existing project skill: it checks template changes since the recorded version and drift in the project (new migrations dir, removed commands, …), then applies only the suggestions you select, keeping your own edits. The generic `ship-it` defers to the project skill whenever one exists.
 
 ## Linear integration
 

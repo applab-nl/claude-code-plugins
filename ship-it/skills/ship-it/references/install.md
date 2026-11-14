@@ -1,9 +1,6 @@
----
-name: install-ship-it
-description: Generate (or upgrade) a project-specific `ship-it` skill for the current repository. Analyzes the project (stack, CI, build/test commands, mobile targets, database migrations, spec kits, deploy targets, ticketing), interviews the user for what the code can't tell, proposes a menu of close-out steps to pick from, and writes a self-contained `.claude/skills/ship-it/SKILL.md` based on the generic ship-it workflow. When a project ship-it skill already exists, reviews it against the current template and the project's current state and suggests upgrades. Use when the user says "install ship-it", "/install-ship-it", "set up ship-it for this project", "customize ship-it", "upgrade/review our ship-it skill", or wants the close-out flow to cover project specifics like mobile builds, device verification or database changes.
----
-
 # Install Ship It
+
+This is a reference that only the `ship-it` skill reads. It is not a skill and has no trigger of its own. `ship-it` follows it in two cases: when it offers the install on its first run in a repo, and when the user asks to set up, review or upgrade the project ship-it skill.
 
 Turns the generic `ship-it` workflow into a skill tailored to one repository, so shipping covers what this project actually needs: a mobile build, a pass on a real device, a migration check, a preview deploy smoke test, a release tag.
 
@@ -11,7 +8,7 @@ The output is a **self-contained** skill at `.claude/skills/ship-it/SKILL.md`. I
 
 ## The template
 
-The generic workflow is the sibling skill at `../ship-it/SKILL.md`, relative to this skill's base directory. Read it in full before generating anything. It is the baseline every generated skill starts from. The template version is the `version` in `../../.claude-plugin/plugin.json`.
+The generic workflow is `SKILL.md` in the ship-it skill's base directory (the parent of this `references/` folder). Read it in full before generating anything. It is the baseline every generated skill starts from. The template version is the `version` in `../../.claude-plugin/plugin.json`, relative to the skill's base directory.
 
 Carry these invariants from the template into every generated skill. Leave them out only if the user explicitly asks you to:
 
@@ -30,7 +27,7 @@ Check for an existing project skill at `.claude/skills/ship-it/SKILL.md` (also c
 - **Missing** → [Install](#install) mode.
 - **Present** → [Upgrade](#upgrade) mode. Don't overwrite it without going through the review.
 
-**Called from `ship-it`.** The generic `ship-it` loads this skill the first time it runs in a repo that has no project skill. That always means Install mode, and the session is in the middle of shipping a branch, so:
+**Called from a ship run.** The generic `ship-it` comes here the first time it runs in a repo that has no project skill. That always means Install mode, and the session is in the middle of shipping a branch, so:
 
 - Keep the interview to what changes the skill. The user is waiting to ship.
 - Run the analysis and write the file as usual. Finish with the outline (Generate → Then, item 1) and skip items 3 and 4. Then hand control back to the `ship-it` run, which reads the new file, continues shipping from it, and commits the file in its own commit.
@@ -112,7 +109,7 @@ Then:
 ## Upgrade
 
 1. **Read the existing skill** and its provenance block. If there's no block, it was hand-written. Treat it as the user's own work and review it the same way.
-2. **Diff against the template**: read the current template and `../../CHANGELOG.md`. List what changed since `generated-from` that the project skill lacks (new steps, fixed rules, changed invariants).
+2. **Diff against the template**: read the current template and `../../CHANGELOG.md` (relative to the skill's base directory). List what changed since `generated-from` that the project skill lacks (new steps, fixed rules, changed invariants).
 3. **Re-analyze the project** (same survey as Install step 1) and look for drift:
    - commands in the skill that no longer exist
    - new areas the skill doesn't cover (a migrations dir appeared, a mobile target was added, CI gained a deploy job)
