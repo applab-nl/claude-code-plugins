@@ -54,7 +54,7 @@ claude-code-plugins/
 - **git-tools** (v1.3.0) — Comprehensive Git automation tools
 - **agents-md** (v1.1.0) — Convert CLAUDE.md to multi-platform AI instruction files following the AGENTS.md standard
 - **linear** (v1.1.1) — Start and shepherd work on a Linear ticket end-to-end
-- **ship-it** (v1.3.0) — End-of-session shipping workflow
+- **ship-it** (v1.4.0) — End-of-session shipping workflow
 - **backlog** (v1.3.0) — Provider-agnostic backlog automation
 - **status-report** (v2.0.0) — Audit every piece of outstanding work
 - **roadmap-status-mod** (v1.1.2) — Live sidebar pane showing which phase or slice of a plan you are in and how far along it is
