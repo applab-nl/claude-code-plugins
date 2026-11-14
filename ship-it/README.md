@@ -17,7 +17,13 @@ When you say "ship it", "/ship-it", "wrap up the session", "land this", etc., th
 
 ## Project-specific ship-it (`/install-ship-it`)
 
-The generic flow doesn't know about your mobile builds, device checks or database migrations. `/install-ship-it` generates a ship-it skill for the current repo:
+The generic flow doesn't know about your mobile builds, device checks or database migrations, so the plugin installs a project skill for itself. The first time you run `/ship-it` in a repo that has none, it asks whether to:
+
+- **Install now**: runs `install-ship-it`, then ships the current branch with the new skill, which gets committed in its own commit
+- **Use the generic flow this time**: asks again next time
+- **Not ask again here**: writes a local marker at `$(git rev-parse --git-common-dir)/ship-it-generic`. Delete the marker, or run `/install-ship-it`, to undo it
+
+Branches that already have a PR, resumed runs and unattended runs aren't asked. You can also run `/install-ship-it` yourself at any time. It generates a ship-it skill for the current repo:
 
 1. **Analyzes** the project: stack and commands, CI, mobile targets, migrations, spec kits, deploy and release setup, ticketing
 2. **Interviews** you about what the code can't tell (merge strategy, manual device verification, who applies migrations, …)

@@ -30,6 +30,11 @@ Check for an existing project skill at `.claude/skills/ship-it/SKILL.md` (also c
 - **Missing** → [Install](#install) mode.
 - **Present** → [Upgrade](#upgrade) mode. Don't overwrite it without going through the review.
 
+**Called from `ship-it`.** The generic `ship-it` loads this skill the first time it runs in a repo that has no project skill. That always means Install mode, and the session is in the middle of shipping a branch, so:
+
+- Keep the interview to what changes the skill. The user is waiting to ship.
+- Run the analysis and write the file as usual. Finish with the outline (Generate → Then, item 1) and skip items 3 and 4. Then hand control back to the `ship-it` run, which reads the new file, continues shipping from it, and commits the file in its own commit.
+
 ## Install
 
 ### 1. Analyze the project
@@ -91,7 +96,7 @@ Write `.claude/skills/ship-it/SKILL.md`:
   steps: [spec-sync, local-gate, mobile-build, device-verification, ...]
   -->
   ```
-- **Body**: the template's structure, with selected steps inserted where they belong and numbered in order. Use the **exact commands** found in the repo (verified, not invented). Drop template sections that don't apply (e.g. Linear transitions when the project doesn't use Linear). Replace the template's merge strategy and default-branch name with the project's.
+- **Body**: the template's structure, with selected steps inserted where they belong and numbered in order. Use the **exact commands** found in the repo (verified, not invented). Drop template sections that don't apply (e.g. Linear transitions when the project doesn't use Linear). Always drop the template's "Project skill check" section and its bullet in "What this skill does": the generated skill *is* the project skill. Replace the template's merge strategy and default-branch name with the project's.
 - Keep it as lean as the template. Project steps state *what to run, what counts as pass/fail, and when to pause*. Don't pad them with generic advice.
 - **Gate expensive steps on changed paths.** Give each step that only matters for some changes (device verification, mobile builds, migration checks, release packaging) an explicit `Runs when git diff <default>...HEAD --name-only matches <globs>` line. The agent must not re-decide this on every run. A docs- or spec-only branch skips all of them and says so in one line.
 - **Hand-offs to the user end with the action, not a reminder.** When a step needs the user to do something outside the terminal, such as uploading a build or rotating a secret, open the file or folder or URL for them (`open <path>` on macOS), list the exact clicks, and say how the agent will confirm it worked.
@@ -102,6 +107,7 @@ Then:
 2. For **local-only**, append `.claude/skills/ship-it/` to `.git/info/exclude`.
 3. For **committed**, leave the file uncommitted and tell the user. It ships with their next `/ship-it`.
 4. Mention that the plugin's generic `ship-it:ship-it` stays available. The generic skill defers to a project skill when one exists.
+5. Remove the generic-only opt-out marker if it's there: `rm -f "$(git rev-parse --git-common-dir)/ship-it-generic"`.
 
 ## Upgrade
 
