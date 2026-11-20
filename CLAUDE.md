@@ -78,6 +78,7 @@ claude-code-plugins/
 
 **Media:**
 - **video-production** (v1.0.0) — Make launch videos, product walkthroughs and social clips in code with HyperFrames (HTML + GSAP), from brief to per-channel renders
+- **explainer** (v1.0.0) — Animated explainers in 86 AI Style Atlas visual styles: storyboard, self-contained HTML canvas animation with synthesized sound, optional voiceover sync and MP4 render
 
 ## Plugin Patterns
 

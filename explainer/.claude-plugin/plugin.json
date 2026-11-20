@@ -1,0 +1,14 @@
+{
+  "name": "explainer",
+  "version": "1.0.0",
+  "description": "Animated explainers in 86 visual styles from the AI Style Atlas: pick a style, approve a storyboard, get one self-contained HTML canvas animation with synthesized sound, optionally timed to a voiceover and rendered to MP4",
+  "author": {
+    "name": "AppLab",
+    "email": "plugins@applab.nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/explainer",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["video", "explainer", "animation", "canvas", "motion-graphics", "storyboard", "voiceover", "sound-design", "ffmpeg", "puppeteer"],
+  "skills": "./skills"
+}

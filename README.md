@@ -303,6 +303,24 @@ Ten skills for launch videos, product walkthroughs and social clips built with H
 - Spend-logged fal calls with an upload guard; on-set dialogue treatment and loudness mix
 - Word-timed captions, beat grid cuts, a review checklist and per-channel exports (MP4, GIF, poster)
 
+#### 🎞️ Explainer
+
+**Animated Explainers in 86 Visual Styles**
+
+Name a style from the AI Style Atlas (or describe a look), give a topic or script, approve a storyboard, and get one self-contained HTML canvas animation with synthesized sound. It can be timed to a voiceover and rendered to MP4.
+
+- **Version**: 1.0.0
+- **Category**: Media
+- **Requires**: Python 3; for MP4 renders Node 18+, ffmpeg and puppeteer
+
+[View Documentation](./explainer/README.md)
+
+**Key Features:**
+- 86 reference styles across 14 families, with a catalog for picking by description
+- The Atlas build brief word for word, for every storyboard/voiceover combination
+- A storyboard approval gate, byte-exact library inlining and a player-interface lint
+- MP4 render with offline-rendered effects and a voiceover loudness/sidechain mix
+
 ## Installation
 
 ### Add This Marketplace
@@ -392,6 +410,7 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 
 ### 🎬 Media
 - **Video Production**: Videos made in code with HyperFrames, from brief to per-channel renders
+- **Explainer**: Animated explainers in 86 visual styles, storyboard to MP4
 
 ## Requirements
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -252,6 +252,19 @@
       },
       "category": "media",
       "keywords": ["video", "hyperframes", "gsap", "motion", "walkthrough", "captions", "fal", "elevenlabs", "ffmpeg", "render"],
+      "license": "MIT"
+    },
+    {
+      "name": "explainer",
+      "source": "./explainer",
+      "version": "1.0.0",
+      "description": "Animated explainers in 86 visual styles from the AI Style Atlas - pick a style, approve a storyboard, get one self-contained HTML canvas animation with synthesized sound, optionally timed to a voiceover and rendered to MP4",
+      "author": {
+        "name": "AppLab",
+        "email": "plugins@applab.nl"
+      },
+      "category": "media",
+      "keywords": ["video", "explainer", "animation", "canvas", "motion-graphics", "storyboard", "voiceover", "sound-design", "ffmpeg", "puppeteer"],
       "license": "MIT"
     }
   ]
