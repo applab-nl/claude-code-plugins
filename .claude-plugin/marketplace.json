@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -265,6 +265,19 @@
       },
       "category": "media",
       "keywords": ["video", "explainer", "animation", "canvas", "motion-graphics", "storyboard", "voiceover", "sound-design", "ffmpeg", "puppeteer"],
+      "license": "MIT"
+    },
+    {
+      "name": "3d-explainer",
+      "source": "./3d-explainer",
+      "version": "1.0.0",
+      "description": "Short 3D explainer motion graphics in three.js in fixed looks (Tiny Diorama, plus any style you import) - rendered-stills storyboard with an approval gate, a self-contained HTML player, and an MP4 rendered in headless Chrome with synthesized sound at -15 LUFS",
+      "author": {
+        "name": "AppLab",
+        "email": "plugins@applab.nl"
+      },
+      "category": "media",
+      "keywords": ["motion-graphics", "threejs", "3d", "explainer", "storyboard", "diorama", "webgl", "playwright", "ffmpeg", "render"],
       "license": "MIT"
     }
   ]

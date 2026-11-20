@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<!--FONTS-->
+<style>
+  :root {
+    --bg: #ecebe7; --panel: #ffffff; --ink: #1d1f24; --muted: #6b6f78; --line: #d6d4ce; --accent: #1d1f24; --accent-ink: #ffffff;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #141518; --panel: #1e2024; --ink: #eceae6; --muted: #9a9ea6; --line: #33363c; --accent: #eceae6; --accent-ink: #141518; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #141518; --panel: #1e2024; --ink: #eceae6; --muted: #9a9ea6; --line: #33363c; --accent: #eceae6; --accent-ink: #141518; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px; overflow: hidden; }
+  .frame { width: min(100%, calc((100vh - 96px) * 16 / 9)); aspect-ratio: 16 / 9; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.18); }
+  canvas { display: block; width: 100%; height: 100%; }
+  .bar { width: min(100%, calc((100vh - 96px) * 16 / 9)); display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+  .bar button { appearance: none; border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 8px; height: 34px; min-width: 34px; padding: 0 10px; font: inherit; cursor: pointer; }
+  .bar button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .bar input[type=range] { flex: 1; min-width: 60px; accent-color: var(--ink); }
+  .time { font-variant-numeric: tabular-nums; color: var(--muted); min-width: 92px; text-align: right; }
+  .loop { display: flex; align-items: center; gap: 4px; color: var(--muted); user-select: none; }
+  .err { position: fixed; inset: auto 16px 16px 16px; background: #b3261e; color: #fff; padding: 10px 12px; border-radius: 8px; white-space: pre-wrap; font: 12px/1.4 ui-monospace, monospace; display: none; }
+  @media (max-width: 560px) { .loop span { display: none; } .time { min-width: 70px; } }
+  body.render { padding: 0; background: #000; }
+  body.render .bar { display: none; }
+  body.render .frame { width: 1920px; height: 1080px; border-radius: 0; box-shadow: none; }
+</style>
+</head>
+<body>
+<div class="frame"><canvas id="c" width="1920" height="1080"></canvas></div>
+<div class="bar">
+  <button id="play" class="primary" aria-label="Play">Play</button>
+  <input id="scrub" type="range" min="0" max="1" step="0.001" value="0" aria-label="Scrub">
+  <span id="time" class="time">0.00 / 0.00</span>
+  <button id="sound" aria-label="Sound on" aria-pressed="true">Sound on</button>
+  <label class="loop"><input id="loop" type="checkbox" checked> <span>Loop</span></label>
+</div>
+<div id="err" class="err"></div>
+
+<script type="module">
+  // three.js r187, vendored inline below by tools/vendor-three.mjs: no CDN, works offline
+<!--THREE-->
+  const errBox = document.getElementById('err');
+  const fail = (msg) => { window.STAGE_ERROR = String(msg); errBox.textContent = String(msg); errBox.style.display = 'block'; };
+  window.addEventListener('error', (e) => fail((e.error && e.error.stack) || e.message));
+  window.addEventListener('unhandledrejection', (e) => fail((e.reason && e.reason.stack) || e.reason));
+  // the kits and the style run here, inside this one module: no import map and no injected scripts, which a sandboxed page may refuse
+<!--KIT_STAGE-->
+<!--KIT_EXTRA-->
+<!--KIT_SOUND-->
+<!--STYLE-->
+
+  const params = new URLSearchParams(location.search);
+  const RENDER = params.has('render');
+  if (RENDER) document.body.classList.add('render');
+  const style = window.STYLES[window.STYLES.length - 1];
+  if (!style) throw new Error('style.js did not call registerStyle()');
+  const canvas = document.getElementById('c');
+  const FULL = (style.render && style.render.samples) || 32;
+  const LIVE = Math.max(1, Math.min(4, +(params.get('live') || 3)));
+  const S = await K.run(canvas, style, { samples: FULL });
+  const D = S.duration;
+  window.S = S; window.STYLE = style; window.DURATION = D;
+  window.seek = (t) => S.seek(t);
+  window.seekN = (t, n) => S.seek(t, n);
+
+  const $ = (id) => document.getElementById(id);
+  const playBtn = $('play'), scrub = $('scrub'), time = $('time'), soundBtn = $('sound'), loopBox = $('loop');
+  scrub.max = String(D);
+  let t = 0, playing = false, last = 0, stopSound = null, soundOn = true, refineTimer = 0, wasPlaying = false;
+
+  const ui = () => {
+    playBtn.textContent = playing ? 'Pause' : 'Play'; playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    scrub.value = String(t); time.textContent = `${t.toFixed(2)} / ${D.toFixed(2)}`;
+    soundBtn.textContent = soundOn ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', String(soundOn));
+  };
+  const draw = (n) => { S.seek(t, n); ui(); };
+  const killSound = () => { if (stopSound) { stopSound(); stopSound = null; } };
+  const startSound = () => { killSound(); if (soundOn && playing && style.sound) stopSound = SOUND.live((k) => style.sound(k), t, { voiceover: false }); };
+  const refine = () => { clearTimeout(refineTimer); refineTimer = setTimeout(() => { if (!playing) S.seek(t, Math.min(FULL, 24)); }, 180); };
+
+  function frame(now) {
+    if (!playing) return;
+    t += (now - last) / 1000; last = now;
+    if (t >= D) {
+      if (loopBox.checked) { t = 0; startSound(); }
+      else { t = D; playing = false; killSound(); draw(LIVE); refine(); return; }
+    }
+    draw(LIVE);
+    requestAnimationFrame(frame);
+  }
+  function play() { if (t >= D) t = 0; playing = true; last = performance.now(); startSound(); ui(); requestAnimationFrame(frame); }
+  function pause() { playing = false; killSound(); ui(); refine(); }
+
+  playBtn.onclick = () => (playing ? pause() : play());
+  scrub.addEventListener('pointerdown', () => { wasPlaying = playing; if (playing) { playing = false; killSound(); } });
+  scrub.addEventListener('input', () => { t = +scrub.value; killSound(); draw(LIVE); });
+  scrub.addEventListener('change', () => { if (wasPlaying) play(); else refine(); wasPlaying = false; });
+  soundBtn.onclick = () => { soundOn = !soundOn; if (soundOn) startSound(); else killSound(); ui(); };
+  window.addEventListener('keydown', (e) => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); playing ? pause() : play(); } });
+
+  if (!RENDER) { S.seek(0, Math.min(FULL, 24)); ui(); }
+  window.STAGE_READY = true;
+</script>
+</body>
+</html>

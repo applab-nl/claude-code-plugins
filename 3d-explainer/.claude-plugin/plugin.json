@@ -1,0 +1,14 @@
+{
+  "name": "3d-explainer",
+  "version": "1.0.0",
+  "description": "Short 3D explainer motion graphics in three.js in fixed looks (Tiny Diorama, plus any style you import): rendered-stills storyboard with an approval gate, a self-contained HTML player, and an MP4 rendered in headless Chrome with synthesized sound at -15 LUFS",
+  "author": {
+    "name": "AppLab",
+    "email": "plugins@applab.nl"
+  },
+  "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/3d-explainer",
+  "repository": "https://github.com/applab-nl/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["motion-graphics", "threejs", "3d", "explainer", "storyboard", "diorama", "webgl", "playwright", "ffmpeg", "render"],
+  "skills": "./skills"
+}
