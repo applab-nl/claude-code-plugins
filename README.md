@@ -321,6 +321,24 @@ Name a style from the AI Style Atlas (or describe a look), give a topic or scrip
 - A storyboard approval gate, byte-exact library inlining and a player-interface lint
 - MP4 render with offline-rendered effects and a voiceover loudness/sidechain mix
 
+#### 🏝️ 3D Explainer
+
+**3D Explainers in a Fixed Look, Storyboarded First**
+
+Short three.js explainer motion graphics in bundled looks (Tiny Diorama, plus any style prompt you import): a storyboard of rendered stills that waits for approval, a self-contained HTML player, and an MP4 rendered in headless Chrome with synthesized sound at -15 LUFS. The rendering and sound kits are spliced in by script, so the model only ever writes one style file.
+
+- **Version**: 1.0.0
+- **Category**: Media
+- **Requires**: Node 18+, Google Chrome, ffmpeg
+
+[View Documentation](./3d-explainer/README.md)
+
+**Key Features:**
+- Accumulation rendering: real motion blur, depth of field and soft shadows on every frame
+- Lint and purity checks that catch state building up between `update(t)` calls
+- Two-pass loudness-normalised audio from the same schedule as the picture
+- `add-style` imports more style prompts and flags kit or instruction drift
+
 ## Installation
 
 ### Add This Marketplace
@@ -411,6 +429,7 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 ### 🎬 Media
 - **Video Production**: Videos made in code with HyperFrames, from brief to per-channel renders
 - **Explainer**: Animated explainers in 86 visual styles, storyboard to MP4
+- **3D Explainer**: Short three.js explainers in fixed looks, rendered-stills storyboard to MP4
 
 ## Requirements
 
