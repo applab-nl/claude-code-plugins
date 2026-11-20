@@ -91,3 +91,7 @@ All in `skills/3d-explainer/scripts/`:
 ```bash
 /plugin install 3d-explainer --marketplace applab-nl/claude-code-plugins
 ```
+
+## License
+
+MIT for the plugin's own code. The style prompts, reference animations, `stage.js`, `sound.js`, `strokefont.js`, `text3d.js` and the prompt wording are Futurepedia's [AI Style Atlas](https://www.futurepedia.io/resources/ai-style-atlas/view) material, bundled for internal use. three.js 0.187.0 ([mrdoob/three.js](https://github.com/mrdoob/three.js), npm `three@0.187.0`) is vendored in `skills/3d-explainer/assets/lib/three.js` under the MIT License; its licence text is in `skills/3d-explainer/assets/lib/three.LICENSE`.

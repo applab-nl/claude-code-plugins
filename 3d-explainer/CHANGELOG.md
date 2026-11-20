@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`strokefont.js`, drawn line lettering, Blueprint Build)
 - Extra libraries per style: a card's `libs:` line makes `assemble.mjs` load them after the stage kit
 - STAGE and SOUND kits bundled verbatim in `assets/lib`, spliced in by `assemble.mjs` so they are never retyped
+- Attribution: style prompts and kits credited to Futurepedia's AI Style Atlas in the README; three.js MIT licence text
+  shipped as `assets/lib/three.LICENSE`
 - three.js 0.187.0 vendored into `assets/lib/three.js` by `tools/vendor-three.mjs` (three.core.js + three.module.js
   merged into one module) and spliced in by `assemble.mjs`: assembled HTML files are fully self-contained, with no
   CDN request and no import map
