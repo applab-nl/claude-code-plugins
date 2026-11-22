@@ -1,5 +1,7 @@
 # Change: Add the `explainer` plugin (86-style animated explainers)
 
+> **Superseded** by `merge-styles-into-video-production`: the plugin was folded into `video-production` 2.0.0 and its Atlas material is no longer committed.
+
 ## Why
 
 Futurepedia's AI Style Atlas offers 86 visual styles for animated explainers. Each one comes as a "Copy prompt" that is pasted into a new Claude chat. A copied prompt is 67–124 KB, and about a third of it is the same in every style: the build rules, a drawing helper library and a sound kit. Using a style today means finding it on the site, copying it, pasting it and filling in a placeholder.
