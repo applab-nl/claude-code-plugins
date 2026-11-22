@@ -287,57 +287,24 @@ Renders the Mermaid blocks in your markdown to SVG or PNG from one shared hand-d
 
 #### 🎬 Video Production
 
-**Videos Made in Code, Reviewed Frame by Frame**
+**Videos and Animated Explainers Made in Code, Reviewed Frame by Frame**
 
-Ten skills for launch videos, product walkthroughs and social clips built with HyperFrames (HTML + GSAP): from a one-page brief through motion, rebuilt product UI, AI footage and voice via fal, beat-synced captions and an eyes-on review gate, to renders for every channel.
+Thirteen skills for launch videos, product walkthroughs, social clips and animated explainers built with HyperFrames (HTML + GSAP). They take you from a one-page brief and treatment through a stills storyboard, rebuilt product UI, a library of 2D and 3D visual styles, voice, beat-synced captions and two review gates, to renders for every channel.
 
-- **Version**: 1.0.0
+- **Version**: 2.0.0
 - **Category**: Media
-- **Requires**: Node 18+ or Bun, ffmpeg, Python 3 + numpy; `FAL_KEY` only for generated footage and voice
+- **Requires**: Node 18+ or Bun, Google Chrome with a GPU for 3D styles, ffmpeg, Python 3 + numpy, `uv` for Kokoro voice; `FAL_KEY` only for generated footage and ElevenLabs voice
 
 [View Documentation](./video-production/README.md)
 
 **Key Features:**
 - Deterministic HyperFrames scenes with a pinned CLI and telemetry/self-update opt-outs
-- A motion language with numbers, and product UI rebuilt in HTML instead of screenshots
-- Spend-logged fal calls with an upload guard; on-set dialogue treatment and loudness mix
-- Word-timed captions, beat grid cuts, a review checklist and per-channel exports (MP4, GIF, poster)
+- 86 2D canvas and 37 three.js 3D styles as HyperFrames scenes, mixable with UI scenes in one film, with a filterable style gallery. The style material is built locally on first use, not shipped
+- Brief + treatment, then an optional stills storyboard, each a hard approval stop
+- Free local Kokoro voice by default, ElevenLabs for Dutch, cloned or premium voices; every line checked back with whisper
+- Word-timed captions, a readability check, a fresh-context reviewer, and per-channel exports (16:9, 9:16, 1:1, 4:5, GIF, poster)
 
-#### 🎞️ Explainer
-
-**Animated Explainers in 86 Visual Styles**
-
-Name a style from the AI Style Atlas (or describe a look), give a topic or script, approve a storyboard, and get one self-contained HTML canvas animation with synthesized sound. It can be timed to a voiceover and rendered to MP4.
-
-- **Version**: 1.0.0
-- **Category**: Media
-- **Requires**: Python 3; for MP4 renders Node 18+, ffmpeg and puppeteer
-
-[View Documentation](./explainer/README.md)
-
-**Key Features:**
-- 86 reference styles across 14 families, with a catalog for picking by description
-- The Atlas build brief word for word, for every storyboard/voiceover combination
-- A storyboard approval gate, byte-exact library inlining and a player-interface lint
-- MP4 render with offline-rendered effects and a voiceover loudness/sidechain mix
-
-#### 🏝️ 3D Explainer
-
-**3D Explainers in a Fixed Look, Storyboarded First**
-
-Short three.js explainer motion graphics in bundled looks (Tiny Diorama, plus any style prompt you import): a storyboard of rendered stills that waits for approval, a self-contained HTML player, and an MP4 rendered in headless Chrome with synthesized sound at -15 LUFS. The rendering and sound kits are spliced in by script, so the model only ever writes one style file.
-
-- **Version**: 1.0.0
-- **Category**: Media
-- **Requires**: Node 18+, Google Chrome, ffmpeg
-
-[View Documentation](./3d-explainer/README.md)
-
-**Key Features:**
-- Accumulation rendering: real motion blur, depth of field and soft shadows on every frame
-- Lint and purity checks that catch state building up between `update(t)` calls
-- Two-pass loudness-normalised audio from the same schedule as the picture
-- `add-style` imports more style prompts and flags kit or instruction drift
+> **v2.0.0 replaces the `explainer` and `3d-explainer` plugins.** Uninstall them, install `video-production`, then build the style library once (see its README).
 
 ## Installation
 
@@ -427,9 +394,7 @@ claude-here  # Creates/attaches to session named "claude-my-app"
 - **Diagram Images**: Themed Mermaid-to-SVG/PNG rendering with a drift linter
 
 ### 🎬 Media
-- **Video Production**: Videos made in code with HyperFrames, from brief to per-channel renders
-- **Explainer**: Animated explainers in 86 visual styles, storyboard to MP4
-- **3D Explainer**: Short three.js explainers in fixed looks, rendered-stills storyboard to MP4
+- **Video Production**: Videos and animated explainers made in code with HyperFrames, 123 2D/3D styles, from brief to per-channel renders
 
 ## Requirements
 
