@@ -1,7 +1,7 @@
 {
   "name": "video-production",
-  "version": "1.0.0",
-  "description": "Make launch videos, product walkthroughs and social clips in code with HyperFrames (HTML + GSAP): brief, motion language, product UI rebuilt in HTML, AI footage and voice through fal, word-timed captions on the beat, an eyes-on review gate, and renders for every channel",
+  "version": "2.0.0",
+  "description": "Make launch videos, walkthroughs, social clips and animated explainers in code with HyperFrames: brief and treatment, a library of 123 2D and 3D visual styles with a gallery, stills storyboard, product UI rebuilt in HTML, free local Kokoro voice or ElevenLabs, AI footage through fal, word-timed captions, readability and fresh-eyes review gates, and renders for every channel",
   "author": {
     "name": "AppLab",
     "email": "plugins@applab.nl"
@@ -9,6 +9,25 @@
   "homepage": "https://github.com/applab-nl/claude-code-plugins/tree/main/video-production",
   "repository": "https://github.com/applab-nl/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["video", "hyperframes", "gsap", "motion", "walkthrough", "captions", "fal", "elevenlabs", "ffmpeg", "render"],
+  "keywords": [
+    "video",
+    "hyperframes",
+    "gsap",
+    "motion",
+    "walkthrough",
+    "explainer",
+    "threejs",
+    "3d",
+    "motion-graphics",
+    "style-gallery",
+    "storyboard",
+    "captions",
+    "kokoro",
+    "tts",
+    "fal",
+    "elevenlabs",
+    "ffmpeg",
+    "render"
+  ],
   "skills": "./skills"
 }

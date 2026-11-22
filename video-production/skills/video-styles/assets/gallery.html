@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video Style Gallery</title>
+<!-- Template: gallery.mjs writes the filled-in copy to <STYLE_HOME>/gallery/index.html. Works from file://. -->
+<style>
+  :root {
+    --bg: #f6f4ef; --panel: #ffffff; --ink: #1b1a17; --muted: #6b675e; --line: #e3dfd5;
+    --accent: #d9542b; --chip: #efebe2; --chip-on: #1b1a17; --chip-on-ink: #fff; --shadow: 0 1px 2px rgba(0,0,0,.06), 0 6px 24px rgba(0,0,0,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121210; --panel: #1c1b19; --ink: #f1eee7; --muted: #a29d92; --line: #2e2c28;
+      --accent: #f07a50; --chip: #262521; --chip-on: #f1eee7; --chip-on-ink: #121210; --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121210; --panel: #1c1b19; --ink: #f1eee7; --muted: #a29d92; --line: #2e2c28;
+    --accent: #f07a50; --chip: #262521; --chip-on: #f1eee7; --chip-on-ink: #121210; --shadow: none;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { position: sticky; top: 0; z-index: 2; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 16px; }
+  .top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding: 18px 0 10px; }
+  h1 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
+  .count { color: var(--muted); font-size: 14px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding-bottom: 14px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { border: 0; background: var(--chip); color: var(--ink); padding: 6px 12px; border-radius: 999px; font: inherit; font-size: 14px; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); }
+  select, input[type=search] { font: inherit; font-size: 14px; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+  input[type=search] { flex: 1 1 220px; min-width: 0; }
+  main { padding: 20px 0 48px; }
+  .family { margin: 26px 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .thumb { position: relative; aspect-ratio: 16 / 9; background: #000; }
+  .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .25s; }
+  .thumb img + img { opacity: 0; }
+  .card:hover .thumb img + img, .card:focus-within .thumb img + img { opacity: 1; }
+  .empty { position: absolute; inset: 0; display: grid; place-items: center; color: #8d887c; font-size: 13px; text-align: center; padding: 12px; background: repeating-linear-gradient(135deg, #1f1e1b 0 10px, #24231f 10px 20px); }
+  .tag { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,.66); color: #fff; font-size: 11px; font-weight: 600; letter-spacing: .06em; padding: 2px 7px; border-radius: 5px; }
+  .body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .name { font-weight: 650; font-size: 16px; }
+  .id { align-self: flex-start; font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); background: var(--chip); border: 0; border-radius: 5px; padding: 2px 6px; cursor: copy; }
+  .id.copied { color: var(--accent); }
+  .look { margin: 0; }
+  .meta { margin: 0; color: var(--muted); font-size: 13.5px; }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .missing { color: var(--accent); font-size: 12.5px; }
+  .none { color: var(--muted); padding: 40px 0; text-align: center; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top"><h1>Video style gallery</h1><span class="count" id="count"></span></div>
+    <div class="controls">
+      <div class="chips" role="group" aria-label="Medium">
+        <button class="chip" data-m="" aria-pressed="true">All</button>
+        <button class="chip" data-m="2d" aria-pressed="false">2D</button>
+        <button class="chip" data-m="3d" aria-pressed="false">3D</button>
+        <button class="chip" data-m="ui" aria-pressed="false">Product UI</button>
+      </div>
+      <select id="family" aria-label="Family"><option value="">All families</option></select>
+      <input type="search" id="q" placeholder="Search looks, uses, names…" aria-label="Search">
+    </div>
+  </div>
+</header>
+<main class="wrap" id="list"></main>
+<script>
+  const DATA = /*__DATA__*/[];
+  const state = { m: '', fam: '', q: '' };
+  try { Object.assign(state, JSON.parse(localStorage.getItem('vp-gallery') || '{}')); } catch {}
+  const $ = (s) => document.querySelector(s);
+  const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) (k === 'class' ? e.className = v : e.setAttribute(k, v)); kids.flat().forEach((k) => e.append(k)); return e; };
+
+  function families() {
+    const sel = $('#family'), keep = state.fam;
+    sel.length = 1;
+    [...new Set(DATA.filter((s) => !state.m || s.medium === state.m).map((s) => s.family))].sort().forEach((f) => sel.append(el('option', { value: f }, f)));
+    sel.value = [...sel.options].some((o) => o.value === keep) ? keep : '';
+    state.fam = sel.value;
+  }
+
+  function card(s) {
+    const thumb = el('div', { class: 'thumb' });
+    if (s.stills.length) s.stills.forEach((src, i) => thumb.append(el('img', { src, alt: i ? '' : `${s.name} example frame`, loading: 'lazy' })));
+    else thumb.append(el('div', { class: 'empty' }, s.medium === 'ui' ? 'Built per video from your product UI' : s.installed ? 'No still yet: run gallery.mjs' : 'Not installed'));
+    thumb.append(el('span', { class: 'tag' }, s.medium.toUpperCase()));
+    const id = el('button', { class: 'id', title: 'Copy id' }, s.id);
+    id.onclick = () => { navigator.clipboard?.writeText(s.id).then(() => { id.classList.add('copied'); id.textContent = 'copied'; setTimeout(() => { id.classList.remove('copied'); id.textContent = s.id; }, 900); }); };
+    return el('article', { class: 'card' }, thumb, el('div', { class: 'body' },
+      el('div', { class: 'name' }, s.name), id,
+      el('p', { class: 'look' }, s.look),
+      el('p', { class: 'meta' }, el('b', {}, 'Good for '), s.goodFor),
+      el('p', { class: 'meta' }, el('b', {}, 'Motion '), s.motion),
+      s.installed ? '' : el('span', { class: 'missing' }, 'Not in your local library')));
+  }
+
+  function render() {
+    try { localStorage.setItem('vp-gallery', JSON.stringify(state)); } catch {}
+    document.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.m === state.m)));
+    const q = state.q.trim().toLowerCase();
+    const rows = DATA.filter((s) => (!state.m || s.medium === state.m) && (!state.fam || s.family === state.fam)
+      && (!q || [s.name, s.id, s.look, s.goodFor, s.motion, s.family].join(' ').toLowerCase().includes(q)));
+    $('#count').textContent = `${rows.length} of ${DATA.length} styles`;
+    const list = $('#list'); list.replaceChildren();
+    if (!rows.length) { list.append(el('p', { class: 'none' }, 'No styles match.')); return; }
+    const groups = new Map();
+    rows.forEach((s) => { const k = `${s.medium.toUpperCase()} · ${s.family}`; (groups.get(k) || groups.set(k, []).get(k)).push(s); });
+    for (const [k, items] of groups) list.append(el('h2', { class: 'family' }, k), el('div', { class: 'grid' }, items.map(card)));
+  }
+
+  document.querySelectorAll('.chip').forEach((c) => c.onclick = () => { state.m = c.dataset.m; families(); render(); });
+  $('#family').onchange = (e) => { state.fam = e.target.value; render(); };
+  $('#q').value = state.q;
+  $('#q').oninput = (e) => { state.q = e.target.value; render(); };
+  families(); render();
+</script>
+</body>
+</html>

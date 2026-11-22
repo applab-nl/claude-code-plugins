@@ -1,0 +1,1118 @@
+[
+ {
+  "id": "2d/art-deco",
+  "medium": "2d",
+  "family": "Art & Design Movements",
+  "name": "Art Deco Foil",
+  "look": "Black lacquer and gold geometry, symmetrical stepped forms, sunburst rays.",
+  "goodFor": "Premium launches, luxury-toned brand stories.",
+  "motion": "Stepped reveals, gilded title-sequence builds."
+ },
+ {
+  "id": "2d/bauhaus",
+  "medium": "2d",
+  "family": "Art & Design Movements",
+  "name": "Bauhaus Poster",
+  "look": "Primary colors, bold geometric shapes and strict grid composition on a poster.",
+  "goodFor": "Design-minded concepts, structured arguments, cultural topics.",
+  "motion": "Shapes snap into place along grid rules."
+ },
+ {
+  "id": "2d/constructivist",
+  "medium": "2d",
+  "family": "Art & Design Movements",
+  "name": "Constructivist Propaganda",
+  "look": "Red, black and cream agitprop diagonals with heavy sans type.",
+  "goodFor": "Manifestos, campaigns, bold calls to action.",
+  "motion": "Staccato slams, shapes rolling and cutting in."
+ },
+ {
+  "id": "2d/memphis",
+  "medium": "2d",
+  "family": "Art & Design Movements",
+  "name": "Memphis Group",
+  "look": "Clashing pastel grounds with squiggles, confetti shapes and bold patterns.",
+  "goodFor": "Playful lifestyle brands, youth campaigns, events.",
+  "motion": "Cut-out shapes hop on twos."
+ },
+ {
+  "id": "2d/swiss-grid",
+  "medium": "2d",
+  "family": "Art & Design Movements",
+  "name": "International Typographic Style",
+  "look": "Strict modular grid, flush-left sans type, one red accent.",
+  "goodFor": "Corporate clarity, design systems, rigorous information.",
+  "motion": "Rules draw along the grid, then type slides in."
+ },
+ {
+  "id": "2d/ukiyo-e",
+  "medium": "2d",
+  "family": "Art & Design Movements",
+  "name": "Ukiyo-e Woodblock",
+  "look": "Edo-period woodblock print with Prussian blue and flat outlines.",
+  "goodFor": "Japanese or nature themes, waves, dramatic scale.",
+  "motion": "Colors print in passes, waves roll across."
+ },
+ {
+  "id": "2d/cosmic",
+  "medium": "2d",
+  "family": "Cosmic & Psychedelic",
+  "name": "Cosmic Star Chart",
+  "look": "Deep-space gradients, stars and engraved celestial chart linework.",
+  "goodFor": "Vision pieces, science, big-picture and wonder topics.",
+  "motion": "Stars fade in slowly; gentle drift across the sky."
+ },
+ {
+  "id": "2d/psychedelic",
+  "medium": "2d",
+  "family": "Cosmic & Psychedelic",
+  "name": "Psychedelic Poster",
+  "look": "Saturated swirling concert-poster lettering and melting color ripples.",
+  "goodFor": "Music, festivals, countercultural brands.",
+  "motion": "Color ripples outward; petals and letters breathe."
+ },
+ {
+  "id": "2d/editorial-chart",
+  "medium": "2d",
+  "family": "Data & Information",
+  "name": "Editorial Chart",
+  "look": "Newspaper-style data graphic: salmon paper, serif headline, hairline gridlines.",
+  "goodFor": "Reports, statistics, data journalism, market stories.",
+  "motion": "Headline sets, gridlines rule across, series draw in."
+ },
+ {
+  "id": "2d/flow-field",
+  "medium": "2d",
+  "family": "Data & Information",
+  "name": "Flow Field",
+  "look": "Thousands of fine streamlines tracing an invisible noise field on black.",
+  "goodFor": "Abstract data, AI, networks, atmospheric intros.",
+  "motion": "Particles stream in, field slowly evolves."
+ },
+ {
+  "id": "2d/isotype",
+  "medium": "2d",
+  "family": "Data & Information",
+  "name": "ISOTYPE Pictograms",
+  "look": "Rows of identical flat pictograms for counting people and things.",
+  "goodFor": "Statistics, social data, simple comparisons.",
+  "motion": "Title sets first, then icon columns fill in."
+ },
+ {
+  "id": "2d/ridgeline",
+  "medium": "2d",
+  "family": "Data & Information",
+  "name": "Ridgeline",
+  "look": "Stacked noisy signal traces, each filled to hide those behind.",
+  "goodFor": "Abstract data, album-art moods, signal and time-series themes.",
+  "motion": "Traces plot one after another from the back."
+ },
+ {
+  "id": "2d/topographic",
+  "medium": "2d",
+  "family": "Data & Information",
+  "name": "Topographic Survey",
+  "look": "Survey sheet with brown contour lines and grid ticks.",
+  "goodFor": "Terrain metaphors, optimization landscapes, geography.",
+  "motion": "Plates print in layers, contours trace outward."
+ },
+ {
+  "id": "2d/transit-map",
+  "medium": "2d",
+  "family": "Data & Information",
+  "name": "Data Line",
+  "look": "Bold colored lines at 45 degrees with station dots and a key.",
+  "goodFor": "Pipelines, workflows, roadmaps, connected systems.",
+  "motion": "Title and key settle, then each line draws on."
+ },
+ {
+  "id": "2d/glassmorphism",
+  "medium": "2d",
+  "family": "Dimensional",
+  "name": "Glassmorphism UI",
+  "look": "Frosted translucent panels over blurred colorful gradients.",
+  "goodFor": "Modern app and SaaS interface stories.",
+  "motion": "Color blobs drift beneath panels that slide and settle."
+ },
+ {
+  "id": "2d/isometric",
+  "medium": "2d",
+  "family": "Dimensional",
+  "name": "Isometric Pastel",
+  "look": "Clean flat-shaded vector scenes in true isometric projection, pastel palette.",
+  "goodFor": "Systems, architecture, infrastructure and product maps.",
+  "motion": "Tiles rise in and assemble piece by piece."
+ },
+ {
+  "id": "2d/low-poly",
+  "medium": "2d",
+  "family": "Dimensional",
+  "name": "Low-Poly Faceted",
+  "look": "Triangulated faceted terrain and objects with flat per-face shading.",
+  "goodFor": "Landscape metaphors, abstract tech, geometric intros.",
+  "motion": "Facets flip into place, slow camera drift."
+ },
+ {
+  "id": "2d/soft-3d",
+  "medium": "2d",
+  "family": "Dimensional",
+  "name": "Soft 3D Clay",
+  "look": "Puffy pastel matte-clay 3D icons with chunky rounded edges.",
+  "goodFor": "Friendly app and SaaS feature highlights.",
+  "motion": "Icons drop in one by one on springs."
+ },
+ {
+  "id": "2d/voxel",
+  "medium": "2d",
+  "family": "Dimensional",
+  "name": "Voxel Diorama",
+  "look": "Floating island built from tiny cubes in a diorama.",
+  "goodFor": "Games, builder tools, cute 3D scenes without heavy rendering.",
+  "motion": "Cubes rain down and stack up in layers."
+ },
+ {
+  "id": "2d/wireframe-terrain",
+  "medium": "2d",
+  "family": "Dimensional",
+  "name": "Hidden-Line Wireframe",
+  "look": "Hidden-line vector mesh landscape with HUD brackets in a dark scene.",
+  "goodFor": "Sci-fi tech, mapping, data landscapes.",
+  "motion": "HUD snaps on, mesh scrolls beneath a moving camera."
+ },
+ {
+  "id": "2d/kinetic-type",
+  "medium": "2d",
+  "family": "Generative & Type",
+  "name": "Kinetic Type",
+  "look": "Huge cropped words filling the frame like a music-video lyric sheet.",
+  "goodFor": "Manifestos, hooks, copy-driven social clips.",
+  "motion": "One word per beat, hard cuts and slams."
+ },
+ {
+  "id": "2d/op-art",
+  "medium": "2d",
+  "family": "Generative & Type",
+  "name": "Op Art Sphere",
+  "look": "Black and ivory checkerboard bulging into optical illusions.",
+  "goodFor": "Mind-bending abstracts, music, attention-grabbing intros.",
+  "motion": "Pattern ripples and swells into a sphere."
+ },
+ {
+  "id": "2d/paper-marbling",
+  "medium": "2d",
+  "family": "Generative & Type",
+  "name": "Ebru Paper Marbling",
+  "look": "Swirled floating pigments on paper, Turkish ebru style.",
+  "goodFor": "Artistic backdrops, calm abstract brand pieces.",
+  "motion": "Color drops bloom, then a comb drags patterns."
+ },
+ {
+  "id": "2d/spirograph",
+  "medium": "2d",
+  "family": "Generative & Type",
+  "name": "Guilloché Security Print",
+  "look": "Fine looping rosette patterns like banknote engraving.",
+  "goodFor": "Security, trust, finance, intricate abstract backdrops.",
+  "motion": "Curves plot as if cut by a lathe."
+ },
+ {
+  "id": "2d/string-art",
+  "medium": "2d",
+  "family": "Generative & Type",
+  "name": "Nail & Thread String Art",
+  "look": "Taut colored thread between brass nails on a dark wood board.",
+  "goodFor": "Handmade, geometric, craft-focused brand moments.",
+  "motion": "Nails go in first, threads then wrap across."
+ },
+ {
+  "id": "2d/truchet",
+  "medium": "2d",
+  "family": "Generative & Type",
+  "name": "Multi-scale Truchet",
+  "look": "Bold two-color tile patterns made of rotating quarter-circles.",
+  "goodFor": "Abstract backdrops, pattern-led brand intros.",
+  "motion": "Large tiles sweep in diagonally and subdivide."
+ },
+ {
+  "id": "2d/ballpoint-notebook",
+  "medium": "2d",
+  "family": "Hand-Drawn",
+  "name": "Ballpoint Notebook",
+  "look": "Blue pen doodles and cross-hatching on lined school paper.",
+  "goodFor": "Casual ideas, student-style walkthroughs, personal stories.",
+  "motion": "Lines scratch on stroke by stroke."
+ },
+ {
+  "id": "2d/blueprint",
+  "medium": "2d",
+  "family": "Hand-Drawn",
+  "name": "Engineering Blueprint",
+  "look": "White technical linework on cyan paper with dimensions and construction lines.",
+  "goodFor": "Architecture, systems, engineering and how things are built.",
+  "motion": "Construction lines sweep out, then forms are drafted."
+ },
+ {
+  "id": "2d/chalkboard",
+  "medium": "2d",
+  "family": "Hand-Drawn",
+  "name": "Chalkboard Lesson",
+  "look": "Dusty chalk lines and diagrams on dark green slate.",
+  "goodFor": "Lessons, step-by-step logic, teaching concepts.",
+  "motion": "Chalk strokes draw on with light dust."
+ },
+ {
+  "id": "2d/etch-sketch",
+  "medium": "2d",
+  "family": "Hand-Drawn",
+  "name": "Etch A Sketch Toy",
+  "look": "Gray line drawing on a red toy frame with a silver screen.",
+  "goodFor": "Playful, nostalgic simple-concept videos.",
+  "motion": "Single continuous line draws, then a shake wipes it."
+ },
+ {
+  "id": "2d/napkin-sketch",
+  "medium": "2d",
+  "family": "Hand-Drawn",
+  "name": "Napkin Sketch",
+  "look": "Black marker boxes and arrows scribbled on a paper napkin.",
+  "goodFor": "Pitches, startup ideas, quick concept explanations.",
+  "motion": "Marker scrawls each box and arrow in order."
+ },
+ {
+  "id": "2d/sketchbook-pencil",
+  "medium": "2d",
+  "family": "Hand-Drawn",
+  "name": "Sketchbook Graphite",
+  "look": "Graphite study with faint construction circles and soft shading.",
+  "goodFor": "Design process, thoughtful craft, early-stage ideas.",
+  "motion": "Construction lines appear, contours and shading follow."
+ },
+ {
+  "id": "2d/whiteboard",
+  "medium": "2d",
+  "family": "Hand-Drawn",
+  "name": "Whiteboard Explainer",
+  "look": "Dry-erase marker strokes on a glossy board, with a hand-drawn feel.",
+  "goodFor": "Classic explainers, process teaching, sales and training.",
+  "motion": "Strokes draw on in sequence."
+ },
+ {
+  "id": "2d/botanical-plate",
+  "medium": "2d",
+  "family": "Illustration",
+  "name": "Botanical Plate",
+  "look": "Engraved, hand-tinted natural-history plate with labeled specimens.",
+  "goodFor": "Biology-flavored metaphors, taxonomies, organic systems.",
+  "motion": "Slow sway and gentle labeled reveals."
+ },
+ {
+  "id": "2d/illuminated",
+  "medium": "2d",
+  "family": "Illustration",
+  "name": "Illuminated Manuscript",
+  "look": "Medieval vellum page with gold leaf, ornate capitals and small paintings.",
+  "goodFor": "Heritage, history, long-form storytelling with gravitas.",
+  "motion": "Gold and ink applied as a scribe would."
+ },
+ {
+  "id": "2d/manga-panel",
+  "medium": "2d",
+  "family": "Illustration",
+  "name": "Manga Page",
+  "look": "Black-and-white ink page with slanted panels, speed lines and screentone.",
+  "goodFor": "Dramatic stories, action beats, character-led narratives.",
+  "motion": "Panels land in sequence with camera pushes."
+ },
+ {
+  "id": "2d/mosaic",
+  "medium": "2d",
+  "family": "Illustration",
+  "name": "Byzantine Mosaic",
+  "look": "Wall of thousands of small colored tiles with gold glints.",
+  "goodFor": "Heritage, grand reveals, culture and history topics.",
+  "motion": "Light rakes across, tiles glint individually."
+ },
+ {
+  "id": "2d/patent-drawing",
+  "medium": "2d",
+  "family": "Illustration",
+  "name": "Patent Drawing",
+  "look": "Black ink line art with shade lines and numbered callouts on aged sheet.",
+  "goodFor": "Inventions, mechanisms, how-it-works breakdowns.",
+  "motion": "Lines inked stroke by stroke, labels follow."
+ },
+ {
+  "id": "2d/sticky-notes",
+  "medium": "2d",
+  "family": "Illustration",
+  "name": "Sticky-Note Wall",
+  "look": "Cork board covered in curling colored notes with pins and strings.",
+  "goodFor": "Brainstorms, planning, workshops, process overviews.",
+  "motion": "Notes slap onto the board one at a time."
+ },
+ {
+  "id": "2d/tarot-card",
+  "medium": "2d",
+  "family": "Illustration",
+  "name": "Tarot Card",
+  "look": "Aged art-nouveau tarot trump with bold outlines and ornate border.",
+  "goodFor": "Mystical metaphors, fortunes, story-led intros.",
+  "motion": "Card is dealt and flips over."
+ },
+ {
+  "id": "2d/deep-sea",
+  "medium": "2d",
+  "family": "Light & Imaging",
+  "name": "Bioluminescent Deep Sea",
+  "look": "Near-black water with drifting particles and glowing creatures.",
+  "goodFor": "Mysterious reveals, hidden data, discovery stories.",
+  "motion": "Slow descent, drifting particles, pulsing glow."
+ },
+ {
+  "id": "2d/film-noir",
+  "medium": "2d",
+  "family": "Light & Imaging",
+  "name": "1940s Film Noir",
+  "look": "High-contrast black and white with venetian blind shadows and smoke.",
+  "goodFor": "Mysteries, security, investigative or dramatic stories.",
+  "motion": "Slow light sweeps, drifting smoke, dramatic cuts."
+ },
+ {
+  "id": "2d/holographic-foil",
+  "medium": "2d",
+  "family": "Light & Imaging",
+  "name": "Holographic Foil Card",
+  "look": "Shimmering rainbow foil on collectible cards and stickers.",
+  "goodFor": "Collectibles, launches, rewards, playful premium tech.",
+  "motion": "Card dealt in, sheen shifts as it tilts."
+ },
+ {
+  "id": "2d/light-painting",
+  "medium": "2d",
+  "family": "Light & Imaging",
+  "name": "Light Painting",
+  "look": "Glowing strokes drawn in the dark as if by long exposure.",
+  "goodFor": "Atmospheric intros, networks, sparks of ideas.",
+  "motion": "Light trails draw the subject over time."
+ },
+ {
+  "id": "2d/neon-sign",
+  "medium": "2d",
+  "family": "Light & Imaging",
+  "name": "Neon Sign at Night",
+  "look": "Glowing bent-glass tubes on a dark brick wall.",
+  "goodFor": "Nightlife, bold slogans, retro-modern branding.",
+  "motion": "Tubes flicker and buzz on letter by letter."
+ },
+ {
+  "id": "2d/thermal-camera",
+  "medium": "2d",
+  "family": "Light & Imaging",
+  "name": "Thermal Camera",
+  "look": "Heat-map colors on a low-res camera feed with readouts.",
+  "goodFor": "Monitoring, diagnostics, hotspots, performance stories.",
+  "motion": "Camera calibration blink, drifting heat blobs."
+ },
+ {
+  "id": "2d/x-ray",
+  "medium": "2d",
+  "family": "Light & Imaging",
+  "name": "Radiograph on Lightbox",
+  "look": "Blue medical film on a glowing light box with translucent overlays.",
+  "goodFor": "Looking inside things, diagnostics, anatomy metaphors.",
+  "motion": "Lightbox tubes flicker on, scan sweeps across."
+ },
+ {
+  "id": "2d/gouache-poster",
+  "medium": "2d",
+  "family": "Painterly",
+  "name": "Gouache Travel Poster",
+  "look": "Flat opaque painted shapes like a mid-century travel poster.",
+  "goodFor": "Places, journeys, calm brand storytelling.",
+  "motion": "Layers slide in on soft parallax."
+ },
+ {
+  "id": "2d/impasto-oil",
+  "medium": "2d",
+  "family": "Painterly",
+  "name": "Impasto Night",
+  "look": "Thick oil brushstrokes following swirling flow, like a night-sky painting.",
+  "goodFor": "Emotional, artistic, atmospheric brand films.",
+  "motion": "Strokes slowly rotate; paint builds up."
+ },
+ {
+  "id": "2d/pointillism",
+  "medium": "2d",
+  "family": "Painterly",
+  "name": "Pointillist Afternoon",
+  "look": "Forms made entirely of tiny colored dabs, Neo-Impressionist style.",
+  "goodFor": "Calm, artful brand pieces, nature and light.",
+  "motion": "Dabs shimmer and re-settle continuously."
+ },
+ {
+  "id": "2d/stained-glass",
+  "medium": "2d",
+  "family": "Painterly",
+  "name": "Cathedral Glass",
+  "look": "Gothic leaded window of streaky colored glass pieces.",
+  "goodFor": "Grand, reverent or historical narratives.",
+  "motion": "Daylight sweeps slowly across the glass."
+ },
+ {
+  "id": "2d/sumi-e",
+  "medium": "2d",
+  "family": "Painterly",
+  "name": "Sumi-e Ink Wash",
+  "look": "Monochrome ink wash landscapes on fibrous rice paper, with open space.",
+  "goodFor": "Calm, minimal, contemplative or wellness messaging.",
+  "motion": "Mist drifts, ink blooms and fades."
+ },
+ {
+  "id": "2d/watercolor",
+  "medium": "2d",
+  "family": "Painterly",
+  "name": "Watercolor Wash",
+  "look": "Transparent layered color washes with soft edges on textured paper.",
+  "goodFor": "Gentle, human, wellness and storytelling pieces.",
+  "motion": "Washes flood in from pencil outlines and dry."
+ },
+ {
+  "id": "2d/claymation",
+  "medium": "2d",
+  "family": "Paper & Craft",
+  "name": "Claymation Set",
+  "look": "Chunky hand-molded plasticine characters on a miniature set.",
+  "goodFor": "Friendly storytelling, kids and family content, humor.",
+  "motion": "Stop-motion stepping on twos, wobbling surfaces."
+ },
+ {
+  "id": "2d/collage-zine",
+  "medium": "2d",
+  "family": "Paper & Craft",
+  "name": "Punk Zine Collage",
+  "look": "Torn halftone scraps, ransom lettering and photocopy grit pasted together.",
+  "goodFor": "Youth culture, indie brands, loud opinions.",
+  "motion": "Scraps slam onto the page on the beat."
+ },
+ {
+  "id": "2d/cross-stitch",
+  "medium": "2d",
+  "family": "Paper & Craft",
+  "name": "Cross-Stitch Sampler",
+  "look": "Pixel imagery stitched in thread on cream fabric.",
+  "goodFor": "Cozy, crafty and nostalgic brand moments.",
+  "motion": "Design fills in stitch by stitch."
+ },
+ {
+  "id": "2d/cut-paper",
+  "medium": "2d",
+  "family": "Paper & Craft",
+  "name": "Cut-Paper Diorama",
+  "look": "Layered cardstock shapes with soft shadows, like a paper shadow box.",
+  "goodFor": "Friendly explainers, children, step-by-step depth scenes.",
+  "motion": "Layers slide in with parallax depth."
+ },
+ {
+  "id": "2d/felt-quilt",
+  "medium": "2d",
+  "family": "Paper & Craft",
+  "name": "Felt & Patchwork",
+  "look": "Soft felt and printed cotton patches with visible stitching.",
+  "goodFor": "Warm community, family and handmade-brand stories.",
+  "motion": "Thread stitches itself, patches pop into place."
+ },
+ {
+  "id": "2d/origami",
+  "medium": "2d",
+  "family": "Paper & Craft",
+  "name": "Origami Studio",
+  "look": "Folded-paper models on a clean studio sweep with crisp creases.",
+  "goodFor": "Craft, precision, product concepts, calm explainers.",
+  "motion": "Models unfold crease by crease into place."
+ },
+ {
+  "id": "2d/shadow-puppet",
+  "medium": "2d",
+  "family": "Paper & Craft",
+  "name": "Shadow Puppet Theatre",
+  "look": "Black cut-out silhouettes lit from behind with lace-like cut details.",
+  "goodFor": "Folklore-style stories, fables, dramatic narration.",
+  "motion": "Puppets slide on rods against a flickering lamp."
+ },
+ {
+  "id": "2d/editorial-collage",
+  "medium": "2d",
+  "family": "Popular Explainer Looks",
+  "name": "Editorial Essay Collage",
+  "look": "Grainy paper cutouts and archival photos in an animated essay layout.",
+  "goodFor": "Documentary-flavored explainers and opinion pieces.",
+  "motion": "Cutouts step in at a low hand-made frame rate."
+ },
+ {
+  "id": "2d/flat-space",
+  "medium": "2d",
+  "family": "Popular Explainer Looks",
+  "name": "Flat-Vector Science",
+  "look": "Flat vector illustration on a navy-to-violet space background.",
+  "goodFor": "General tech and science explainers for broad audiences.",
+  "motion": "Smooth eased moves with a gentle overshoot."
+ },
+ {
+  "id": "2d/kawaii",
+  "medium": "2d",
+  "family": "Popular Explainer Looks",
+  "name": "Kawaii Anime",
+  "look": "Cute big-eyed characters, pastel flat colors, glossy highlights.",
+  "goodFor": "Consumer apps, youth audiences, friendly onboarding.",
+  "motion": "Bouncy pop-ins stepped on twos."
+ },
+ {
+  "id": "2d/math-anim",
+  "medium": "2d",
+  "family": "Popular Explainer Looks",
+  "name": "Manim-Style Math",
+  "look": "Dark background with clean equations, graphs and morphing shapes.",
+  "goodFor": "Math, algorithms, technical education, ML concepts.",
+  "motion": "Draw-on, transform and fade, smooth sigmoid timing."
+ },
+ {
+  "id": "2d/papercraft",
+  "medium": "2d",
+  "family": "Popular Explainer Looks",
+  "name": "Papercraft Models",
+  "look": "Printed cardstock kit models, boxy and folded, with visible tabs.",
+  "goodFor": "Playful product concepts, robots, charming explainers.",
+  "motion": "Flat templates fold themselves into models."
+ },
+ {
+  "id": "2d/product-launch",
+  "medium": "2d",
+  "family": "Popular Explainer Looks",
+  "name": "Product Launch Reveal",
+  "look": "One glossy hero object on near-black with sweeping rim light.",
+  "goodFor": "Keynote-style product reveals and feature drops.",
+  "motion": "Light finds the object, slow push-ins."
+ },
+ {
+  "id": "2d/tech-glow",
+  "medium": "2d",
+  "family": "Popular Explainer Looks",
+  "name": "Tech Glow Explainer",
+  "look": "Dark navy-to-indigo background with glowing icons and neon outlines.",
+  "goodFor": "AI and tech explainers, developer-audience channels.",
+  "motion": "Smooth builds as glows bloom and icons connect."
+ },
+ {
+  "id": "2d/halftone-pop",
+  "medium": "2d",
+  "family": "Print",
+  "name": "Halftone Pop Panel",
+  "look": "Comic panel with thick outlines, dot shading and bold primary colors.",
+  "goodFor": "Energetic announcements, humor, pop-culture tones.",
+  "motion": "Dots pop on in waves, speech bursts bounce in."
+ },
+ {
+  "id": "2d/letterpress",
+  "medium": "2d",
+  "family": "Print",
+  "name": "Wood Type Letterpress",
+  "look": "Mixed wood type and ink on cream stock, slightly uneven impression.",
+  "goodFor": "Craft, heritage, editorial and announcement pieces.",
+  "motion": "Blocks are proofed onto the sheet one by one."
+ },
+ {
+  "id": "2d/linocut",
+  "medium": "2d",
+  "family": "Print",
+  "name": "Linocut Relief Print",
+  "look": "Hand-carved two-color relief print with bold white gouge marks.",
+  "goodFor": "Handmade brand stories, activism, nature themes.",
+  "motion": "Print is pulled in passes, colors registering."
+ },
+ {
+  "id": "2d/newsprint",
+  "medium": "2d",
+  "family": "Print",
+  "name": "Vintage Newsprint",
+  "look": "Aged broadsheet front page with blackletter masthead and columns.",
+  "goodFor": "News-style announcements, history, press-flavored stories.",
+  "motion": "Spinning-paper reveal, then headline stamps in."
+ },
+ {
+  "id": "2d/risograph",
+  "medium": "2d",
+  "family": "Print",
+  "name": "Risograph Zine",
+  "look": "Grainy fluorescent spot inks overprinted with slight misregistration.",
+  "goodFor": "Indie brands, zines, creative-community content.",
+  "motion": "Sheet passes through the drum once per ink color."
+ },
+ {
+  "id": "2d/screenprint-grid",
+  "medium": "2d",
+  "family": "Print",
+  "name": "Silkscreen Grid",
+  "look": "One portrait repeated in a grid, each print in new colors.",
+  "goodFor": "Pop-art campaigns, identity, repetition-driven ideas.",
+  "motion": "Panels print one after another with color swaps."
+ },
+ {
+  "id": "2d/ascii-render",
+  "medium": "2d",
+  "family": "Retro Digital",
+  "name": "ASCII Demoscene",
+  "look": "Everything drawn as monospace characters, glowing like a demoscene intro.",
+  "goodFor": "Developer tools, hacker-flavored tech demos.",
+  "motion": "Characters resolve from noise; plasma-style shimmer."
+ },
+ {
+  "id": "2d/crt-terminal",
+  "medium": "2d",
+  "family": "Retro Digital",
+  "name": "Phosphor Terminal",
+  "look": "Green phosphor text on a curved glowing monitor with scanlines.",
+  "goodFor": "Command-line tools, logs, developer and security topics.",
+  "motion": "Tube warms up, text types out line by line."
+ },
+ {
+  "id": "2d/gameboy",
+  "medium": "2d",
+  "family": "Retro Digital",
+  "name": "Pocket Monochrome",
+  "look": "Four-shade green pixel screen in a handheld console frame.",
+  "goodFor": "Retro games, nostalgia, tiny-app and indie tool demos.",
+  "motion": "Boot-up logo drop, chunky frame steps."
+ },
+ {
+  "id": "2d/mac-1bit",
+  "medium": "2d",
+  "family": "Retro Digital",
+  "name": "MacPaint 1984",
+  "look": "Pure black and white dithered bitmap with early-desktop windows and icons.",
+  "goodFor": "Retro computing, indie software, nostalgia.",
+  "motion": "Dither patterns build up, windows pop open."
+ },
+ {
+  "id": "2d/oscilloscope",
+  "medium": "2d",
+  "family": "Retro Digital",
+  "name": "Oscilloscope Vector Art",
+  "look": "Single green beam tracing vector shapes on a lab scope.",
+  "goodFor": "Audio, signal, engineering and hardware-flavored topics.",
+  "motion": "Beam blooms from a dot and traces shapes."
+ },
+ {
+  "id": "2d/pixel-16bit",
+  "medium": "2d",
+  "family": "Retro Digital",
+  "name": "16-Bit Pixel Odyssey",
+  "look": "Hand-placed 16-bit game art in a strict palette, upscaled sharp.",
+  "goodFor": "Games, developer culture, nostalgic storytelling.",
+  "motion": "Stepped brightness fades, sprite hops, scrolling layers."
+ },
+ {
+  "id": "2d/vector-arcade",
+  "medium": "2d",
+  "family": "Retro Digital",
+  "name": "Vector Arcade 1980",
+  "look": "Thin glowing line shapes on black like a 1980s arcade cabinet.",
+  "goodFor": "Games, retro-futurist tech, minimal sci-fi.",
+  "motion": "Beam traces shapes in attract-mode sequences."
+ },
+ {
+  "id": "2d/ms-paint",
+  "medium": "2d",
+  "family": "Retro UI & Neon",
+  "name": "Bitmap Paint Doodle",
+  "look": "Crude bitmap painting with aliased lines and flat fills.",
+  "goodFor": "Memes, irony, lo-fi humor, casual tools.",
+  "motion": "Strokes appear as if dragged by a mouse."
+ },
+ {
+  "id": "2d/synthwave",
+  "medium": "2d",
+  "family": "Retro UI & Neon",
+  "name": "Synthwave Outrun",
+  "look": "Neon grid highway running to a striped sunset, wireframe mountains.",
+  "goodFor": "Gaming, music, 80s nostalgia, bold tech tones.",
+  "motion": "Stars blink on; grid scrolls toward the horizon."
+ },
+ {
+  "id": "2d/teletext",
+  "medium": "2d",
+  "family": "Retro UI & Neon",
+  "name": "Teletext Page",
+  "look": "Blocky colored text on black in a 40-column broadcast page.",
+  "goodFor": "News tickers, status updates, retro information screens.",
+  "motion": "Header appears, then rows reveal like a page loading."
+ },
+ {
+  "id": "2d/vaporwave",
+  "medium": "2d",
+  "family": "Retro UI & Neon",
+  "name": "Vaporwave",
+  "look": "Pastel-neon dream scene with sliced sun, grid floor and glitch.",
+  "goodFor": "Internet-culture humor, music, ironic nostalgia.",
+  "motion": "VCR-style start, slow drift and glitches."
+ },
+ {
+  "id": "2d/win95",
+  "medium": "2d",
+  "family": "Retro UI & Neon",
+  "name": "Win95 Desktop",
+  "look": "Beige desktop with teal wallpaper, bevelled windows and pixel icons.",
+  "goodFor": "Retro software, humor, throwback UI stories.",
+  "motion": "Icons pop on, windows open with a click."
+ },
+ {
+  "id": "2d/y2k-chrome",
+  "medium": "2d",
+  "family": "Retro UI & Neon",
+  "name": "Y2K Liquid Chrome",
+  "look": "Liquid chrome blobs and reflective letters, millennium-futurist look.",
+  "goodFor": "Fashion-forward launches, Gen-Z culture, bold identities.",
+  "motion": "Mercury droplets fly in and merge with squash."
+ },
+ {
+  "id": "3d/blueprint-build",
+  "medium": "3d",
+  "family": "Diagrams with depth",
+  "name": "Blueprint Build",
+  "look": "Blue drafting-paper plan with white line drawings, dimension callouts and numbered labels; wireframe fills into solid.",
+  "goodFor": "Ergonomics, how-to setups, product anatomy and step-by-step build explanations.",
+  "motion": "Wireframe fills in; labelled callouts appear one by one."
+ },
+ {
+  "id": "3d/data-skyline",
+  "medium": "3d",
+  "family": "Diagrams with depth",
+  "name": "Data Skyline",
+  "look": "Stacked pale and orange bricks form chart towers with serif numbers on a pale plinth.",
+  "goodFor": "Statistics, growth over time and before-and-after comparisons.",
+  "motion": "Bricks stack up to each value; camera drifts along."
+ },
+ {
+  "id": "3d/exploded-view",
+  "medium": "3d",
+  "family": "Diagrams with depth",
+  "name": "Exploded View",
+  "look": "Pale studio set where a pen's parts float apart along its axis, with numbered labels.",
+  "goodFor": "Product anatomy, how a thing is built, feature breakdowns.",
+  "motion": "Parts separate along the axis, hold for labels, rejoin."
+ },
+ {
+  "id": "3d/layer-stack",
+  "medium": "3d",
+  "family": "Diagrams with depth",
+  "name": "Layer Stack",
+  "look": "Glowing translucent panels stacked with circuit patterns, labelled on the right, black background.",
+  "goodFor": "Tech stacks, architecture layers and how AI systems fit together.",
+  "motion": "Layers separate; one highlights in turn with an orange glow."
+ },
+ {
+  "id": "3d/node-network",
+  "medium": "3d",
+  "family": "Diagrams with depth",
+  "name": "Node Network",
+  "look": "Smiley-face discs joined by gold links on a terracotta wall, with blue counter plaques.",
+  "goodFor": "Social spread, referrals, word of mouth and network effects.",
+  "motion": "Network branches outward as new nodes light up; counts jump."
+ },
+ {
+  "id": "3d/white-model",
+  "medium": "3d",
+  "family": "Diagrams with depth",
+  "name": "White Model",
+  "look": "Pale clay-white house and objects on a light ground, orange accents and numbered callouts.",
+  "goodFor": "Systems explained spatially, energy, infrastructure and architecture.",
+  "motion": "Orange flow traces the system; labels appear in order."
+ },
+ {
+  "id": "3d/dithered",
+  "medium": "3d",
+  "family": "Filters over 3D",
+  "name": "Dithered",
+  "look": "One-bit retro look: cream and brown halftone dots, pixel-font HUD frames around a lit object.",
+  "goodFor": "Retro tech, timers, game-flavoured or lo-fi productivity themes.",
+  "motion": "Dots shimmer; counters and progress bars update."
+ },
+ {
+  "id": "3d/ink-toon",
+  "medium": "3d",
+  "family": "Filters over 3D",
+  "name": "Ink and Toon",
+  "look": "Comic-book 3D: thick ink outlines, halftone dots, teal background, bold sound-effect title lettering.",
+  "goodFor": "Recipes, tutorials and quirky how-tos with a graphic-novel feel.",
+  "motion": "Quick panel-like cuts; steam wisps and text snap in."
+ },
+ {
+  "id": "3d/low-poly",
+  "medium": "3d",
+  "family": "Filters over 3D",
+  "name": "Low-Poly",
+  "look": "Faceted pastel mountains, pines, river and clouds on a diorama with flag-style labels.",
+  "goodFor": "Nature cycles, geography, process maps and landscape explainers.",
+  "motion": "Camera sweeps the terrain; rain and water flow."
+ },
+ {
+  "id": "3d/painted",
+  "medium": "3d",
+  "family": "Filters over 3D",
+  "name": "Painted",
+  "look": "Rough textured brushstroke scenery in rich purples, reds and greens, with handwritten caption strip.",
+  "goodFor": "Storybook narratives, how-things-were-made tales, artisan or rural subjects.",
+  "motion": "Slow painterly camera moves; caption changes per scene."
+ },
+ {
+  "id": "3d/pencil-sketch",
+  "medium": "3d",
+  "family": "Filters over 3D",
+  "name": "Pencil Sketch",
+  "look": "Graphite line drawing with cross-hatching on cream paper, a numbered step list at the side.",
+  "goodFor": "Construction, design processes and calm step-by-step builds.",
+  "motion": "Lines draw on; the frame fills in and shades."
+ },
+ {
+  "id": "3d/voxel",
+  "medium": "3d",
+  "family": "Filters over 3D",
+  "name": "Voxel",
+  "look": "Chunky cube-built garden island with a plant, fence and sun above blocky lettering.",
+  "goodFor": "Growth stories, games-flavoured explainers and life cycles.",
+  "motion": "Plants grow cube by cube; camera sways around the island."
+ },
+ {
+  "id": "3d/x-ray",
+  "medium": "3d",
+  "family": "Filters over 3D",
+  "name": "X-Ray",
+  "look": "Dark scene with translucent bluish outlines revealing hatched walls and orange heat inside a bottle.",
+  "goodFor": "Hidden mechanics, insulation, anatomy and engineering cutaways.",
+  "motion": "Camera turns around the glow while arrows show flow."
+ },
+ {
+  "id": "3d/embossed",
+  "medium": "3d",
+  "family": "Flat content made physical",
+  "name": "Embossed",
+  "look": "Cream paper with raised, shadow-edged serif lettering and a ruler pattern pressed into it.",
+  "goodFor": "Quotes, mottos, craft or stationery-feel brand statements.",
+  "motion": "Raking light slides across the relief; slow macro drift."
+ },
+ {
+  "id": "3d/led-wall",
+  "medium": "3d",
+  "family": "Flat content made physical",
+  "name": "LED Wall",
+  "look": "Dot-matrix video screen on a truss showing pixel-art scenes and amber scrolling captions.",
+  "goodFor": "Playful storytelling, fables, retro arcade or stadium-flavoured announcements.",
+  "motion": "Pixel scene animates; ticker text scrolls beneath."
+ },
+ {
+  "id": "3d/neon-sign",
+  "medium": "3d",
+  "family": "Flat content made physical",
+  "name": "Neon Sign",
+  "look": "Glowing neon tubes on a dark brick wall: rainbow arcs, a sun, light rays and ring shapes.",
+  "goodFor": "Physics of light, weather, nightlife-toned or retro brand moments.",
+  "motion": "Tubes flicker on in sequence; beams trace their paths."
+ },
+ {
+  "id": "3d/particle-swarm",
+  "medium": "3d",
+  "family": "Flat content made physical",
+  "name": "Particle Swarm",
+  "look": "Fine glittering grains clustering into soft organic shapes on deep teal, small caption below.",
+  "goodFor": "Transformations, science of materials, cooking or growth moments.",
+  "motion": "Grains drift, merge and burst into a new form."
+ },
+ {
+  "id": "3d/pin-wall",
+  "medium": "3d",
+  "family": "Flat content made physical",
+  "name": "Pin Wall",
+  "look": "Dense bed of tiny pins pushed up into blue terrain and a volcano, glowing at the peak.",
+  "goodFor": "Geography, topography, maps and data shown as relief.",
+  "motion": "Pins rise and fall to sculpt shape; camera tilts over."
+ },
+ {
+  "id": "3d/shadow-box",
+  "medium": "3d",
+  "family": "Flat content made physical",
+  "name": "Shadow Box",
+  "look": "Sepia cutout layers in a wooden frame, silhouettes of computers stepping forward in depth.",
+  "goodFor": "Eras, timelines and nostalgic history, one layer per period.",
+  "motion": "Layers parallax gently; new cutouts slide into the frame."
+ },
+ {
+  "id": "3d/split-flap",
+  "medium": "3d",
+  "family": "Flat content made physical",
+  "name": "Split-Flap Board",
+  "look": "Black airport-style board with white lettered flip tiles and numbers, backlit and glowing.",
+  "goodFor": "Rankings, tables of facts and comparisons shown as a list.",
+  "motion": "Tiles clatter and flip to reveal each new row."
+ },
+ {
+  "id": "3d/domino-chain",
+  "medium": "3d",
+  "family": "Machines that explain",
+  "name": "Domino Chain",
+  "look": "Cream dominoes on polished wood with growing numbers on each tile, shallow depth of field.",
+  "goodFor": "Exponential growth, chain reactions and escalating numbers.",
+  "motion": "Tiles topple in sequence, each larger than the last."
+ },
+ {
+  "id": "3d/factory-line",
+  "medium": "3d",
+  "family": "Machines that explain",
+  "name": "Factory Line",
+  "look": "Blue machines with chunky labels pass cards along a black conveyor in soft light.",
+  "goodFor": "Processes, pipelines, workflows and AI or automation stages.",
+  "motion": "Item rides the belt through stations, changing at each."
+ },
+ {
+  "id": "3d/marble-run",
+  "medium": "3d",
+  "family": "Machines that explain",
+  "name": "Marble Run",
+  "look": "Coloured marbles roll down wooden rails into glass jars with scoreboard counters on a wood wall.",
+  "goodFor": "Sorting, classification, filtering and counting stories.",
+  "motion": "Marbles roll, switch tracks and fill jars; counters tick."
+ },
+ {
+  "id": "3d/glass-light",
+  "medium": "3d",
+  "family": "Material worlds",
+  "name": "Glass and Light",
+  "look": "Clear glass bottles and jars holding coloured liquids on a dark counter, caustic light patches.",
+  "goodFor": "Science demos, physical experiments, food and chemistry explanations.",
+  "motion": "Liquid pours and settles; light ripples across the surface."
+ },
+ {
+  "id": "3d/inflated",
+  "medium": "3d",
+  "family": "Material worlds",
+  "name": "Inflated",
+  "look": "Shiny puffy balloon forms in saturated colours on a flat blue sky with cartoon clouds.",
+  "goodFor": "Playful physics or science concepts and lighthearted consumer explainers.",
+  "motion": "Objects bob and rise; arrows and captions pop in."
+ },
+ {
+  "id": "3d/paper-pop-up",
+  "medium": "3d",
+  "family": "Material worlds",
+  "name": "Paper Pop-Up",
+  "look": "Cut-paper scenes with bees, jars and teapots folding up from a patterned page with ribbon banners.",
+  "goodFor": "Cosy storytelling, food, kids' content and step-by-step tales.",
+  "motion": "Pages fold open and pieces pop upright, page by page."
+ },
+ {
+  "id": "3d/soft-clay",
+  "medium": "3d",
+  "family": "Material worlds",
+  "name": "Soft Clay",
+  "look": "Matte orange and yellow clay coin stacks and lumps on a teal backdrop, handmade feel.",
+  "goodFor": "Finance, savings growth and friendly numeric stories.",
+  "motion": "Clay pieces drop and stack, wobbling slightly on landing."
+ },
+ {
+  "id": "3d/toy-blocks",
+  "medium": "3d",
+  "family": "Material worlds",
+  "name": "Toy Blocks",
+  "look": "Wooden alphabet blocks stacked into labelled towers on a playroom floor, window light.",
+  "goodFor": "Budgets, percentages, categories and kid-friendly concepts.",
+  "motion": "Blocks drop and stack into towers; percentages appear."
+ },
+ {
+  "id": "3d/device-hero",
+  "medium": "3d",
+  "family": "Products and screens",
+  "name": "Device Hero",
+  "look": "Close-cropped phone in darkness showing a bright app screen with a large ring counter.",
+  "goodFor": "App features, mobile product demos and habit or progress tracking.",
+  "motion": "Slow push-in on the screen; interface values tick up."
+ },
+ {
+  "id": "3d/floating-screens",
+  "medium": "3d",
+  "family": "Products and screens",
+  "name": "Floating Screens",
+  "look": "Rounded white UI cards tilted in depth over a warm blur, joined by a green thread.",
+  "goodFor": "Checkout or onboarding flows, multi-step product journeys.",
+  "motion": "Panels slide past in sequence; camera tracks the flow."
+ },
+ {
+  "id": "3d/hero-icon",
+  "medium": "3d",
+  "family": "Products and screens",
+  "name": "Hero Icon",
+  "look": "Single glossy rounded-square app icon floating on a flat colour, soft shadow, with a short tagline.",
+  "goodFor": "App icon reveals, brand logos and one-product announcements.",
+  "motion": "Icon spins and tilts into place, then logo text appears."
+ },
+ {
+  "id": "3d/studio-product",
+  "medium": "3d",
+  "family": "Products and screens",
+  "name": "Studio Product",
+  "look": "Bottle on a black reflective surface, rim-lit like an ad, with clean sans text beside it.",
+  "goodFor": "Product launches, brand ads and hero shots of physical goods.",
+  "motion": "Slow orbit with sliding highlights; text fades in."
+ },
+ {
+  "id": "3d/circuit-city",
+  "medium": "3d",
+  "family": "Spaces and journeys",
+  "name": "Circuit City",
+  "look": "Macro view of a green circuit board: chips, glowing traces, LEDs, shallow focus, engraved labels.",
+  "goodFor": "Hardware, chips, computing and AI explainers; tech-process stories.",
+  "motion": "Camera glides across the board; traces light up."
+ },
+ {
+  "id": "3d/monument-type",
+  "medium": "3d",
+  "family": "Spaces and journeys",
+  "name": "Monument Type",
+  "look": "Huge rusty and white 3D letters stacked like a building on a misty waterfront at dusk.",
+  "goodFor": "Bold slogans, manifestos and title cards with weight.",
+  "motion": "Slow camera pull-back reveals the words as architecture."
+ },
+ {
+  "id": "3d/museum-gallery",
+  "medium": "3d",
+  "family": "Spaces and journeys",
+  "name": "Museum Gallery",
+  "look": "Dark green gallery wall with gold-framed pictures and engraved brass plaques lit by spotlights.",
+  "goodFor": "Timelines, history and milestones shown one exhibit at a time.",
+  "motion": "Camera glides wall to wall, pausing on each frame."
+ },
+ {
+  "id": "3d/spotlight-stage",
+  "medium": "3d",
+  "family": "Spaces and journeys",
+  "name": "Spotlight Stage",
+  "look": "Theatre stage with red curtains, paper-cut aircraft and beams lighting one scene and sign.",
+  "goodFor": "Historic moments, dramatic reveals and single-event storytelling.",
+  "motion": "Spotlight shifts across the set; sign swaps between beats."
+ },
+ {
+  "id": "3d/tiny-diorama",
+  "medium": "3d",
+  "family": "Spaces and journeys",
+  "name": "Tiny Diorama",
+  "look": "Floating grass-and-soil island with factory, van, houses, trees and numbered signposts.",
+  "goodFor": "Journeys, delivery or process stories, and friendly place-based explanations.",
+  "motion": "Vehicle drives the route; lights come on; camera circles."
+ },
+ {
+  "id": "ui/motion-system",
+  "medium": "ui",
+  "family": "Product UI",
+  "name": "Product UI (motion system)",
+  "look": "Real interface recreated in code: crisp panels, cursors, cards and charts on brand colors.",
+  "goodFor": "launch films, walkthroughs, feature drops with real product UI",
+  "motion": "Purpose-matched eases, staggers, camera pushes, idle drift, counters."
+ }
+]

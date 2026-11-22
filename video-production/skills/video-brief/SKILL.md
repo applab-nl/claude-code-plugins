@@ -11,6 +11,8 @@ for. So the brief comes first, in words, and the person approves it before any H
 
 Write it to `BRIEF.md` in the video's folder (starter: `templates/BRIEF.md`). Keep it to one page.
 
+Flow: brief + treatment, approval (hard stop), storyboard if on (`video-storyboard`, hard stop), build.
+
 ## 1. The one line
 
 - Write what the video says in one sentence of 12 words or fewer. "You can now ship a launch video
@@ -98,14 +100,40 @@ Two columns, never the same words in both.
 - Every number on screen is real and sourced, or clearly a demo value (see
   `product-ui-recreation`).
 
-## 9. Approval gate
+## 9. Look, storyboard and voice engine
 
-- Show the brief and stop. The person approves the one line, the beats and the shown/said table,
-  word by word if the video has a voiceover.
+Three fields, all decided before approval:
+
+- **Look.** One style per film from the library, by id: `2d/flat-space`, `3d/tiny-diorama`, or
+  `ui/motion-system` for product UI. Per-scene overrides are allowed and listed by scene
+  (`scene 3: 3d/tiny-diorama`). Never choose from memory of names: `video-styles` resolves the id and
+  its gallery page (`<STYLE_HOME>/gallery/index.html`) is where the person picks. Product UI scenes
+  default to `ui/motion-system`.
+- **Storyboard.** `on` by default. `off` is allowed for quick social clips (under about 15 s, one
+  layout, no styled scenes); write `storyboard: off` and the reason in the brief.
+- **Voice engine.** Kokoro by default. ElevenLabs when the language is not supported by Kokoro (Dutch,
+  for one), a cloned voice is needed, or the person asks for premium delivery. Record the engine and
+  the reason (`voice-and-music`, "Engines"). No voiceover: write `none`.
+
+## 10. Treatment
+
+Write it into the brief, before approval. Under about 15 lines:
+
+- **Three candidate structures**, one line each, genuinely different (for example problem-first,
+  result-first, one-object-transforms). Not three names for the same cut.
+- **Chosen**, and why, in one or two lines tied to the viewer and channel.
+- **Reference**: one film or piece to learn from, what to take from it, and what NOT to copy.
+
+## 11. Approval gate
+
+- Show the brief and treatment and stop. The person approves the one line, the treatment, the look,
+  the beats and the shown/said table, word by word if the video has a voiceover.
 - A change to the story after footage exists costs a rebuild. A change to the brief costs a
   sentence. Get the "no" early.
 - Once approved, the brief is the spec. When a review changes the video, update the brief first,
   then the scenes.
+- Next gate: with the storyboard on, `video-storyboard` runs and stops again. With it off, the build
+  starts after this approval.
 
 ## What a good brief rules out
 
@@ -114,4 +142,5 @@ floating in the middle, everything fading in and sliding up, three feature cards
 docked in a corner, a title over a dimmed screenshot, glow and particles as decoration. Add to it
 after every review.
 
-Next step: `hyperframes-scene` to set up the project, `motion-system` for the motion language.
+Next step: `video-storyboard` when the storyboard is on, else `hyperframes-scene` to set up the project
+(`video-styles` for styled scenes, `motion-system` for the motion language).

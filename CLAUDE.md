@@ -77,9 +77,7 @@ claude-code-plugins/
 - **diagram-images** (v1.0.1) — Render Mermaid diagrams in markdown to SVG/PNG with one shared hand-drawn theme and a drift linter
 
 **Media:**
-- **video-production** (v1.0.0) — Make launch videos, product walkthroughs and social clips in code with HyperFrames (HTML + GSAP), from brief to per-channel renders
-- **explainer** (v1.0.0) — Animated explainers in 86 AI Style Atlas visual styles: storyboard, self-contained HTML canvas animation with synthesized sound, optional voiceover sync and MP4 render
-- **3d-explainer** (v1.0.0) — Short three.js 3D explainers in fixed looks (Tiny Diorama and imported styles): rendered-stills storyboard, HTML player and MP4 render
+- **video-production** (v2.0.0) — Launch videos, walkthroughs, social clips and animated explainers in code with HyperFrames: 123 2D/3D styles with a gallery (built locally), stills storyboard, Kokoro or ElevenLabs voice, captions, review gates and per-channel renders
 
 ## Plugin Patterns
 

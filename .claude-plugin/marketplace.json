@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "applab-plugins",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "description": "A curated collection of Claude Code plugins for enhanced development workflows",
   "owner": {
     "name": "AppLab",
@@ -18,7 +18,15 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["notifications", "audio", "tts", "hooks", "macos", "statusline", "alerts"],
+      "keywords": [
+        "notifications",
+        "audio",
+        "tts",
+        "hooks",
+        "macos",
+        "statusline",
+        "alerts"
+      ],
       "license": "MIT"
     },
     {
@@ -31,7 +39,13 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["logging", "prompts", "analytics", "hooks", "audit"],
+      "keywords": [
+        "logging",
+        "prompts",
+        "analytics",
+        "hooks",
+        "audit"
+      ],
       "license": "MIT"
     },
     {
@@ -44,7 +58,16 @@
         "email": "plugins@applab.nl"
       },
       "category": "debugging",
-      "keywords": ["sentry", "error-tracking", "debugging", "ios", "android", "monitoring", "crash-analysis", "bug-fixing"],
+      "keywords": [
+        "sentry",
+        "error-tracking",
+        "debugging",
+        "ios",
+        "android",
+        "monitoring",
+        "crash-analysis",
+        "bug-fixing"
+      ],
       "license": "MIT"
     },
     {
@@ -57,7 +80,20 @@
         "email": "plugins@applab.nl"
       },
       "category": "development",
-      "keywords": ["nextjs", "frontend", "react", "typescript", "web-development", "app-router", "ssr", "server-components", "devtools", "testing", "playwright", "diagnostics"],
+      "keywords": [
+        "nextjs",
+        "frontend",
+        "react",
+        "typescript",
+        "web-development",
+        "app-router",
+        "ssr",
+        "server-components",
+        "devtools",
+        "testing",
+        "playwright",
+        "diagnostics"
+      ],
       "license": "MIT"
     },
     {
@@ -70,7 +106,19 @@
         "email": "plugins@applab.nl"
       },
       "category": "development",
-      "keywords": ["svelte", "svelte5", "sveltekit", "runes", "frontend", "reactive", "typescript", "ssr", "compiler", "web-development", "code-analysis"],
+      "keywords": [
+        "svelte",
+        "svelte5",
+        "sveltekit",
+        "runes",
+        "frontend",
+        "reactive",
+        "typescript",
+        "ssr",
+        "compiler",
+        "web-development",
+        "code-analysis"
+      ],
       "license": "MIT"
     },
     {
@@ -83,7 +131,21 @@
         "email": "plugins@applab.nl"
       },
       "category": "development",
-      "keywords": ["flutter", "dart", "mobile", "android", "ios", "widgets", "state-management", "cross-platform", "material-design", "riverpod", "supabase", "code-analysis", "pub-dev"],
+      "keywords": [
+        "flutter",
+        "dart",
+        "mobile",
+        "android",
+        "ios",
+        "widgets",
+        "state-management",
+        "cross-platform",
+        "material-design",
+        "riverpod",
+        "supabase",
+        "code-analysis",
+        "pub-dev"
+      ],
       "license": "MIT"
     },
     {
@@ -96,7 +158,17 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["git", "commit", "automation", "version-control", "workflow", "productivity", "commit-messages", "worktree", "branching"],
+      "keywords": [
+        "git",
+        "commit",
+        "automation",
+        "version-control",
+        "workflow",
+        "productivity",
+        "commit-messages",
+        "worktree",
+        "branching"
+      ],
       "license": "MIT"
     },
     {
@@ -109,7 +181,17 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["agents-md", "claude-md", "copilot", "gemini", "opencode", "ai-instructions", "conversion", "sync", "multi-platform"],
+      "keywords": [
+        "agents-md",
+        "claude-md",
+        "copilot",
+        "gemini",
+        "opencode",
+        "ai-instructions",
+        "conversion",
+        "sync",
+        "multi-platform"
+      ],
       "license": "MIT"
     },
     {
@@ -122,7 +204,16 @@
         "email": "plugins@applab.nl"
       },
       "category": "security",
-      "keywords": ["security", "audit", "backdoor", "supply-chain", "prompt-injection", "malware", "scanning", "code-review"],
+      "keywords": [
+        "security",
+        "audit",
+        "backdoor",
+        "supply-chain",
+        "prompt-injection",
+        "malware",
+        "scanning",
+        "code-review"
+      ],
       "license": "MIT"
     },
     {
@@ -135,7 +226,17 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["linear", "tickets", "issues", "workflow", "worktree", "openspec", "superpowers", "mcp", "project-management"],
+      "keywords": [
+        "linear",
+        "tickets",
+        "issues",
+        "workflow",
+        "worktree",
+        "openspec",
+        "superpowers",
+        "mcp",
+        "project-management"
+      ],
       "license": "MIT"
     },
     {
@@ -148,7 +249,18 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["ship", "git", "github", "pr", "pull-request", "ci", "merge", "workflow", "linear", "automation"],
+      "keywords": [
+        "ship",
+        "git",
+        "github",
+        "pr",
+        "pull-request",
+        "ci",
+        "merge",
+        "workflow",
+        "linear",
+        "automation"
+      ],
       "license": "MIT"
     },
     {
@@ -161,7 +273,23 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["backlog", "refinement", "grooming", "linear", "jira", "github-issues", "tickets", "unattended", "overnight", "worktree", "preview-branch", "test-plan", "draft-pr", "subagents", "project-management"],
+      "keywords": [
+        "backlog",
+        "refinement",
+        "grooming",
+        "linear",
+        "jira",
+        "github-issues",
+        "tickets",
+        "unattended",
+        "overnight",
+        "worktree",
+        "preview-branch",
+        "test-plan",
+        "draft-pr",
+        "subagents",
+        "project-management"
+      ],
       "license": "MIT"
     },
     {
@@ -174,7 +302,21 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["audit", "backlog", "git", "branches", "worktrees", "pull-requests", "linear", "jira", "github-issues", "cleanup", "triage", "technical-debt", "reporting"],
+      "keywords": [
+        "audit",
+        "backlog",
+        "git",
+        "branches",
+        "worktrees",
+        "pull-requests",
+        "linear",
+        "jira",
+        "github-issues",
+        "cleanup",
+        "triage",
+        "technical-debt",
+        "reporting"
+      ],
       "license": "MIT"
     },
     {
@@ -187,7 +329,15 @@
         "email": "plugins@applab.nl"
       },
       "category": "development",
-      "keywords": ["android", "adb", "device-testing", "logcat", "android-auto", "dhu", "kmp"],
+      "keywords": [
+        "android",
+        "adb",
+        "device-testing",
+        "logcat",
+        "android-auto",
+        "dhu",
+        "kmp"
+      ],
       "license": "MIT"
     },
     {
@@ -200,7 +350,16 @@
         "email": "plugins@applab.nl"
       },
       "category": "documentation",
-      "keywords": ["diagrams", "mermaid", "svg", "png", "architecture", "adr", "documentation", "theme"],
+      "keywords": [
+        "diagrams",
+        "mermaid",
+        "svg",
+        "png",
+        "architecture",
+        "adr",
+        "documentation",
+        "theme"
+      ],
       "license": "MIT"
     },
     {
@@ -212,7 +371,13 @@
         "name": "zenbu-labs"
       },
       "category": "development",
-      "keywords": ["browser", "terminal", "preview", "function-hooks", "mod"],
+      "keywords": [
+        "browser",
+        "terminal",
+        "preview",
+        "function-hooks",
+        "mod"
+      ],
       "license": "MIT"
     },
     {
@@ -225,7 +390,16 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["plan", "roadmap", "progress", "openspec", "superpowers", "tasks", "pane", "sidebar"],
+      "keywords": [
+        "plan",
+        "roadmap",
+        "progress",
+        "openspec",
+        "superpowers",
+        "tasks",
+        "pane",
+        "sidebar"
+      ],
       "license": "MIT"
     },
     {
@@ -238,46 +412,48 @@
         "email": "plugins@applab.nl"
       },
       "category": "productivity",
-      "keywords": ["git", "branches", "worktrees", "pull-requests", "github", "merged", "pane", "sidebar"],
+      "keywords": [
+        "git",
+        "branches",
+        "worktrees",
+        "pull-requests",
+        "github",
+        "merged",
+        "pane",
+        "sidebar"
+      ],
       "license": "MIT"
     },
     {
       "name": "video-production",
       "source": "./video-production",
-      "version": "1.0.0",
-      "description": "Make launch videos, product walkthroughs and social clips in code with HyperFrames (HTML + GSAP) - brief, motion language, product UI rebuilt in HTML, AI footage and voice through fal, word-timed captions on the beat, an eyes-on review gate, and renders for every channel",
+      "version": "2.0.0",
+      "description": "Make launch videos, walkthroughs, social clips and animated explainers in code with HyperFrames - brief and treatment, a library of 123 2D and 3D visual styles with a gallery, stills storyboard, product UI rebuilt in HTML, free local Kokoro voice or ElevenLabs, AI footage through fal, word-timed captions, readability and fresh-eyes review gates, and renders for every channel",
       "author": {
         "name": "AppLab",
         "email": "plugins@applab.nl"
       },
       "category": "media",
-      "keywords": ["video", "hyperframes", "gsap", "motion", "walkthrough", "captions", "fal", "elevenlabs", "ffmpeg", "render"],
-      "license": "MIT"
-    },
-    {
-      "name": "explainer",
-      "source": "./explainer",
-      "version": "1.0.0",
-      "description": "Animated explainers in 86 visual styles from the AI Style Atlas - pick a style, approve a storyboard, get one self-contained HTML canvas animation with synthesized sound, optionally timed to a voiceover and rendered to MP4",
-      "author": {
-        "name": "AppLab",
-        "email": "plugins@applab.nl"
-      },
-      "category": "media",
-      "keywords": ["video", "explainer", "animation", "canvas", "motion-graphics", "storyboard", "voiceover", "sound-design", "ffmpeg", "puppeteer"],
-      "license": "MIT"
-    },
-    {
-      "name": "3d-explainer",
-      "source": "./3d-explainer",
-      "version": "1.0.0",
-      "description": "Short 3D explainer motion graphics in three.js in fixed looks (Tiny Diorama, plus any style you import) - rendered-stills storyboard with an approval gate, a self-contained HTML player, and an MP4 rendered in headless Chrome with synthesized sound at -15 LUFS",
-      "author": {
-        "name": "AppLab",
-        "email": "plugins@applab.nl"
-      },
-      "category": "media",
-      "keywords": ["motion-graphics", "threejs", "3d", "explainer", "storyboard", "diorama", "webgl", "playwright", "ffmpeg", "render"],
+      "keywords": [
+        "video",
+        "hyperframes",
+        "gsap",
+        "motion",
+        "walkthrough",
+        "explainer",
+        "threejs",
+        "3d",
+        "motion-graphics",
+        "style-gallery",
+        "storyboard",
+        "captions",
+        "kokoro",
+        "tts",
+        "fal",
+        "elevenlabs",
+        "ffmpeg",
+        "render"
+      ],
       "license": "MIT"
     }
   ]

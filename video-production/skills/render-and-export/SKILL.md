@@ -29,6 +29,22 @@ npx hyperframes check --json > out/check.json
   `first_frame_empty` (a blank thumbnail), `nested_structure_needs_subcomposition`.
 - A warning you keep on purpose goes in the README's "Known" list, so the next person does not fix it back.
 
+## 1b. Readability check
+
+```bash
+python3 -I scripts/readcheck.py . [--captions captions.json]   # writes texts.json, exit 1 on any FAIL
+```
+
+Run it after `hyperframes check` and before any render. It lists every on-screen text (`.clip` text in
+`index.html` and `compositions/*.html`, offset by the host's `data-start`, plus caption groups) and fails
+any text held under 0.5 s + 0.3 s per word. Text marked `data-read="key"` holds at least 1.5 s. A line of
+more than 6 words is a WARN.
+
+- Styled canvas scenes have no DOM text, so declare their words in the composition, in scene-local seconds:
+  `<script type="application/json" data-texts>[{"text":"Ship it","start":1,"end":3,"key":true}]</script>`.
+- Fix a FAIL by holding the text longer or cutting words, never by editing the manifest.
+- A FAIL blocks delivery. Do not render the master until `readcheck` exits 0.
+
 ## 2. Contact sheets before the render
 
 ```bash
@@ -128,5 +144,6 @@ npx hyperframes render --batch rows.json --quality delivery --strict-variables -
 ## Done when
 
 - `check` shows no errors, and every kept warning is written down.
+- `readcheck` exits 0 (no FAIL).
 - Every channel's file exists, matches its duration and size, and passed `video-review`.
 - The loop's frame 0 is a busy, readable frame. The GIF is at 25 fps.
