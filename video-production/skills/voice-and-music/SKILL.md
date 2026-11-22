@@ -1,6 +1,6 @@
 ---
 name: voice-and-music
-description: Use when a video needs voiceover, character dialogue, a music bed or sound effects, made with ElevenLabs through fal, or when generated dialogue sounds fake and needs the "on set" treatment and a proper loudness mix.
+description: Use when a video needs voiceover, character dialogue, a music bed or sound effects, made with Kokoro locally or ElevenLabs through fal, or when generated dialogue sounds fake and needs the "on set" treatment and a proper loudness mix.
 ---
 
 # Voice and music
@@ -10,6 +10,46 @@ a bright "radio" sheen, every line at one level. This skill makes the voice, the
 then mixes them so they sound recorded, not rendered. Paid calls go through `ai-footage/scripts/fal_run.py`
 (price first, cap, ledger). The voice is the clock for a narrated film; for timing captions and cuts to
 it, see `captions-on-the-beat`.
+
+## Engines
+
+Pick the TTS engine in the brief, with the reason, before the first line is generated. Never switch it
+silently; a change goes back into the brief.
+
+- **Kokoro, the default.** Free, local, offline, Apache-2.0 model (Kokoro v1.0, 82M, via `kokoro-onnx`).
+  Languages: American and British English (`en-us`, `en-gb`), Spanish (`es`), French (`fr-fr`), Italian
+  (`it`), Brazilian Portuguese (`pt-br`), Hindi (`hi`), Japanese (`ja`), Mandarin (`cmn`). English is by far
+  the strongest. Default voice `af_heart`; pick a voice whose prefix matches the language (`a` en-us,
+  `b` en-gb, `e`, `f`, `i`, `p`, `h`, `j`, `z`).
+- **ElevenLabs via fal** (the table below) when the brief's language is not on Kokoro's list (Dutch, German
+  and so on), a cloned or character voice is wanted, or the brief asks for premium delivery.
+
+```bash
+uv run scripts/tts_kokoro.py lines.txt --out vo/                       # one spoken line per row, ids line-01...
+uv run scripts/tts_kokoro.py lines.json --out vo/ --voice bm_george --lang en-gb --speed 0.95   # [{id, text}]
+uv run scripts/tts_kokoro.py --list-voices
+```
+
+It writes one 24 kHz WAV per line (`vo/<id>.wav`) and `vo/manifest.json` (id, text, voice, lang,
+duration_s). An unsupported `--lang` stops with the supported list and points to ElevenLabs. The first run
+downloads the model and voices once, about 350 MB, to `${XDG_CACHE_HOME:-~/.cache}/video-production/kokoro/`
+(about 15 s on a fast line); after that a run takes about 2 s for a few lines. Both files are checked
+against pinned SHA-256 values on every run: a mismatch deletes the file, prints the error and generates
+nothing. Never edit the pinned hashes to make a download pass.
+
+**Every TTS line goes through the round trip before captions or the mix**, whichever engine made it.
+TTS skips words, swaps numbers and garbles names; whisper hears what the viewer will hear:
+
+```bash
+python scripts/tts_check.py vo/                                  # Kokoro: reads vo/manifest.json
+python scripts/tts_check.py vo/ --script lines.json --lang nl    # ElevenLabs: <id>.wav or .mp3 per line
+```
+
+Per line it prints OK or MISMATCH with a word diff (`-missing +extra`), after normalising case,
+punctuation and English numbers ("42" matches "forty-two"). Exit 1 on any mismatch: rewrite the line
+(spell out a name phonetically, write the number as words) and regenerate. Exit 2 means no whisper:
+`uv tool install openai-whisper`, or whisper.cpp with `--cpp ggml-small.bin`, the same tools
+`captions-on-the-beat` uses.
 
 ## What to make, and with what
 
@@ -93,6 +133,7 @@ small clicks.
 
 ## Done when
 
+- The TTS engine is named in the brief, and every TTS line passed `tts_check.py`.
 - Each character has one voice id across every line, and lips still match.
 - Silence between words has room in it; no line sounds closer than its shot.
 - Dialogue stem near -23 LUFS, master at -14 LUFS and -1 dBTP or lower, measured on the delivered file.

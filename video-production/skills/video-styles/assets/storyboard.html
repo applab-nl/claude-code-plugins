@@ -22,7 +22,7 @@
   .status { margin: 14px 0 0; color: var(--muted); font-variant-numeric: tabular-nums; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr)); gap: 18px; margin-top: 22px; }
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
-  .still { aspect-ratio: 16 / 9; background: var(--chip); display: grid; place-items: center; color: var(--muted); }
+  .still { aspect-ratio: {{W}} / {{H}}; background: var(--chip); display: grid; place-items: center; color: var(--muted); }
   .still img { width: 100%; height: 100%; display: block; object-fit: cover; }
   .meta { padding: 12px 14px 14px; display: grid; gap: 8px; }
   .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
@@ -36,7 +36,7 @@
   section.assume h2 { margin: 0 0 6px; font-size: 17px; }
   section.assume ul { margin: 0; padding-left: 20px; }
   .err { margin-top: 16px; background: #b3261e; color: #fff; padding: 10px 12px; border-radius: 8px; white-space: pre-wrap; font: 12px/1.4 ui-monospace, monospace; display: none; }
-  canvas#c { position: absolute; left: -99999px; top: 0; width: 1920px; height: 1080px; }
+  canvas#c { position: absolute; left: -99999px; top: 0; width: {{W}}px; height: {{H}}px; }
 </style>
 </head>
 <body>
@@ -53,7 +53,7 @@
   </section>
   <div id="err" class="err"></div>
 </main>
-<canvas id="c" width="1920" height="1080"></canvas>
+<canvas id="c" width="{{W}}" height="{{H}}"></canvas>
 
 <script type="module">
   // three.js r187, vendored inline below by tools/vendor-three.mjs: no CDN, works offline
@@ -96,7 +96,7 @@
   }
 
   const canvas = $('c');
-  const S = await K.run(canvas, style, { samples: N });
+  const S = await K.run(canvas, style, { samples: N, width: canvas.width, height: canvas.height });
   window.S = S; window.STYLE = style; window.DURATION = S.duration;
   window.seekN = (t, n) => S.seek(t, n);
   for (let i = 0; i < beats.length; i++) {

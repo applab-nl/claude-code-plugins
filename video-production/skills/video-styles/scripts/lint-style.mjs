@@ -1,18 +1,21 @@
 #!/usr/bin/env node
-// Static checks for a style file before it is assembled. Exits 1 on errors, 0 with warnings.
-//   node lint-style.mjs <style.js> [--storyboard]
+// Static checks for a style file (2D or 3D) before it is built into a scene. Exits 1 on errors, 0 with warnings.
+//   node lint-style.mjs <style.js> [--medium 2d|3d] [--storyboard]
 import { readFileSync } from 'node:fs';
 
-const file = process.argv[2];
-const needStoryboard = process.argv.includes('--storyboard');
-if (!file) { console.error('usage: lint-style.mjs <style.js> [--storyboard]'); process.exit(2); }
+const argv = process.argv.slice(2);
+const mi = argv.indexOf('--medium');
+const file = argv.find((a, i) => !a.startsWith("--") && (mi < 0 || i !== mi + 1));
+const needStoryboard = argv.includes('--storyboard');
+if (!file) { console.error('usage: lint-style.mjs <style.js> [--medium 2d|3d] [--storyboard]'); process.exit(2); }
 const src = readFileSync(file, 'utf8');
+const medium = mi >= 0 ? argv[mi + 1] : /\bbuild\s*\(\s*S\s*\)/.test(src) ? '3d' : '2d';
 const lines = src.split('\n');
 const errors = [], warnings = [];
 
 // update(t) is called many times per frame in any order: nothing may depend on wall-clock time or hidden state
 const banned = [
-  [/\bMath\.random\s*\(/, 'Math.random: use K.rng(seed) or K.hash(...)'],
+  [/\bMath\.random\s*\(/, 'Math.random: use K.rng(seed) / K.hash(...) (3D) or H.rng(seed) (2D)'],
   [/\bDate\.now\s*\(|\bnew Date\s*\(/, 'Date: drive everything from t'],
   [/\bperformance\.now\s*\(/, 'performance.now: drive everything from t'],
   [/\bset(Timeout|Interval)\s*\(/, 'timers: drive everything from t'],
@@ -26,7 +29,12 @@ lines.forEach((l, i) => {
   for (const [re, msg] of banned) if (re.test(code)) errors.push(`${file}:${i + 1}: ${msg}`);
 });
 
-const need = [
+const need = medium === '2d' ? [
+  [/registerStyle\s*\(/, 'registerStyle({...}) call'],
+  [/\bexplainer\s*\(\s*\w+\s*,/, 'explainer(ctx, W, H, t) method'],
+  [/\b(explainerDuration|duration)\s*:/, 'explainerDuration (or duration)'],
+  [/\bfonts\s*:/, 'fonts list (the adapter awaits them before the first frame)'],
+] : [
   [/registerStyle\s*\(/, 'registerStyle({...}) call'],
   [/\bbuild\s*\(\s*S\s*\)/, 'build(S) method'],
   [/\bupdate\s*\(\s*t\s*\)/, 'update(t) returned from build'],
@@ -35,11 +43,11 @@ const need = [
   [/\brender\s*:/, 'render settings (copy them from the reference)'],
 ];
 for (const [re, what] of need) if (!re.test(src)) errors.push(`missing ${what}`);
-if (!/\bsound\s*\(\s*k\s*\)/.test(src)) warnings.push('no sound(k) score: the piece will be silent');
+if (!/\b(sound|explainerSound)\s*[(:]/.test(src)) warnings.push(`no ${medium === '2d' ? 'explainerSound(k)' : 'sound(k)'} score: the scene will be silent`);
 if (needStoryboard && !/\bstoryboard\s*:/.test(src)) errors.push('missing storyboard: { beats: [...], assumptions: [...] }');
 
 // state that builds up between update calls: += / -= / ++ on object properties inside update is almost always a bug
-const u = src.search(/\bupdate\s*\(\s*t\s*\)\s*\{/);
+const u = medium === '2d' ? -1 : src.search(/\bupdate\s*\(\s*t\s*\)\s*\{/);
 if (u >= 0) {
   const startLine = src.slice(0, u).split('\n').length;
   for (let i = startLine; i < lines.length; i++) {

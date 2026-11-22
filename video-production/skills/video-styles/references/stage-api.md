@@ -27,7 +27,7 @@ registerStyle({
 |---|---|
 | `S.THREE`, `S.K` | the libraries |
 | `S.scene`, `S.camera`, `S.renderer` | three.js objects (camera is a PerspectiveCamera with `render.fov`) |
-| `S.W`, `S.H` | 1920, 1080 |
+| `S.W`, `S.H` | frame size: 1920, 1080 by default; set by `assemble.mjs --aspect` (4:3 is 1440, 1080). Frame the camera for it |
 | `S.duration`, `S.samples`, `S.R` | resolved settings |
 | `S.seek(t, n?)` | render the finished frame at t with n samples (default full) |
 | `S.addFilter(fragBody, uniforms)` | full-screen pass on the graded 8-bit image; gets `tex`, `res`, `time`, `vUv` |

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Vendor three.js into skills/3d-explainer/assets/lib/three.js as ONE self-contained ES module, so the
+// Vendor three.js into skills/video-styles/assets/three.js as ONE self-contained ES module, so the
 // assembled player/storyboard HTML has no CDN dependency (works offline, no third-party request).
 //
 //   node tools/vendor-three.mjs [version]      (default 0.187.0; rerun to upgrade)
@@ -18,7 +18,7 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const VERSION = process.argv[2] || '0.187.0';
-const OUT = new URL('../skills/3d-explainer/assets/lib/three.js', import.meta.url).pathname;
+const OUT = new URL('../skills/video-styles/assets/three.js', import.meta.url).pathname;
 const CDN = (f) => `https://cdn.jsdelivr.net/npm/three@${VERSION}/build/${f}`;
 
 const get = async (file) => {

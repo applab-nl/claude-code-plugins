@@ -9,7 +9,8 @@ You wrote the timeline, so you know what is supposed to happen. The viewer sees 
 a phone, often muted. Most defects in a video made from code are invisible in the source and obvious in
 one frame. This gate is the frames. Nothing ships on "the check passed" or "the render finished".
 
-Run it after `render-and-export` step 2 (contact sheets) and again on the rendered file.
+Run it after `render-and-export` step 2 (contact sheets) and again on the rendered file. `readcheck.py`
+(`render-and-export`) must exit 0 before review starts; a FAIL there is fixed first, not reviewed.
 
 ## 1. Capture
 
@@ -59,14 +60,48 @@ screen that you did not choose (`motion-system`)?
 Sound you cannot hear from a terminal. Measure it (`voice-and-music`: loudness, peaks, hits on the picture)
 and say that it was measured, not heard.
 
-## 4. Fix, then look again
+## 4. Fresh-context review
+
+Before any render is shown as final, dispatch a reviewer that has not seen the build. You are anchored on
+what you meant; it only sees what is on screen. Use the Agent tool, `general-purpose`. It gets ONLY: the
+rendered file path(s), the approved `BRIEF.md`, the contact sheet(s), and this skill's checklist (section 3).
+Not the build conversation, not your notes, not your opinion of the result.
+
+Prompt template, fill the brackets:
+
+```
+You are reviewing a finished video you did not make. Judge only what is on screen.
+Files: [absolute path(s) of the rendered file(s)]
+Contact sheets: [absolute path(s)]
+Brief: [absolute path to BRIEF.md]; read it for the intended story, channels and BANNED list.
+Rubric: [absolute path to video-review/SKILL.md]; apply section 3, the checklist, plus its whole-film questions.
+
+Method: open every contact sheet with Read. Extract frames from the rendered file with
+`ffmpeg -ss <t> -i <file> -frames:v 1 <out>.png` at frame 0, every beat in the brief, 0.1 s either side
+of each cut, mid-scene, and the last frame; open each and look. Do not edit any file.
+
+Return findings ranked P0 (breaks the read: unreadable, wrong, broken, a tell in the hero shot),
+P1 (weakens it), P2 (polish). Each finding: frame number and timecode, what is wrong, why it matters to
+the viewer. Then: does the story in the brief come through for a stranger, yes or no, with the reason.
+No praise, no summary of what works.
+```
+
+Then, on the main thread:
+
+- Fix every P0. No delivery with an open P0.
+- Fix every P1, or write one line of justification for keeping it.
+- P2 at your discretion.
+- Record each finding and its status in REVIEW.md (section 6), marked `fresh-context` in a column or tag.
+- After fixes, re-render, re-run `readcheck.py`, and dispatch a new reviewer only if a P0 was fixed.
+
+## 5. Fix, then look again
 
 Rank each defect: **P0** breaks the read (unreadable, wrong, broken, a tell in the hero shot), **P1**
 weakens it (dead stretch, soft payoff, jumpy seam), **P2** polish. Fix every P0 and the P1s worth the time,
 text first, then timing, then detail. Re-snapshot only what you changed and look at those frames. When a
 fix does not hold, compare the frames either side of the problem and change only the line that causes it.
 
-## 5. Write REVIEW.md
+## 6. Write REVIEW.md
 
 At the project root, short, one line per defect:
 
@@ -89,5 +124,6 @@ The next person reads REVIEW.md before changing anything.
 ## Done when
 
 - Every frame in the capture list was opened and looked at, on the rendered file, not only the preview.
+- `readcheck.py` exited 0 and the fresh-context reviewer ran on the final render.
 - No P0 is open. Every kept warning and every P1 left open is written down with its reason.
 - REVIEW.md exists, and its short form is in your reply.

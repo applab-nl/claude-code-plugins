@@ -17,9 +17,9 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
   body { background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px; overflow: hidden; }
-  .frame { width: min(100%, calc((100vh - 96px) * 16 / 9)); aspect-ratio: 16 / 9; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.18); }
+  .frame { width: min(100%, calc((100vh - 96px) * {{W}} / {{H}})); aspect-ratio: {{W}} / {{H}}; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.18); }
   canvas { display: block; width: 100%; height: 100%; }
-  .bar { width: min(100%, calc((100vh - 96px) * 16 / 9)); display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+  .bar { width: min(100%, calc((100vh - 96px) * {{W}} / {{H}})); display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
   .bar button { appearance: none; border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 8px; height: 34px; min-width: 34px; padding: 0 10px; font: inherit; cursor: pointer; }
   .bar button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   .bar input[type=range] { flex: 1; min-width: 60px; accent-color: var(--ink); }
@@ -29,11 +29,11 @@
   @media (max-width: 560px) { .loop span { display: none; } .time { min-width: 70px; } }
   body.render { padding: 0; background: #000; }
   body.render .bar { display: none; }
-  body.render .frame { width: 1920px; height: 1080px; border-radius: 0; box-shadow: none; }
+  body.render .frame { width: {{W}}px; height: {{H}}px; border-radius: 0; box-shadow: none; }
 </style>
 </head>
 <body>
-<div class="frame"><canvas id="c" width="1920" height="1080"></canvas></div>
+<div class="frame"><canvas id="c" width="{{W}}" height="{{H}}"></canvas></div>
 <div class="bar">
   <button id="play" class="primary" aria-label="Play">Play</button>
   <input id="scrub" type="range" min="0" max="1" step="0.001" value="0" aria-label="Scrub">
@@ -64,7 +64,7 @@
   const canvas = document.getElementById('c');
   const FULL = (style.render && style.render.samples) || 32;
   const LIVE = Math.max(1, Math.min(4, +(params.get('live') || 3)));
-  const S = await K.run(canvas, style, { samples: FULL });
+  const S = await K.run(canvas, style, { samples: FULL, width: canvas.width, height: canvas.height });
   const D = S.duration;
   window.S = S; window.STYLE = style; window.DURATION = D;
   window.seek = (t) => S.seek(t);

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Import a style from a "make me a 3D motion graphic in the <X> style" prompt (style card + STAGE kit + SOUND kit +
-// reference source) into styles/<id>/.
+// reference source) into the style library: <STYLE_HOME>/3d/styles/<id>/ (see paths.mjs).
 //
 //   node import-style.mjs <prompt.txt> [--force]
 //   node import-style.mjs --clipboard [--force]          (macOS: reads the prompt with pbpaste)
@@ -11,10 +11,8 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
-
-const SKILL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+import { LIB3D, STYLES3D } from './paths.mjs';
 const argv = process.argv.slice(2);
 const force = argv.includes('--force');
 const src = argv.includes('--clipboard') ? execFileSync('pbpaste', [], { encoding: 'utf8', maxBuffer: 64 << 20 }) : readFileSync(argv.find((a) => !a.startsWith('--')) || '', 'utf8');
@@ -60,7 +58,8 @@ const durRaw = (/\bduration:\s*([\w.]+)/.exec(ref.code) || [])[1] || '';      //
 const duration = /^[\d.]+$/.test(durRaw) ? durRaw : ((new RegExp('\\b' + durRaw.split('.').pop() + '\\s*[:=]\\s*([\\d.]+)').exec(ref.code) || [])[1] || '')   // T.end: 8.5 or const D = 12;
 const samples = (/\bsamples:\s*(\d+)/.exec(ref.code) || [])[1] || '';
 
-const dir = join(SKILL, 'styles', id);
+mkdirSync(LIB3D, { recursive: true });
+const dir = join(STYLES3D, id);
 if (existsSync(dir) && !force) { console.error(`styles/${id} already exists (pass --force to overwrite)`); process.exit(1); }
 mkdirSync(dir, { recursive: true });
 
@@ -94,12 +93,12 @@ writeFileSync(join(dir, 'reference.js'), ref.code + '\n');
 const norm = (s) => s.replace(/[ \t]+$/gm, '').trim();
 const kitReport = [], note = {};
 for (const [file, block] of [['stage.js', stage], ['sound.js', sound], ...extras.map((e) => [e.file, e])]) {
-  const shared = join(SKILL, 'assets', 'lib', file);
+  const shared = join(LIB3D, file);
   if (!existsSync(shared)) { writeFileSync(shared, block.code + '\n'); note[file] = `new shared library, saved as assets/lib/${file}`; kitReport.push(`${file}: ${note[file]}`); continue; }
   if (norm(readFileSync(shared, 'utf8')) === norm(block.code)) { note[file] = `identical to the bundled assets/lib/${file}`; kitReport.push(`${file}: identical to the bundled kit`); continue; }
   mkdirSync(join(dir, 'lib'), { recursive: true });
   writeFileSync(join(dir, 'lib', file), block.code + '\n');
-  const tmp = join(tmpdir(), `3d-explainer-${process.pid}-${file}`);
+  const tmp = join(tmpdir(), `video-styles-${process.pid}-${file}`);
   writeFileSync(tmp, block.code + '\n');
   const d = spawnSync('diff', ['-u', shared, tmp], { encoding: 'utf8' }).stdout || '';
   note[file] = `saved as lib/${file}`;
@@ -115,13 +114,13 @@ const prose = strip(text).trim() + '\n';
 writeFileSync(join(dir, 'source-prompt.md'), prose);
 
 // compare the generic sections with the baseline style's prompt (style names, fonts and the card are expected to differ)
-const baseId = existsSync(join(SKILL, 'styles', 'tiny-diorama', 'source-prompt.md')) && id !== 'tiny-diorama' ? 'tiny-diorama'
-  : readdirSync(join(SKILL, 'styles')).find((s) => s !== id && existsSync(join(SKILL, 'styles', s, 'source-prompt.md')));
+const baseId = existsSync(join(STYLES3D, 'tiny-diorama', 'source-prompt.md')) && id !== 'tiny-diorama' ? 'tiny-diorama'
+  : readdirSync(STYLES3D).find((s) => s !== id && existsSync(join(STYLES3D, s, 'source-prompt.md')));
 let promptDiff = '(no baseline prompt to compare with)';
 if (baseId) {
   const generic = (s) => s.split(/^STYLE CARD\s*$/m)[0];
-  const a = join(tmpdir(), `3d-explainer-${process.pid}-base.md`), b = join(tmpdir(), `3d-explainer-${process.pid}-new.md`);
-  writeFileSync(a, generic(readFileSync(join(SKILL, 'styles', baseId, 'source-prompt.md'), 'utf8')));
+  const a = join(tmpdir(), `video-styles-${process.pid}-base.md`), b = join(tmpdir(), `video-styles-${process.pid}-new.md`);
+  writeFileSync(a, generic(readFileSync(join(STYLES3D, baseId, 'source-prompt.md'), 'utf8')));
   writeFileSync(b, generic(prose));
   const d = spawnSync('diff', ['-u', a, b], { encoding: 'utf8' }).stdout;
   promptDiff = d ? `differences from styles/${baseId}/source-prompt.md (generic sections only):\n${d.split('\n').slice(2).join('\n')}` : `generic sections identical to styles/${baseId}`;

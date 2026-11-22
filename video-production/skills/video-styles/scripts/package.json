@@ -1,8 +1,8 @@
 {
-  "name": "3d-explainer-scripts",
+  "name": "video-styles-scripts",
   "private": true,
   "type": "module",
-  "description": "Render tooling for the 3d-explainer skill (headless Chrome via Playwright, ffmpeg on PATH)",
+  "description": "Render tooling for the video-styles skill (headless Chrome via Playwright, ffmpeg on PATH)",
   "dependencies": {
     "playwright": "^1.55.0"
   }

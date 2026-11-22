@@ -71,6 +71,9 @@ page.on('crash', () => problems.push('page crashed (out of GPU memory?)'));
 await page.exposeFunction('__ctxLost', () => problems.push('WebGL context lost'));
 await page.addInitScript(() => document.addEventListener('webglcontextlost', () => window.__ctxLost(), true));
 await page.goto(pathToFileURL(resolve(page0)).href + '?render');
+// the frame size comes from the page (assemble --aspect); fit the viewport to it so the canvas is never clipped
+const size = await page.evaluate(() => { const c = document.getElementById('c'); return { width: c.width, height: c.height }; });
+await page.setViewportSize(size);
 
 await page.waitForFunction(() => window.STAGE_READY || window.STAGE_ERROR, null, { timeout: 180000 });
 // a lost context or a shader that failed to compile renders blank frames that would pass every later check: stop here
